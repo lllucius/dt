@@ -12,7 +12,9 @@ tools/baseline/capture_symbols.sh --out baseline-runs/current/symbols
 tools/baseline/capture_dictionaries.sh --out baseline-runs/current/dictionaries
 tools/baseline/capture_user_dictionaries.sh --out baseline-runs/current/user-dictionaries
 tools/baseline/capture_audio.sh --out baseline-runs/current/audio-us
-tools/baseline/compare_audio.py --actual baseline-runs/current/audio-us
+tools/baseline/compare_audio.py \
+  --actual baseline-runs/current/audio-us \
+  --metrics-out baseline-runs/current/audio-metrics.tsv
 ```
 
 Single-command verification:

@@ -75,7 +75,9 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/capture_dictionaries.sh" --out "$run_dir/dictionaries"
 "$repo_root/tools/baseline/capture_user_dictionaries.sh" --out "$run_dir/user-dictionaries"
 "$repo_root/tools/baseline/capture_audio.sh" --out "$run_dir/audio-us"
-"$repo_root/tools/baseline/compare_audio.py" --actual "$run_dir/audio-us" > "$run_dir/audio-compare.txt"
+"$repo_root/tools/baseline/compare_audio.py" \
+  --actual "$run_dir/audio-us" \
+  --metrics-out "$run_dir/audio-metrics.tsv" > "$run_dir/audio-compare.txt"
 
 if [ -n "$expected_dir" ]; then
   if [ -d "$expected_dir/symbols" ]; then
@@ -109,6 +111,7 @@ fi
   printf 'default_warnings=%s\n' "$(cat "$run_dir/build/default-warning-count.txt")"
   printf 'strict_warnings=%s\n' "$(cat "$run_dir/build/strict-warning-count.txt")"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
+  printf 'audio_metrics=%s\n' "$run_dir/audio-metrics.tsv"
   [ -f "$run_dir/symbol-compare.txt" ] && printf 'symbol_compare=%s\n' "$run_dir/symbol-compare.txt"
   [ -f "$run_dir/manifest-compare.txt" ] && printf 'manifest_compare=%s\n' "$run_dir/manifest-compare.txt"
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"

@@ -67,6 +67,7 @@ jobs:
             > baseline-runs/ci/user-dictionary-compare.txt
           tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us
           tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
+            --metrics-out baseline-runs/ci/audio-metrics.tsv \
             > baseline-runs/ci/audio-compare.log
 
       - name: Capture baseline visibility
@@ -91,7 +92,9 @@ jobs:
           fi
           if [ -x dist/say ]; then
             tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us || true
-            tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us > baseline-runs/ci/audio-compare.log 2>&1 || true
+            tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
+              --metrics-out baseline-runs/ci/audio-metrics.tsv \
+              > baseline-runs/ci/audio-compare.log 2>&1 || true
           fi
 
       - name: Upload baseline visibility

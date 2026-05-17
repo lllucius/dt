@@ -35,7 +35,7 @@ Known baseline facts:
 - Autotools default Linux build succeeds.
 - Strict warning build succeeds.
 - Post-cleanup warning-line counts were last observed as:
-  - default build: 1,829
+  - default build: 1,828
   - strict build: 29,839
 - US English golden WAVs for speakers 0 through 8 compare exactly after rebuild.
 - Exported symbols matched the Phase 1 symbol baseline after the first cleanup.
@@ -100,7 +100,7 @@ checks and state the result:
 - `tools/baseline/capture_symbols.sh --out baseline-runs/<phase>/symbols`
 - compare exported symbols against the previous accepted baseline
 - `tools/baseline/capture_audio.sh --out baseline-runs/<phase>/audio-us`
-- `tools/baseline/compare_audio.py --actual baseline-runs/<phase>/audio-us`
+- `tools/baseline/compare_audio.py --actual baseline-runs/<phase>/audio-us --metrics-out baseline-runs/<phase>/audio-metrics.tsv`
 - capture or compare `dist` manifest when packaging/install behavior might be
   affected
 - `git diff --check`, with explicit note if legacy CRLF files require scoped
@@ -490,7 +490,37 @@ Rules:
 
 ## Phase 7: Golden Audio Expansion
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Expanded golden audio verification reporting without adding non-US baselines.
+  This preserves the previously approved scope: US English, speakers 0 through
+  8, one fixed input, WAV output.
+- Updated `tools/baseline/compare_audio.py` to optionally write a TSV metrics
+  report with SHA-256 hashes, frame counts, sample rates, peak/RMS levels, and
+  max sample deltas.
+- Updated `tools/baseline/verify_current.sh` and Ubuntu CI to publish
+  `audio-metrics.tsv` alongside exact audio comparison logs.
+- Added documentation headers to `tools/baseline/capture_audio.sh` and updated
+  `tools/baseline/README.md`, `tests/golden/audio/us/README.md`, and
+  `docs/modernization/BASELINE_PROCEDURE.md`.
+- Verification run:
+  - `tools/baseline/capture_audio.sh --out baseline-runs/phase7-audio-us`
+  - `tools/baseline/compare_audio.py --actual baseline-runs/phase7-audio-us --metrics-out baseline-runs/phase7-audio-us/audio-metrics.tsv`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase7-audio-verification --expected tests/golden`
+- Verification results:
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - audio metrics reported 56,729 frames, 11025 Hz, matching SHA-256 hashes,
+    and max sample delta 0 for every committed speaker WAV.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated main and user dictionary file lists, sizes, and SHA-256 hashes
+    matched committed baselines.
+  - default warning-line count: 1,828.
+  - strict warning-line count: 29,839.
+- No generated WAV baselines, dictionary outputs, public headers, exported
+  symbols, install layout, sample rate, or runtime behavior were intentionally
+  changed.
 
 Goals:
 

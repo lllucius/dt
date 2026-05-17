@@ -121,6 +121,16 @@ Generation command pattern:
 Repeat with speaker IDs `0` through `8`. The Phase 1 WAV files are RIFF/WAVE,
 PCM, 16-bit, mono, 11025 Hz.
 
+Audio comparisons can also emit a metrics report:
+
+```sh
+tools/baseline/compare_audio.py --actual baseline-runs/current/audio-us --metrics-out baseline-runs/current/audio-metrics.tsv
+```
+
+The metrics report includes SHA-256 hashes, frame counts, sample rates, peak and
+RMS levels, and max sample deltas. Exact WAV equality remains the pass/fail
+condition.
+
 ## Limitations
 
 - Baseline audio covers US English only.
