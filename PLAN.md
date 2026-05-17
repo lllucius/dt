@@ -988,7 +988,51 @@ Rules:
 
 ## Phase 14: Public Header and Export Audit
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added `docs/modernization/PUBLIC_API_AUDIT.md` documenting the current Linux
+  installed header set, ABI-sensitive non-installed `tts.h`, feasible header
+  isolation checks, installed phoneme headers that are intentionally not
+  isolated, and exported-symbol policy.
+- Added public header audit tooling:
+  - `tools/baseline/check_public_headers.sh`
+- Added committed public header allowlists:
+  - `tests/golden/public-headers/installed-linux.txt`
+  - `tests/golden/public-headers/self-compile-linux.txt`
+  - `tests/golden/public-headers/known-not-isolated-linux.txt`
+  - `tests/golden/public-headers/README.md`
+- Updated `tools/baseline/verify_current.sh` so expected runs containing
+  `public-headers/` also compare public header audit outputs.
+- Updated `.github/workflows/build.yml` so the Ubuntu verification gate runs
+  the public header audit against the committed allowlists.
+- Updated `tools/baseline/README.md` with the public header audit command.
+- Header self-compile coverage now includes:
+  - `ttsapi.h`
+  - `tts.h`
+  - `dtmmedefs.h`
+  - `l_com_ph.h`
+  - `l_fr_ph.h`
+- Verification run:
+  - `tools/baseline/check_public_headers.sh --out baseline-runs/phase14-public-headers --expected tests/golden/public-headers`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase14-api --expected tests/golden`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase13-format/dist-manifest.txt --actual baseline-runs/phase14-api/dist-manifest.txt --out baseline-runs/phase14-api/dist-manifest-compare.diff`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - public header audit matched committed allowlists.
+  - all feasible header self-compile checks passed.
+  - exported symbol comparisons matched committed baselines for all shared
+    libraries.
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - generated dictionary and user dictionary captures matched committed
+    baselines.
+  - dist manifest matched the Phase 13 manifest exactly.
+  - default warning-line count: 1,805.
+  - strict warning-line count: 29,815.
+- No public headers, public API signatures, exported symbol names, calling
+  conventions, structure layouts, runtime code, dictionaries, or speech behavior
+  were changed.
 
 Reasoning checkpoint: extra-high recommended before changing public headers,
 ABI surfaces, calling conventions, or exported-symbol policy.

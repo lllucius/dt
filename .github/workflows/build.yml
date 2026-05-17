@@ -69,6 +69,9 @@ jobs:
           tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
             --metrics-out baseline-runs/ci/audio-metrics.tsv \
             > baseline-runs/ci/audio-compare.log
+          tools/baseline/check_public_headers.sh \
+            --out baseline-runs/ci/public-headers \
+            --expected tests/golden/public-headers
 
       - name: Capture baseline visibility
         if: always()
@@ -96,6 +99,9 @@ jobs:
               --metrics-out baseline-runs/ci/audio-metrics.tsv \
               > baseline-runs/ci/audio-compare.log 2>&1 || true
           fi
+          tools/baseline/check_public_headers.sh \
+            --out baseline-runs/ci/public-headers \
+            --expected tests/golden/public-headers || true
 
       - name: Upload baseline visibility
         if: always()

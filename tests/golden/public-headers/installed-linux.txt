@@ -1,0 +1,10 @@
+src/dapi/src/api/ttsapi.h
+src/dapi/src/include/l_all_ph.h
+src/dapi/src/include/l_com_ph.h
+src/dapi/src/include/l_fr_ph.h
+src/dapi/src/include/l_gr_ph.h
+src/dapi/src/include/l_la_ph.h
+src/dapi/src/include/l_sp_ph.h
+src/dapi/src/include/l_uk_ph.h
+src/dapi/src/include/l_us_ph.h
+src/dapi/src/osf/dtmmedefs.h

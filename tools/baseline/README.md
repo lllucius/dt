@@ -12,6 +12,9 @@ tools/baseline/capture_symbols.sh --out baseline-runs/current/symbols
 tools/baseline/capture_dictionaries.sh --out baseline-runs/current/dictionaries
 tools/baseline/capture_user_dictionaries.sh --out baseline-runs/current/user-dictionaries
 tools/baseline/capture_audio.sh --out baseline-runs/current/audio-us
+tools/baseline/check_public_headers.sh \
+  --out baseline-runs/current/public-headers \
+  --expected tests/golden/public-headers
 tools/baseline/compare_audio.py \
   --actual baseline-runs/current/audio-us \
   --metrics-out baseline-runs/current/audio-metrics.tsv
@@ -38,6 +41,17 @@ tools/baseline/summarize_warnings.py \
 The warning summarizer writes TSV reports grouped by flag, category, file, and
 risk. It is an inventory helper only; it does not decide whether a warning is
 safe to clean.
+
+Public header audit:
+
+```sh
+tools/baseline/check_public_headers.sh \
+  --out baseline-runs/current/public-headers \
+  --expected tests/golden/public-headers
+```
+
+The header audit compares the accepted installed-header list and syntax-checks
+the subset of public or ABI-sensitive headers that currently self-compile.
 
 Generated logs and comparison artifacts should stay under ignored
 `baseline-runs/`.

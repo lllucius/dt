@@ -1,0 +1,6 @@
+src/dapi/src/include/l_all_ph.h	requires explicit VOICE_ROM_* selection
+src/dapi/src/include/l_gr_ph.h	contains intentional #error: This file is no longer used
+src/dapi/src/include/l_la_ph.h	contains intentional #error: This file is no longer used
+src/dapi/src/include/l_sp_ph.h	contains intentional #error: This file is no longer used
+src/dapi/src/include/l_uk_ph.h	contains intentional #error: This file is no longer used
+src/dapi/src/include/l_us_ph.h	contains intentional #error: This file is no longer used

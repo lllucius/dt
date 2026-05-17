@@ -1,0 +1,5 @@
+src/dapi/src/api/tts.h tts.h
+src/dapi/src/api/ttsapi.h ttsapi.h
+src/dapi/src/include/l_com_ph.h l_com_ph.h
+src/dapi/src/include/l_fr_ph.h l_fr_ph.h
+src/dapi/src/osf/dtmmedefs.h dtmmedefs.h
