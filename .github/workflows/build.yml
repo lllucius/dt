@@ -85,6 +85,8 @@ jobs:
           tools/baseline/check_public_headers.sh \
             --out baseline-runs/ci/public-headers \
             --expected tests/golden/public-headers
+          tools/baseline/check_api_smoke.sh \
+            --out baseline-runs/ci/api-smoke
           tools/baseline/summarize_warnings.py \
             --log baseline-runs/ci/build.log \
             --out-dir baseline-runs/ci/warnings-default
@@ -141,6 +143,10 @@ jobs:
           tools/baseline/check_public_headers.sh \
             --out baseline-runs/ci/public-headers \
             --expected tests/golden/public-headers || true
+          if [ -f dist/include/dtk/ttsapi.h ] && [ -f dist/lib/libtts.so ]; then
+            tools/baseline/check_api_smoke.sh \
+              --out baseline-runs/ci/api-smoke || true
+          fi
           if [ -f baseline-runs/ci/build.log ]; then
             tools/baseline/summarize_warnings.py \
               --log baseline-runs/ci/build.log \

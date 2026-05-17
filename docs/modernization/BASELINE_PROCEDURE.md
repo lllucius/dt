@@ -137,11 +137,28 @@ The metrics report includes SHA-256 hashes, frame counts, sample rates, peak and
 RMS levels, and max sample deltas. Exact WAV equality remains the pass/fail
 condition.
 
+## Public API Smoke
+
+The public API smoke test compiles against the staged Linux install headers and
+libraries:
+
+```sh
+tools/baseline/check_api_smoke.sh --out baseline-runs/current/api-smoke
+```
+
+It includes `dtk/ttsapi.h`, links against `dist/lib/libtts.so`, starts the US
+language path, opens a no-audio TTS handle, selects speaker 0, writes
+`tests/golden/input/us_one_shot.txt` through `TextToSpeechOpenWaveOutFile`,
+closes the WAV file, and shuts down. The generated WAV must match
+`tests/golden/audio/us/speaker_0.wav` byte-for-byte.
+
 ## Limitations
 
 - Baseline audio covers US English only.
 - Baseline audio covers the original one-shot input plus three expanded US
   input suites. Each suite covers speakers 0 through 8.
+- Public API smoke coverage currently covers US English speaker 0, public
+  header inclusion, dynamic linking, and speak-to-WAV only.
 - No live audio hardware path was tested.
 - Optional GTK, ALSA, and PulseAudio development packages were not available on
   the host used for Phase 1.

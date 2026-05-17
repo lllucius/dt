@@ -19,6 +19,7 @@ tools/baseline/capture_audio_suites.sh --out baseline-runs/current/audio-us-suit
 tools/baseline/check_public_headers.sh \
   --out baseline-runs/current/public-headers \
   --expected tests/golden/public-headers
+tools/baseline/check_api_smoke.sh --out baseline-runs/current/api-smoke
 tools/baseline/compare_audio.py \
   --actual baseline-runs/current/audio-us \
   --metrics-out baseline-runs/current/audio-metrics.tsv
@@ -74,6 +75,18 @@ tools/baseline/check_public_headers.sh \
 
 The header audit compares the accepted installed-header list and syntax-checks
 the subset of public or ABI-sensitive headers that currently self-compile.
+
+Public API smoke coverage:
+
+```sh
+tools/baseline/check_api_smoke.sh --out baseline-runs/current/api-smoke
+```
+
+The smoke test compiles a small C program against `dist/include` and `dist/lib`,
+then exercises public startup, US language selection, speaker selection,
+speak-to-WAV, sync, wave close, and shutdown behavior without opening live
+audio. The generated WAV is compared byte-for-byte against the accepted US
+speaker 0 golden audio.
 
 CMake subset verification:
 

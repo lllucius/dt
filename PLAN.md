@@ -496,7 +496,7 @@ Implementation Summary:
 
 ## Phase 6: Public API Smoke Coverage
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high before adding API tests or changing any API
 implementation.
@@ -526,6 +526,37 @@ Rules:
 - Do not reformat public headers.
 - Do not change installed header paths.
 - Do not change exported symbol names.
+
+Implementation Summary:
+
+- Added `tools/baseline/api_smoke.c`, a small public C smoke test that includes
+  installed `dtk/ttsapi.h` and exercises US language selection, no-audio
+  startup, speaker 0 selection, `TextToSpeechOpenWaveOutFile`,
+  `TextToSpeechSpeak`, `TextToSpeechSync`, `TextToSpeechCloseWaveOutFile`, and
+  `TextToSpeechShutdown`.
+- Added `tools/baseline/check_api_smoke.sh`, which compiles the smoke test
+  against staged `dist/include` and `dist/lib`, runs it from the staged `dist/`
+  directory so `DECtalk.conf` and dictionaries resolve the same way as the
+  install layout, and compares the generated WAV byte-for-byte against
+  `tests/golden/audio/us/speaker_0.wav`.
+- Wired the API smoke into `tools/baseline/verify_current.sh` and the Ubuntu CI
+  baseline verification and visibility artifact steps.
+- Documented the public API smoke in `tools/baseline/README.md` and
+  `docs/modernization/BASELINE_PROCEDURE.md`.
+- Verification run:
+  `tools/baseline/check_api_smoke.sh --out baseline-runs/next-phase6-api-smoke-2`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase6-full --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: API smoke WAV comparison was exact; public header audit
+  matched accepted lists; all exported symbol baselines matched; detailed
+  manifest, dictionaries, user dictionary fixture, original US audio, expanded
+  US audio suites, and warning budgets matched accepted baselines.
+- Public headers were not modified. Exported symbols did not change.
+  Dictionaries and golden audio did not change. Behavior risk is low because
+  the implementation only adds external test coverage and CI wiring.
+- Known limitations: API smoke coverage currently covers Linux, US English,
+  speaker 0, dynamic linking, and WAV file output only; it does not exercise
+  live audio hardware, callbacks, in-memory output, or non-US languages.
 
 ## Phase 7: API-Boundary Warning Cleanup
 
