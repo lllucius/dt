@@ -11,9 +11,21 @@ accidentally shape Linux cleanup work.
 - The initial side-by-side CMake build is explicitly Linux-only by default.
 - Non-Linux CMake experimentation requires the opt-in option
   `DECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON`.
+- Autotools configuration now requires `--enable-legacy-targets` for
+  historical/non-current target triplets before target-specific branches are
+  selected. Current non-iPAQ Linux configuration remains the default path.
+- Platform scaffolding includes `src/platform/dt_legacy_targets.*`, which
+  reports historical target macros and requires
+  `DECTALK_ENABLE_LEGACY_TARGET_SOURCE` when those macros are active.
 
-This is a build-system quarantine for the new CMake path only. It does not claim
-that historical source branches are deleted, dead, or safe to remove.
+This is a build-system and scaffolding-level quarantine. It does not claim that
+historical source branches are deleted, dead, validated, or safe to remove.
+
+## Source-level opt-in names
+
+- Autotools: `./configure --enable-legacy-targets`
+- CMake: `-DDECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON`
+- Source scaffolding macro: `DECTALK_ENABLE_LEGACY_TARGET_SOURCE`
 
 ## Historical or non-current targets to preserve
 

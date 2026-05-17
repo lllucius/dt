@@ -4,6 +4,11 @@ The side-by-side CMake build is optional Linux build scaffolding. It does not
 replace Autotools, Visual Studio project files, GitHub Actions build scripts, or
 packaging, and Autotools remains authoritative until full parity is proven.
 
+Non-Linux CMake experimentation requires
+`-DDECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON`. When that option is enabled, CMake
+also defines `DECTALK_ENABLE_LEGACY_TARGET_SOURCE` for the platform scaffolding
+so historical target macros are explicit rather than accidental.
+
 ## Current scope
 
 The Phase 8 CMake build creates:

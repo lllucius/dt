@@ -1,3 +1,12 @@
+/*
+ * Purpose: shared platform detection macros for internal wrappers.
+ * Scope: private DECtalk modernization scaffolding; not a public API.
+ * Behavior preservation: centralizes current platform checks without changing
+ * existing DECtalk runtime or build-system behavior.
+ * Limitations: Linux/POSIX is the current target; historical target work must
+ * remain explicitly gated and documented.
+ */
+
 #ifndef DT_PLATFORM_H
 #define DT_PLATFORM_H
 

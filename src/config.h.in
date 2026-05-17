@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 to allow historical DECtalk target source scaffolding. */
+#undef DECTALK_ENABLE_LEGACY_TARGET_SOURCE
+
 /* Define to 1 if iconv exists */
 #undef HAVE_ICONV
 

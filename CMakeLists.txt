@@ -18,6 +18,10 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT DECTALK_CMAKE_ENABLE_LEGACY_TA
   )
 endif()
 
+if(DECTALK_CMAKE_ENABLE_LEGACY_TARGETS)
+  set(DECTALK_ENABLE_LEGACY_TARGET_SOURCE 1)
+endif()
+
 include(CheckFunctionExists)
 check_function_exists(iconv HAVE_ICONV)
 
@@ -180,12 +184,16 @@ add_library(dt_platform STATIC
   src/platform/dt_audio_backend.c
   src/platform/dt_event_posix.c
   src/platform/dt_filesystem_posix.c
+  src/platform/dt_legacy_targets.c
   src/platform/dt_mutex_posix.c
   src/platform/dt_thread_posix.c
   src/platform/dt_time_posix.c
 )
 target_include_directories(dt_platform PUBLIC src/platform)
 target_compile_options(dt_platform PRIVATE ${DECTALK_COMMON_COMPILE_OPTIONS})
+if(DECTALK_CMAKE_ENABLE_LEGACY_TARGETS)
+  target_compile_definitions(dt_platform PUBLIC DECTALK_ENABLE_LEGACY_TARGET_SOURCE=1)
+endif()
 target_link_libraries(dt_platform PUBLIC pthread)
 
 add_executable(dt_platform_smoke tools/platform/dt_platform_smoke.c)

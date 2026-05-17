@@ -13,6 +13,7 @@
 #include "dt_event.h"
 #include "dt_mutex.h"
 #include "dt_thread.h"
+#include "dt_legacy_targets.h"
 #include "dt_time.h"
 
 #include <inttypes.h>
@@ -54,6 +55,7 @@ int main(int argc, char **argv)
     void *thread_status = NULL;
     struct smoke_context smoke;
     dt_audio_backend_config_t audio_config;
+    dt_legacy_target_inventory_t legacy_inventory;
 
     if (dt_path_join(joined_path, sizeof(joined_path), base, leaf) != 0) {
         perror("dt_path_join");
@@ -139,6 +141,20 @@ int main(int argc, char **argv)
     printf("audio_audioqueue=%d\n", audio_config.use_audioqueue);
     printf("audio_legacy_oss_device=%s\n", audio_config.legacy_oss_device);
     printf("audio_selection_order=%s\n", audio_config.selection_order);
+    dt_legacy_targets_get_inventory(&legacy_inventory);
+    printf("legacy_source_opt_in=%d\n", legacy_inventory.source_opt_in);
+    printf("legacy_windows=%d\n", legacy_inventory.windows);
+    printf("legacy_windows_ce=%d\n", legacy_inventory.windows_ce);
+    printf("legacy_osf_tru64=%d\n", legacy_inventory.osf_tru64);
+    printf("legacy_sparc_solaris=%d\n", legacy_inventory.sparc_solaris);
+    printf("legacy_vxworks=%d\n", legacy_inventory.vxworks);
+    printf("legacy_msdos=%d\n", legacy_inventory.msdos);
+    printf("legacy_arm7=%d\n", legacy_inventory.arm7);
+    printf("legacy_ipaq_linux=%d\n", legacy_inventory.ipaq_linux);
+    printf("legacy_powerpc_mac=%d\n", legacy_inventory.powerpc_mac);
+    printf("legacy_apple=%d\n", legacy_inventory.apple);
+    printf("legacy_emscripten=%d\n", legacy_inventory.emscripten);
+    printf("legacy_alpha=%d\n", legacy_inventory.alpha);
 
     dt_event_destroy(smoke.event);
     dt_mutex_destroy(smoke.mutex);

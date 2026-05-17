@@ -17,6 +17,8 @@ Current wrappers:
 - `dt_audio_backend.*`: compile-time audio backend metadata used to document
   current backend availability without opening devices or changing runtime
   audio routing.
+- `dt_legacy_targets.*`: compile-time historical target inventory and opt-in
+  gate for platform scaffolding.
 
 The CMake-only `dt_platform_smoke` target exercises these wrappers as a
 developer check without installing them or routing DECtalk runtime behavior

@@ -845,7 +845,52 @@ Rules:
 
 ## Phase 12: Historical Target Quarantine, Source Level
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added a source-level historical target opt-in gate for platform scaffolding:
+  - `src/platform/dt_legacy_targets.h`
+  - `src/platform/dt_legacy_targets.c`
+- Updated `src/platform/dt_platform.h` with standard project documentation.
+- Updated `CMakeLists.txt` so the CMake platform smoke target compiles the
+  historical target inventory and defines
+  `DECTALK_ENABLE_LEGACY_TARGET_SOURCE` only when
+  `DECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON` is set.
+- Updated `src/configure.ac` and `src/config.h.in` so Autotools current Linux
+  configuration remains default, while historical/non-current target triplets
+  require `./configure --enable-legacy-targets`.
+- Updated platform smoke output to report historical target macro inventory and
+  the source opt-in state.
+- Updated modernization docs:
+  - `docs/modernization/HISTORICAL_TARGETS.md`
+  - `docs/modernization/BUILD_OVERVIEW.md`
+  - `docs/modernization/CMAKE_OVERVIEW.md`
+  - `docs/modernization/MACRO_INVENTORY.md`
+  - `src/platform/README.md`
+- Verification run:
+  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase12-legacy-cmake -DCMAKE_BUILD_TYPE=Release`
+  - `cmake --build baseline-runs/phase12-legacy-cmake --target dt_platform_smoke -- -j1`
+  - `baseline-runs/phase12-legacy-cmake/dt_platform_smoke . PLAN.md`
+  - `(cd src && autoreconf -i)`
+  - `(cd src && ./configure --target=sparc-sun-solaris)`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase12-behavior --expected tests/golden`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - CMake platform smoke reported all historical target indicators inactive on
+    the current Linux build and `legacy_source_opt_in=0`.
+  - `./configure --target=sparc-sun-solaris` stopped with the new
+    `--enable-legacy-targets` opt-in requirement.
+  - Current Linux Autotools verification still passed.
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated dictionary and user dictionary captures matched committed
+    baselines.
+  - default warning-line count: 1,829.
+  - strict warning-line count: 29,839.
+- No historical code was deleted. No engine files, public headers, dictionary
+  sources, runtime audio/threading paths, exported symbols, or Linux default
+  runtime behavior were changed.
 
 Goals:
 

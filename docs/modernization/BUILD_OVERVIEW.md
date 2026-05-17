@@ -31,6 +31,8 @@ inventory, not a support promise.
     and `compile_commands.json`.
   - The CMake path is Linux-only by default; non-current targets require
     `DECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON`.
+  - Historical/non-current Autotools target triplets require
+    `./configure --enable-legacy-targets`.
   - Scope and source-membership differences are documented in
     `docs/modernization/CMAKE_OVERVIEW.md`.
 - Emscripten/WebAssembly port under `ports/emscripten`.
