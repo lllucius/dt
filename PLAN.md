@@ -50,11 +50,21 @@ Known baseline facts:
 - Keep each subtask small enough to leave the tree buildable and testable.
 - Update this plan immediately after each completed phase with an Implementation
   Summary.
+- Commit often while executing the plan. Each logical subtask should end in a
+  stable, verified commit when feasible. After completing the requested plan
+  scope, create a pull request with an appropriate body summarizing changes,
+  verification, behavior risk, and limitations, then automatically merge that PR
+  once required checks and repository policy allow it.
 - Do not delete historical target code without explicit approval.
 - Do not change speech output, phoneme output, dictionary behavior, public API
   signatures, exported symbols, install layout, sample rate, default voice,
   threading model, or audio backend behavior unless a phase explicitly approves
   that change and verification proves the result.
+- Every newly created source or header file must include standard project
+  documentation at the top of the file: purpose, scope, behavior-preservation
+  notes, and any important limitations or ownership boundaries. Keep comments
+  concise and avoid changing existing file headers unless the phase explicitly
+  requires it.
 - Execute ordinary phases with high reasoning. At each reasoning escalation
   checkpoint, stop before implementation, call out the need for extra-high
   reasoning, and wait for explicit approval before continuing that phase.
