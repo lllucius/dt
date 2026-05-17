@@ -683,7 +683,7 @@ Implementation Summary:
 
 ## Phase 8: API-Boundary Warning Cleanup
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -717,6 +717,43 @@ Rules:
 - Do not change public API signatures.
 - Do not change exported symbol names or calling conventions.
 - Stop on any API smoke, symbol, header, audio, or dictionary delta.
+
+Implementation Summary:
+
+- Selected one API-boundary warning class in one implementation file:
+  `-Wmisleading-indentation` in `src/dapi/src/api/ttsapi.c`.
+- Realigned the `LeaveCriticalSection(phTTS->pcsLogFile)` cleanup statement in
+  `TextToSpeechCloseLogFile` so it no longer appears to be guarded by the
+  preceding `fclose`/`CloseHandle` error check. This is an indentation-only
+  source change; it does not change the existing public API signature, calling
+  convention, control flow, lock release behavior, exported symbols, callbacks,
+  or structures.
+- Added a zero-count warning-budget ratchet for
+  `src/dapi/src/api/ttsapi.c` `-Wmisleading-indentation` in
+  `tests/golden/warnings/default-cleaned.tsv`.
+- Updated `tests/golden/dist-manifest-detailed.txt` for the expected rebuilt
+  binary hash changes caused by recompiling `ttsapi.c`. The accepted manifest
+  update is hash-only for `libtts_<lang>.so` and `tools/say_demo_*`; path,
+  type, mode, size, symlink, installed header, dictionary, and documentation
+  entries did not change.
+- Verified with
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase8-api-warning-final --expected tests/golden`.
+  Default warning-line count was 1,778, strict warning-line count was 29,763,
+  and parser-visible default warnings were 1,757.
+- Confirmed `src/dapi/src/api/ttsapi.c` no longer reports
+  `-Wmisleading-indentation`. The overall default `-Wmisleading-indentation`
+  count remains 45 from other files outside this phase.
+- Warning budget passed with the new row:
+  `src/dapi/src/api/ttsapi.c`, `-Wmisleading-indentation`, actual count 0.
+- Public headers matched allowlists. Exported symbols matched committed
+  baselines. Detailed Autotools manifest matched the updated accepted baseline.
+  Dictionaries, user dictionaries, API smoke WAV, one-shot US audio, and
+  expanded US audio suites all matched accepted baselines.
+- Ran `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+  successfully.
+- Behavior risk level: low to medium. The source change is indentation-only,
+  but it is in API implementation code and required full API, symbol, manifest,
+  dictionary, and audio verification.
 
 ## Phase 9: Platform Wrapper Parity Harness
 
