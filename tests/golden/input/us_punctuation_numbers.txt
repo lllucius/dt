@@ -1,0 +1,1 @@
+DECtalk reads numbers like 123, 45.67, and 1,000. It should pause after commas, semicolons; and periods.

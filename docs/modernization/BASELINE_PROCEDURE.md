@@ -39,6 +39,12 @@ find dist -maxdepth 4 -printf '%y %p -> %l\n' | sort > baseline-runs/phase1/dist
 
 The manifest records path and file type only.
 
+Manifest comparisons can be run with:
+
+```sh
+tools/baseline/compare_manifest.sh --expected baseline-runs/accepted/dist-manifest.txt --actual baseline-runs/current/dist-manifest.txt
+```
+
 ## Exported symbols
 
 ```sh
@@ -58,11 +64,31 @@ Phase 1 captured symbols for all shared libraries installed into `dist/lib/`:
 - `libtts_uk.so`
 - `libtts_us.so`
 
+Symbol comparisons can be run with:
+
+```sh
+tools/baseline/compare_symbols.sh --expected baseline-runs/accepted/symbols --actual baseline-runs/current/symbols
+```
+
+## Generated dictionaries
+
+Dictionary hashes can be captured and compared with:
+
+```sh
+tools/baseline/capture_dictionaries.sh --out baseline-runs/current/dictionaries
+tools/baseline/compare_dictionaries.sh --expected baseline-runs/accepted/dictionaries --actual baseline-runs/current/dictionaries
+```
+
+Generated dictionary changes are behavior-relevant until explicitly reviewed.
+
 ## Golden audio
 
 Committed input:
 
 - `tests/golden/input/us_one_shot.txt`
+- `tests/golden/input/us_abbreviations.txt`
+- `tests/golden/input/us_commands_markup.txt`
+- `tests/golden/input/us_punctuation_numbers.txt`
 
 Committed WAV outputs:
 
@@ -89,8 +115,22 @@ PCM, 16-bit, mono, 11025 Hz.
 
 - Baseline audio covers US English only.
 - Baseline audio covers one fixed input text and speakers 0 through 8.
+- Additional committed input files expand future coverage, but they do not yet
+  have committed WAV baselines.
 - No live audio hardware path was tested.
 - Optional GTK, ALSA, and PulseAudio development packages were not available on
   the host used for Phase 1.
 - Captured outputs are a baseline for comparison; they are not by themselves a
   proof that future behavior is preserved.
+
+## Single-command verification
+
+`tools/baseline/verify_current.sh` runs the current build, capture, and available
+comparison steps into one run directory:
+
+```sh
+tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected baseline-runs/accepted
+```
+
+The expected directory is optional. When supplied, it may contain `symbols/`,
+`dist-manifest.txt`, and `dictionaries/` captures from a previously accepted run.

@@ -35,7 +35,7 @@ Known baseline facts:
 - Autotools default Linux build succeeds.
 - Strict warning build succeeds.
 - Post-cleanup warning-line counts were last observed as:
-  - default build: 1,828
+  - default build: 1,829
   - strict build: 29,854
 - US English golden WAVs for speakers 0 through 8 compare exactly after rebuild.
 - Exported symbols matched the Phase 1 symbol baseline after the first cleanup.
@@ -112,7 +112,39 @@ Do not claim behavior preservation unless the relevant checks were run.
 
 ## Phase 1: Verification Hardening
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added baseline comparison and verification scripts:
+  - `tools/baseline/compare_symbols.sh`
+  - `tools/baseline/compare_manifest.sh`
+  - `tools/baseline/capture_dictionaries.sh`
+  - `tools/baseline/compare_dictionaries.sh`
+  - `tools/baseline/verify_current.sh`
+- Updated `tools/baseline/README.md` and
+  `docs/modernization/BASELINE_PROCEDURE.md` with the new capture/compare
+  workflow.
+- Added additional committed US English fixed input texts for future golden
+  coverage:
+  - `tests/golden/input/us_abbreviations.txt`
+  - `tests/golden/input/us_commands_markup.txt`
+  - `tests/golden/input/us_punctuation_numbers.txt`
+- Verification run:
+  - `tools/baseline/capture_symbols.sh --out baseline-runs/phase1-hardening-expected/symbols`
+  - `tools/baseline/capture_dist_manifest.sh --out baseline-runs/phase1-hardening-expected/dist-manifest.txt`
+  - `tools/baseline/capture_dictionaries.sh --out baseline-runs/phase1-hardening-expected/dictionaries`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase1-hardening-current --expected baseline-runs/phase1-hardening-expected`
+- Verification results:
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched the expected capture.
+  - dist manifest matched the expected capture.
+  - generated dictionary file list, sizes, and SHA-256 hashes matched the
+    expected capture.
+  - default warning-line count: 1,829.
+  - strict warning-line count: 29,854.
+- No engine code, public headers, dictionary sources, generated committed audio,
+  exported symbols, or install layout were changed.
 
 Goals:
 
