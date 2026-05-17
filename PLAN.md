@@ -426,7 +426,7 @@ Implementation Summary:
 
 ## Phase 5: Warning Budget Expansion, Low-Risk Files
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high for low-risk auxiliary files; extra-high if cleanup
 touches API, dictionary internals, synthesis, threading, or audio paths.
@@ -461,6 +461,38 @@ Rules:
 
 - Do not mix unrelated warning categories.
 - Do not silence warnings globally to make budgets pass.
+
+Implementation Summary:
+
+- Cleaned one low-risk warning category in one auxiliary sample tool:
+  converted the `set_baud` and `set_format` definitions in
+  `src/samplosf/src/dtsamples/mfg_load.c` from K&R-style parameter declarations
+  to prototype-style definitions.
+- Added a warning budget entry for
+  `src/samplosf/src/dtsamples/mfg_load.c`, `-Wold-style-definition`, maximum
+  count `0`.
+- Updated `docs/modernization/WARNING_INVENTORY.md` to document the expanded
+  warning-budget ratchet.
+- Updated `tests/golden/dist-manifest-detailed.txt` only for the rebuilt
+  `tools/mfg_load` binary hash; the detailed manifest path, type, mode, and
+  size entries did not change.
+- Verification run:
+  `tools/baseline/summarize_warnings.py --log baseline-runs/next-phase4-autotools/build/build-strict-warnings.log --out-dir baseline-runs/next-phase5-strict-inventory`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase5-mfg-load-3 --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: warning budget status was `ok`; the new
+  `mfg_load.c` `-Wold-style-definition` budget had actual count `0`;
+  original US golden audio, expanded US audio suites, exported symbols,
+  detailed manifest, main dictionaries, the US user-dictionary fixture, and
+  public header allowlists all matched accepted baselines.
+- Warning counts improved: default warning-line count decreased from 1,805 to
+  1,793 and strict warning-line count decreased from 29,815 to 29,801.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change. Behavior risk is low because the source change is limited to two
+  equivalent function-definition signatures in an auxiliary sample loader.
+- Known limitations: the file still has unrelated medium/unknown/low strict
+  warnings; no live serial-port hardware behavior was exercised; broader
+  warning debt remains non-blocking outside explicit budgets.
 
 ## Phase 6: Public API Smoke Coverage
 
