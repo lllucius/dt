@@ -35,8 +35,8 @@ Known baseline facts:
 - Autotools default Linux build succeeds.
 - Strict warning build succeeds.
 - Post-cleanup warning-line counts were last observed as:
-  - default build: 1,829
-  - strict build: 29,853
+  - default build: 1,828
+  - strict build: 29,838
 - US English golden WAVs for speakers 0 through 8 compare exactly after rebuild.
 - Exported symbols matched the Phase 1 symbol baseline after the first cleanup.
 - CMake currently builds only initial Linux US `libtts_us.so` and `say_cmake`.
@@ -308,7 +308,32 @@ Rules:
 
 ## Phase 4: Low-Risk Warning Cleanup, Tools and Samples
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Cleaned a narrow first wave of low-risk warnings in auxiliary code only:
+  - `src/samplosf/src/dtsamples/dump_vdf.c`
+  - `src/licunix/src/license.c`
+  - `src/licunix/src/csn.c`
+- Used internal linkage for private helper functions and explicit `(void)`
+  markers for intentionally unused `main` parameters.
+- Did not touch synthesis, phoneme, LTS, VTM, HLSYN, public API, dictionary
+  source, audio, or threading paths.
+- Verification run:
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase4-tools-samples --expected tests/golden`
+  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase4-tools-samples/build/build-strict-warnings.log --out-dir baseline-runs/phase4-tools-samples/warnings-strict`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated dictionary file list, sizes, and SHA-256 hashes matched committed
+    baselines.
+  - default warning-line count: 1,828.
+  - strict warning-line count: 29,838.
+  - parser-visible strict warnings: 29,818.
+- No public headers, exported symbols, generated dictionaries, generated audio,
+  install layout, or runtime behavior were intentionally changed.
 
 Goals:
 

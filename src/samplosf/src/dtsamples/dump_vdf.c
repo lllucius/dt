@@ -18,7 +18,7 @@ unsigned char paul[] = { 0x00, 0x64, 0x00, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00, 0
 unsigned char betty[] = { 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00 };
 #define BETTY_OFFSET 12
 
-void zap_or_value(FILE *out, char *zapname, int zapval, char *desc, int value)
+static void zap_or_value(FILE *out, char *zapname, int zapval, char *desc, int value)
 {
 	if (value == zapval) {
 		fprintf(out, "\t%s%s", zapname, desc);
@@ -27,7 +27,7 @@ void zap_or_value(FILE *out, char *zapname, int zapval, char *desc, int value)
 	}
 }
 
-void print_voice(char *name, unsigned short *voice, int zapf, int zapb, FILE *out)
+static void print_voice(char *name, unsigned short *voice, int zapf, int zapb, FILE *out)
 {
 	unsigned short *param = voice;
 	char n[128] = { 0 };
