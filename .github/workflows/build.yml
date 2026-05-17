@@ -51,6 +51,7 @@ jobs:
           tools/baseline/compare_symbols.sh \
             --expected tests/golden/symbols \
             --actual baseline-runs/ci/symbols \
+            --mode name-type \
             --out baseline-runs/ci/symbol-compare \
             > baseline-runs/ci/symbol-compare.txt
           tools/baseline/capture_dist_manifest.sh \
@@ -59,6 +60,7 @@ jobs:
           tools/baseline/compare_manifest.sh \
             --expected tests/golden/dist-manifest-detailed.txt \
             --actual baseline-runs/ci/dist-manifest-detailed.txt \
+            --mode path-type-subset \
             --out baseline-runs/ci/dist-manifest-detailed.diff \
             > baseline-runs/ci/dist-manifest-detailed-compare.txt
           tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries
@@ -98,7 +100,7 @@ jobs:
       - name: Verify CMake subset
         run: |
           tools/baseline/verify_cmake_subset.sh \
-            --run-dir baseline-runs/ci/cmake-subset \
+            --run-dir baseline-runs/cm \
             --expected tests/golden
 
       - name: Capture baseline visibility
@@ -117,6 +119,7 @@ jobs:
             tools/baseline/compare_manifest.sh \
               --expected tests/golden/dist-manifest-detailed.txt \
               --actual baseline-runs/ci/dist-manifest-detailed.txt \
+              --mode path-type-subset \
               --out baseline-runs/ci/dist-manifest-detailed.diff \
               > baseline-runs/ci/dist-manifest-detailed-compare.txt 2>&1 || true
           fi
@@ -158,9 +161,9 @@ jobs:
                 --out baseline-runs/ci/warning-budget.tsv || true
             fi
           fi
-          if [ ! -f baseline-runs/ci/cmake-subset/summary.txt ]; then
+          if [ ! -f baseline-runs/cm/summary.txt ]; then
             tools/baseline/verify_cmake_subset.sh \
-              --run-dir baseline-runs/ci/cmake-subset \
+              --run-dir baseline-runs/cm \
               --expected tests/golden || true
           fi
 
@@ -169,7 +172,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ubuntu-latest-baseline-visibility
-          path: baseline-runs/ci/
+          path: |
+            baseline-runs/ci/
+            baseline-runs/cm/
 
       - name: Create a `.tar.gz` of the dist/ folder.
         run: tar -cvzf dectalk.tar.gz -C dist/ .

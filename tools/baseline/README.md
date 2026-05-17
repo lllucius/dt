@@ -116,6 +116,13 @@ earlier accepted baselines. Use `--format metadata` or
 `--format metadata-hash` when packaging work may affect file modes, symlinks, or
 payload bytes.
 
+Hosted CI should avoid comparing runner-specific binary addresses, sizes, and
+hashes as behavior. Use `tools/baseline/compare_symbols.sh --mode name-type`
+for exported symbol type/name checks, and
+`tools/baseline/compare_manifest.sh --mode path-type-subset` when the expected
+dist paths and file types must be present but optional runner-built tools may
+add extra files. The default modes remain exact for local reproducibility gates.
+
 Expanded US audio suites:
 
 ```sh

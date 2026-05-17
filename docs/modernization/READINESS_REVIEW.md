@@ -287,8 +287,10 @@ Review areas:
 
 - Linux build reproducibility: the authoritative Autotools/Linux gate rebuilt
   and reproduced accepted behavior baselines under `tests/golden/`.
-- CI reliability: the local scripts that CI uses passed here; GitHub-hosted CI
-  was not run by this review.
+- CI reliability: the local scripts that CI uses passed here. Hosted PR CI uses
+  stable symbol type/name and manifest path/type checks because exact dynamic
+  symbol addresses, binary metadata, and optional runner-built tools vary by
+  GitHub runner; the local readiness gates keep exact comparisons.
 - warnings: warning counts are lower than the follow-on Phase 1 baseline, but
   warning debt remains substantial and only the narrow warning budget is
   enforced.

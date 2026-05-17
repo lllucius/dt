@@ -9,15 +9,22 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: tools/baseline/compare_symbols.sh --expected DIR --actual DIR [--out DIR]
+Usage: tools/baseline/compare_symbols.sh --expected DIR --actual DIR [--out DIR] [--mode MODE]
 
 Compares symbols-*.txt files produced by capture_symbols.sh.
+
+Modes:
+  exact      Compare the complete nm output, including addresses. This is the
+             default and is appropriate for local reproducibility gates.
+  name-type  Compare exported symbol type/name sets only. This is appropriate
+             for CI runners where addresses may vary by toolchain or linker.
 USAGE
 }
 
 expected_dir=""
 actual_dir=""
 out_dir=""
+compare_mode="exact"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -45,6 +52,14 @@ while [ "$#" -gt 0 ]; do
       out_dir="$2"
       shift 2
       ;;
+    --mode)
+      if [ "$#" -lt 2 ]; then
+        echo "error: --mode requires a value" >&2
+        exit 2
+      fi
+      compare_mode="$2"
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -61,6 +76,16 @@ if [ -z "$expected_dir" ] || [ -z "$actual_dir" ]; then
   usage >&2
   exit 2
 fi
+
+case "$compare_mode" in
+  exact|name-type)
+    ;;
+  *)
+    echo "error: unknown compare mode: $compare_mode" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 if [[ "$expected_dir" != /* ]]; then
@@ -88,6 +113,10 @@ mkdir -p "$out_dir"
 summary="$out_dir/summary.tsv"
 printf 'file\tstatus\n' > "$summary"
 
+normalize_symbol_names() {
+  awk 'NF >= 3 { print $2 "\t" $3 }' "$1" | sort -u
+}
+
 failed=0
 for expected in "$expected_dir"/symbols-*.txt; do
   [ -e "$expected" ] || continue
@@ -98,9 +127,21 @@ for expected in "$expected_dir"/symbols-*.txt; do
     failed=1
     continue
   fi
-  if diff -u "$expected" "$actual" > "$out_dir/diff-$base"; then
+  if [ "$compare_mode" = "name-type" ]; then
+    expected_compare="$out_dir/expected-$base.name-type"
+    actual_compare="$out_dir/actual-$base.name-type"
+    normalize_symbol_names "$expected" > "$expected_compare"
+    normalize_symbol_names "$actual" > "$actual_compare"
+  else
+    expected_compare="$expected"
+    actual_compare="$actual"
+  fi
+  if diff -u "$expected_compare" "$actual_compare" > "$out_dir/diff-$base"; then
     printf '%s\tok\n' "$base" >> "$summary"
     rm -f "$out_dir/diff-$base"
+    if [ "$compare_mode" = "name-type" ]; then
+      rm -f "$expected_compare" "$actual_compare"
+    fi
   else
     printf '%s\tdifferent\n' "$base" >> "$summary"
     failed=1

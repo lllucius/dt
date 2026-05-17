@@ -818,7 +818,10 @@ Implementation Summary:
 
 - Updated `docs/modernization/READINESS_REVIEW.md` with a follow-on plan final
   readiness review dated 2026-05-17.
-- Files changed: `docs/modernization/READINESS_REVIEW.md` and `PLAN.md`.
+- Files changed: `.github/workflows/build.yml`,
+  `docs/modernization/READINESS_REVIEW.md`, `PLAN.md`,
+  `tools/baseline/README.md`, `tools/baseline/compare_manifest.sh`, and
+  `tools/baseline/compare_symbols.sh`.
 - The review documents the final state of Linux build reproducibility, local CI
   script reliability, warning counts and budgets, public headers, API smoke
   coverage, exports, dictionary generation, deterministic golden audio, CMake
@@ -857,6 +860,22 @@ Implementation Summary:
   full API conformance remain untested; CMake packaging parity remains
   incomplete; behavior preservation is claimed only for the deterministic checks
   listed above.
+- PR CI portability checkpoint: the first hosted Ubuntu PR run exposed
+  runner-specific exact symbol address, binary metadata, optional GTK tool, and
+  long CMake artifact path differences. Added `name-type` symbol comparison and
+  `path-type-subset` manifest comparison modes for CI, updated hosted CI to use
+  those stable checks, and shortened the CI CMake run directory to
+  `baseline-runs/cm` so expanded-suite WAV paths stay below the legacy runtime
+  path-length limit. Local exact symbol and manifest comparisons remain the
+  default.
+- CI portability verification: the downloaded failed CI artifact passed
+  `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual /tmp/ci-artifact-phase11/symbols --mode name-type --out /tmp/ci-artifact-phase11-symbol-name-type`
+  and
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual /tmp/ci-artifact-phase11/dist-manifest-detailed.txt --mode path-type-subset --out /tmp/ci-artifact-phase11-manifest-path-type.diff`;
+  exact local symbol and manifest comparisons still passed; reran
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase11-ci-portability --expected tests/golden`
+  and
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm --expected tests/golden`.
 
 ## Definition of Done for Each Phase
 
