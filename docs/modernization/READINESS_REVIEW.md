@@ -157,3 +157,56 @@ warning-budget expansions, CMake packaging parity, additional deterministic
 audio or phoneme baselines, and isolated API-boundary cleanup. Do not promote
 CMake, rewrite audio/threading paths, simplify sound-critical macros, or edit
 public headers without explicit approval and matching verification.
+
+## Follow-On Plan Phase 1 Baseline
+
+The next modernization plan started with a post-merge baseline refresh after
+PR #1 was merged to `origin/develop`.
+
+Autotools/Linux refresh:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next-phase1-post-merge \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,804.
+- strict warning-line count: 29,815.
+- parser-visible default warnings: 1,783.
+- US English golden WAV output matched exactly for speakers 0 through 8.
+- exported symbols matched the committed symbol baselines.
+- generated main dictionaries matched the committed dictionary baselines.
+- generated US user-dictionary fixture output matched the committed expected
+  capture.
+- public header audit matched the committed allowlists.
+- warning budget status was `ok`; `src/dapi/src/dic/dic_comm.c` stayed at zero
+  `-Wformat=` warnings.
+- the current basic Autotools dist manifest was captured with 589 entries.
+
+CMake subset refresh:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next-phase1-post-merge-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,127 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English WAV output matched exactly for speakers 0 through 8.
+- CMake-staged `libtts.so` exported symbols matched the committed baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched the committed
+  baselines.
+- the detailed CMake staged manifest contained 90 entries, so CMake remains a
+  packaging subset.
+
+The one-line decrease in default warning count compared with Phase 19 was
+observed after the PR merge and rebase; no source behavior change was made in
+this refresh phase.

@@ -152,7 +152,7 @@ Do not claim behavior preservation unless the relevant checks were run.
 
 ## Phase 1: Post-Merge Baseline Refresh
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -183,6 +183,34 @@ Rules:
 
 - This phase is a synchronization and verification checkpoint only.
 - Do not update golden files in this phase.
+
+Implementation Summary:
+
+- Re-synced local `develop` with merged `origin/develop` by fetching the remote
+  merge commit, rebasing the new plan commit onto `origin/develop`, and setting
+  local `develop` to track `origin/develop`.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the follow-on Phase 1
+  post-merge baseline refresh results.
+- Verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase1-post-merge --expected tests/golden`,
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase1-post-merge-cmake --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: Autotools accepted baselines reproduced for US English
+  golden audio, exported symbols, main dictionaries, the US user-dictionary
+  fixture, public header allowlists, and the narrow warning budget. CMake
+  subset verification reproduced dictionaries, US English golden audio, exact
+  `libtts.so` symbols, language-library symbol name/type sets, and
+  `compile_commands.json`.
+- Warning counts changed only by observation after the post-merge refresh:
+  default warning-line count was 1,804, strict warning-line count was 29,815,
+  and parser-visible default warnings were 1,783. The warning budget remained
+  `ok`.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change. Behavior risk is low for this documentation and verification
+  phase.
+- Known limitations remain: CMake packaging is still a subset, live audio
+  hardware behavior was not tested, and non-current platform builds were not
+  verified.
 
 ## Phase 2: Baseline Coverage Expansion Plan
 
