@@ -68,6 +68,9 @@ Known baseline facts:
 - Execute ordinary phases with high reasoning. At each reasoning escalation
   checkpoint, stop before implementation, call out the need for extra-high
   reasoning, and wait for explicit approval before continuing that phase.
+- When extra-high checkpoint work is complete and the next work can return to
+  ordinary high reasoning, stop before continuing, call out that the reasoning
+  level should change back to high, and wait for explicit approval.
 
 ## Reasoning Escalation Checkpoints
 
