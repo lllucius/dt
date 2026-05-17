@@ -128,6 +128,43 @@ is closed or each remaining packaging difference is explicitly accepted, and
 after the symbol-address/order differences for language libraries are either
 eliminated or explicitly accepted as non-ABI-relevant.
 
+## Phase 10 Reassessment
+
+Recommendation: do not promote CMake to the primary Linux build path yet.
+Autotools remains authoritative.
+
+Current evidence from
+`tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase10-cmake --expected tests/golden`:
+
+- CMake configures and builds the side-by-side subset.
+- `compile_commands.json` is generated and non-empty.
+- generated CMake dictionaries match `tests/golden/dictionaries` exactly.
+- CMake-staged `say` produces exact original US English golden WAVs for
+  speakers 0 through 8.
+- CMake-staged `say` also produces exact expanded US audio suite WAVs.
+- CMake-staged `libtts.so` matches the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets match the committed
+  baselines.
+- Ubuntu CI runs `tools/baseline/verify_cmake_subset.sh`.
+
+Promotion blockers:
+
+- CMake still does not stage all intended Linux artifacts. The current detailed
+  manifest comparison has 589 Autotools paths, 530 CMake paths, 59 missing
+  Autotools paths, and 0 extra CMake paths.
+- Remaining missing paths are still the unbuilt `aclock` and `dtmemory`
+  top-level tools, generated sample text files under `src/DECtalk/dtsamples/`,
+  helper/user-dictionary tools under `tools/`, and staged `/usr/bin` symlinks.
+- CMake does not expose the live audio backend options used by the Autotools
+  runtime build.
+- CMake packaging parity is not proven, and the remaining layout differences
+  have not been explicitly accepted as final.
+
+Next CMake work should close the staged-layout gap or document explicit
+acceptance for each remaining difference. Promotion should remain a separate
+decision after exact or accepted packaging parity is available.
+
 ## Phase 8 Verification
 
 Phase 8 checks used `baseline-runs/phase8-cmake-expanded-2/cmake-dist`:

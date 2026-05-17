@@ -732,7 +732,7 @@ Implementation Summary:
 
 ## Phase 10: CMake Promotion Reassessment
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -759,6 +759,27 @@ Success criteria:
 Rules:
 
 - Promotion is a decision point, not automatic removal of Autotools.
+
+Implementation Summary:
+
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` with the Phase 10 CMake
+  promotion reassessment.
+- Recommendation: do not promote CMake to the primary Linux build path yet;
+  Autotools remains authoritative.
+- Verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase10-cmake --expected tests/golden`
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: CMake configured, built the side-by-side subset,
+  generated non-empty `compile_commands.json`, matched generated dictionaries,
+  matched original US golden audio, matched expanded US audio suites, matched
+  `libtts.so` exported symbols exactly, and matched language-library exported
+  symbol name/type sets.
+- Detailed manifest evidence: 589 Autotools paths, 530 CMake staged paths,
+  59 missing Autotools paths, and 0 extra CMake paths.
+- Promotion blockers remain: unbuilt `aclock` and `dtmemory` tools, generated
+  sample text files, helper/user-dictionary tools, `/usr/bin` symlinks, and
+  missing live-audio backend option parity.
+- No build system was removed or promoted.
 
 ## Phase 11: Final Readiness Review For This Plan
 
