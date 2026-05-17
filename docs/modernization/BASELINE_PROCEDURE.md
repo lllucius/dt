@@ -81,6 +81,16 @@ tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --ac
 
 Generated dictionary changes are behavior-relevant until explicitly reviewed.
 
+User dictionary fixture output can be captured and compared with:
+
+```sh
+tools/baseline/capture_user_dictionaries.sh --out baseline-runs/current/user-dictionaries
+tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries/user/expected --actual baseline-runs/current/user-dictionaries
+```
+
+User dictionary `.dtu` hash changes are also behavior-relevant until explicitly
+reviewed.
+
 ## Golden audio
 
 Committed input:
@@ -133,4 +143,5 @@ tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected base
 ```
 
 The expected directory is optional. When supplied, it may contain `symbols/`,
-`dist-manifest.txt`, and `dictionaries/` captures from a previously accepted run.
+`dist-manifest.txt`, `dictionaries/`, and `dictionaries/user/expected/`
+captures from a previously accepted run.

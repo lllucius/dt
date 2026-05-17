@@ -59,6 +59,12 @@ jobs:
             --actual baseline-runs/ci/dictionaries \
             --out baseline-runs/ci/dictionary-compare \
             > baseline-runs/ci/dictionary-compare.txt
+          tools/baseline/capture_user_dictionaries.sh --out baseline-runs/ci/user-dictionaries
+          tools/baseline/compare_dictionaries.sh \
+            --expected tests/golden/dictionaries/user/expected \
+            --actual baseline-runs/ci/user-dictionaries \
+            --out baseline-runs/ci/user-dictionary-compare \
+            > baseline-runs/ci/user-dictionary-compare.txt
           tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us
           tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
             > baseline-runs/ci/audio-compare.log
@@ -79,6 +85,9 @@ jobs:
           fi
           if [ -d dist/dic ]; then
             tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries || true
+          fi
+          if [ -x dist/tools/udic_us ]; then
+            tools/baseline/capture_user_dictionaries.sh --out baseline-runs/ci/user-dictionaries || true
           fi
           if [ -x dist/say ]; then
             tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us || true

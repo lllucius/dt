@@ -18,6 +18,7 @@ When supplied, it may contain:
   symbols/
   dist-manifest.txt
   dictionaries/
+  dictionaries/user/expected/
 
 Golden audio is always compared against tests/golden/audio/us.
 USAGE
@@ -72,6 +73,7 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/capture_symbols.sh" --out "$run_dir/symbols"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" --out "$run_dir/dist-manifest.txt"
 "$repo_root/tools/baseline/capture_dictionaries.sh" --out "$run_dir/dictionaries"
+"$repo_root/tools/baseline/capture_user_dictionaries.sh" --out "$run_dir/user-dictionaries"
 "$repo_root/tools/baseline/capture_audio.sh" --out "$run_dir/audio-us"
 "$repo_root/tools/baseline/compare_audio.py" --actual "$run_dir/audio-us" > "$run_dir/audio-compare.txt"
 
@@ -94,6 +96,12 @@ if [ -n "$expected_dir" ]; then
       --actual "$run_dir/dictionaries" \
       --out "$run_dir/dictionary-compare" > "$run_dir/dictionary-compare.txt"
   fi
+  if [ -d "$expected_dir/dictionaries/user/expected" ]; then
+    "$repo_root/tools/baseline/compare_dictionaries.sh" \
+      --expected "$expected_dir/dictionaries/user/expected" \
+      --actual "$run_dir/user-dictionaries" \
+      --out "$run_dir/user-dictionary-compare" > "$run_dir/user-dictionary-compare.txt"
+  fi
 fi
 
 {
@@ -104,6 +112,7 @@ fi
   [ -f "$run_dir/symbol-compare.txt" ] && printf 'symbol_compare=%s\n' "$run_dir/symbol-compare.txt"
   [ -f "$run_dir/manifest-compare.txt" ] && printf 'manifest_compare=%s\n' "$run_dir/manifest-compare.txt"
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"
+  [ -f "$run_dir/user-dictionary-compare.txt" ] && printf 'user_dictionary_compare=%s\n' "$run_dir/user-dictionary-compare.txt"
 } > "$run_dir/summary.txt"
 
 cat "$run_dir/summary.txt"

@@ -35,8 +35,8 @@ Known baseline facts:
 - Autotools default Linux build succeeds.
 - Strict warning build succeeds.
 - Post-cleanup warning-line counts were last observed as:
-  - default build: 1,828
-  - strict build: 29,838
+  - default build: 1,829
+  - strict build: 29,839
 - US English golden WAVs for speakers 0 through 8 compare exactly after rebuild.
 - Exported symbols matched the Phase 1 symbol baseline after the first cleanup.
 - CMake currently builds only initial Linux US `libtts_us.so` and `say_cmake`.
@@ -424,7 +424,41 @@ Rules:
 
 ## Phase 6: Dictionary Baseline Expansion
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added deterministic US user dictionary fixture input:
+  - `tests/golden/dictionaries/user/input/us_custom_pronunciations.tab`
+- Added committed user dictionary compiler expected captures:
+  - `tests/golden/dictionaries/user/expected/files.txt`
+  - `tests/golden/dictionaries/user/expected/sha256.txt`
+  - `tests/golden/dictionaries/user/expected/sizes.tsv`
+  - `tests/golden/dictionaries/user/expected/logs/us_custom_pronunciations.log`
+- Added `tools/baseline/capture_user_dictionaries.sh` to compile fixture `.tab`
+  files with `dist/tools/udic_us` and capture `.dtu` output metadata.
+- Updated `tools/baseline/verify_current.sh` and Ubuntu CI to compare the user
+  dictionary fixture output against the committed expected capture.
+- Added `docs/modernization/DICTIONARY_BASELINE.md` and updated baseline
+  documentation with the main/user dictionary capture workflow.
+- Verification run:
+  - `tools/baseline/capture_user_dictionaries.sh --out baseline-runs/phase6-user-dictionaries`
+  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries/user/expected --actual baseline-runs/phase6-user-dictionaries --out baseline-runs/phase6-user-dictionaries-compare`
+  - `tools/baseline/capture_dictionaries.sh --out baseline-runs/phase6-main-dictionaries`
+  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/phase6-main-dictionaries --out baseline-runs/phase6-main-dictionaries-compare`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase6-dictionary-baseline --expected tests/golden`
+- Verification results:
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated main dictionary file list, sizes, and SHA-256 hashes matched
+    committed baselines.
+  - generated user dictionary fixture file list, size, and SHA-256 hash matched
+    committed baselines.
+  - default warning-line count: 1,829.
+  - strict warning-line count: 29,839.
+- No dictionary source text, dictionary format, generated committed `.dic`
+  files, public headers, exported symbols, generated audio, install layout, or
+  runtime behavior were intentionally changed.
 
 Goals:
 
