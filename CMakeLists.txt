@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(DECtalk VERSION 0.1 LANGUAGES C)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(GNUInstallDirs)
 
 option(
   DECTALK_CMAKE_ENABLE_LEGACY_TARGETS
@@ -38,6 +39,10 @@ configure_file(
 )
 
 set(DECTALK_DAPI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/dapi/src")
+set(DECTALK_CMAKE_STAGE_DIR
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake-dist"
+  CACHE PATH "CMake staging directory used by the side-by-side DECtalk build"
+)
 
 set(DECTALK_CORE_SOURCES
   src/dapi/src/api/ttsapi.c
@@ -126,13 +131,7 @@ set(DECTALK_CORE_SOURCES
   src/dapi/src/vtm/playtone.c
 )
 
-add_library(tts_us SHARED ${DECTALK_CORE_SOURCES})
-set_target_properties(tts_us PROPERTIES
-  OUTPUT_NAME tts_us
-  POSITION_INDEPENDENT_CODE ON
-)
-
-target_include_directories(tts_us PRIVATE
+set(DECTALK_COMMON_INCLUDE_DIRS
   "${CMAKE_CURRENT_BINARY_DIR}/generated"
   "${CMAKE_CURRENT_BINARY_DIR}/generated/include"
   src
@@ -150,23 +149,19 @@ target_include_directories(tts_us PRIVATE
   src/dapi/src/vtm
 )
 
-target_compile_definitions(tts_us PRIVATE
+set(DECTALK_COMMON_DEFINES
   _REENTRANT
   NOMME
   LTSSIM
   TTSSIM
   ANSI
   BLD_DECTALK_DLL
-  ENGLISH
-  ENGLISH_US
-  ACNA
   ACCESS32
   TYPING_MODE
-  DEC
   DECTALK_INSTALL_PREFIX="/opt/dectalk"
 )
 
-target_compile_options(tts_us PRIVATE
+set(DECTALK_COMMON_COMPILE_OPTIONS
   -Wall
   -Wno-missing-braces
   -Wno-pointer-sign
@@ -175,39 +170,188 @@ target_compile_options(tts_us PRIVATE
   -Wno-unused-function
 )
 
-target_link_libraries(tts_us PRIVATE m pthread)
+function(dectalk_apply_common_c_settings target_name)
+  target_include_directories(${target_name} PRIVATE ${DECTALK_COMMON_INCLUDE_DIRS})
+  target_compile_definitions(${target_name} PRIVATE ${DECTALK_COMMON_DEFINES})
+  target_compile_options(${target_name} PRIVATE ${DECTALK_COMMON_COMPILE_OPTIONS})
+endfunction()
 
-add_executable(say_cmake src/samplosf/src/dtsamples/say.c)
-target_include_directories(say_cmake PRIVATE
+set(DECTALK_TTS_TARGETS)
+
+function(dectalk_add_tts_language lang_code)
+  add_library(tts_${lang_code} SHARED ${DECTALK_CORE_SOURCES})
+  set_target_properties(tts_${lang_code} PROPERTIES
+    OUTPUT_NAME tts_${lang_code}
+    POSITION_INDEPENDENT_CODE ON
+    BUILD_RPATH "$ORIGIN"
+    INSTALL_RPATH "$ORIGIN"
+  )
+  dectalk_apply_common_c_settings(tts_${lang_code})
+  target_compile_definitions(tts_${lang_code} PRIVATE DEC ${ARGN})
+  target_link_options(tts_${lang_code} PRIVATE
+    -Wl,-Bsymbolic
+    -Wl,-soname,libtts_${lang_code}.so
+  )
+  target_link_libraries(tts_${lang_code} PRIVATE m pthread)
+  list(APPEND DECTALK_TTS_TARGETS tts_${lang_code})
+  set(DECTALK_TTS_TARGETS "${DECTALK_TTS_TARGETS}" PARENT_SCOPE)
+endfunction()
+
+dectalk_add_tts_language(us ENGLISH ENGLISH_US ACNA)
+dectalk_add_tts_language(uk ENGLISH ENGLISH_UK)
+dectalk_add_tts_language(sp SPANISH SPANISH_SP)
+dectalk_add_tts_language(gr GERMAN)
+dectalk_add_tts_language(la SPANISH SPANISH_LA)
+dectalk_add_tts_language(fr FRENCH)
+
+add_library(tts_multi SHARED
+  src/dtalkml/src/dtalk_ml.c
+  src/dtalkml/src/init.c
+)
+set_target_properties(tts_multi PROPERTIES
+  OUTPUT_NAME tts
+  POSITION_INDEPENDENT_CODE ON
+  BUILD_RPATH "$ORIGIN"
+  INSTALL_RPATH "$ORIGIN"
+)
+target_include_directories(tts_multi PRIVATE
   "${CMAKE_CURRENT_BINARY_DIR}/generated"
   "${CMAKE_CURRENT_BINARY_DIR}/generated/include"
   src
   src/dapi/src/api
+  src/dapi/src/cmd
+  src/dapi/src/dic
   src/dapi/src/include
+  src/dapi/src/lts
   src/dapi/src/nt
+  src/dapi/src/osf
   src/dapi/src/ph
-  src/dapi/src/vtm
+  src/dapi/src/protos
 )
-target_compile_definitions(say_cmake PRIVATE
-  _REENTRANT
-  NOMME
-  LTSSIM
-  TTSSIM
-  ANSI
-  BLD_DECTALK_DLL
+target_compile_definitions(tts_multi PRIVATE
+  ${DECTALK_COMMON_DEFINES}
   ENGLISH
   ENGLISH_US
   ACNA
-  ACCESS32
-  TYPING_MODE
-  DECTALK_INSTALL_PREFIX="/opt/dectalk"
 )
-target_compile_options(say_cmake PRIVATE
-  -Wall
-  -Wno-missing-braces
-  -Wno-pointer-sign
-  -Wno-unused-variable
-  -Wno-unused-but-set-variable
-  -Wno-unused-function
+target_compile_options(tts_multi PRIVATE ${DECTALK_COMMON_COMPILE_OPTIONS})
+target_link_options(tts_multi PRIVATE
+  -Wl,-Bsymbolic
+  -Wl,-soname,libtts.so
 )
-target_link_libraries(say_cmake PRIVATE tts_us m pthread)
+target_link_libraries(tts_multi PRIVATE dl pthread m)
+
+set(DECTALK_DICTIONARY_OUTPUTS)
+
+function(dectalk_add_dictionary_compiler lang_code)
+  add_executable(dic_${lang_code} src/dapi/src/dic/dic.c)
+  dectalk_apply_common_c_settings(dic_${lang_code})
+  target_compile_definitions(dic_${lang_code} PRIVATE ${ARGN})
+
+  set(dictionary_names ${lang_code} ${lang_code}_5)
+  if(lang_code STREQUAL "us")
+    list(APPEND dictionary_names us_1997 us_s_1997 us_s_1998 us_2001 us_2002)
+  endif()
+
+  set(lang_outputs)
+  set(output_dir "${CMAKE_CURRENT_BINARY_DIR}/dictionaries/${lang_code}")
+  foreach(dictionary_name IN LISTS dictionary_names)
+    set(input_file "${CMAKE_CURRENT_SOURCE_DIR}/src/dapi/src/dic/Dic_${dictionary_name}.txt")
+    set(output_relative "dictionaries/${lang_code}/dtalk_${dictionary_name}.dic")
+    set(output_file "${CMAKE_CURRENT_BINARY_DIR}/${output_relative}")
+    add_custom_command(
+      OUTPUT "${output_file}"
+      COMMAND "${CMAKE_COMMAND}" -E make_directory "${output_dir}"
+      COMMAND "$<TARGET_FILE:dic_${lang_code}>" "${input_file}" "${output_relative}" /t:win32
+      DEPENDS dic_${lang_code} "${input_file}"
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+      VERBATIM
+    )
+    list(APPEND lang_outputs "${output_file}")
+  endforeach()
+
+  add_custom_target(dictionaries_${lang_code} DEPENDS ${lang_outputs})
+  list(APPEND DECTALK_DICTIONARY_OUTPUTS ${lang_outputs})
+  set(DECTALK_DICTIONARY_OUTPUTS "${DECTALK_DICTIONARY_OUTPUTS}" PARENT_SCOPE)
+endfunction()
+
+dectalk_add_dictionary_compiler(us ENGLISH ENGLISH_US ACNA)
+dectalk_add_dictionary_compiler(uk ENGLISH ENGLISH_UK)
+dectalk_add_dictionary_compiler(sp SPANISH SPANISH_SP)
+dectalk_add_dictionary_compiler(gr GERMAN)
+dectalk_add_dictionary_compiler(la SPANISH SPANISH_LA)
+dectalk_add_dictionary_compiler(fr FRENCH)
+
+add_custom_target(cmake_dictionaries ALL DEPENDS ${DECTALK_DICTIONARY_OUTPUTS})
+
+add_executable(say_cmake src/samplosf/src/dtsamples/say.c)
+set_target_properties(say_cmake PROPERTIES
+  OUTPUT_NAME say
+  BUILD_RPATH "$ORIGIN;$ORIGIN/lib;$ORIGIN/../lib"
+  INSTALL_RPATH "$ORIGIN/lib;$ORIGIN/../lib"
+)
+dectalk_apply_common_c_settings(say_cmake)
+target_compile_definitions(say_cmake PRIVATE
+  ENGLISH
+  ENGLISH_US
+  ACNA
+)
+target_link_libraries(say_cmake PRIVATE tts_multi m pthread)
+
+set(DECTALK_PHONEME_HEADERS
+  src/dapi/src/include/l_all_ph.h
+  src/dapi/src/include/l_com_ph.h
+  src/dapi/src/include/l_fr_ph.h
+  src/dapi/src/include/l_gr_ph.h
+  src/dapi/src/include/l_la_ph.h
+  src/dapi/src/include/l_sp_ph.h
+  src/dapi/src/include/l_uk_ph.h
+  src/dapi/src/include/l_us_ph.h
+)
+
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/generated/DECtalk.conf"
+"licenses:YV808w008IQ0\n"
+"licensepassword:kw60P7Y0bGRNB1@W3L@\n"
+"US_dict:dic/dtalk_us.dic\n"
+"UK_dict:dic/dtalk_uk.dic\n"
+"SP_dict:dic/dtalk_sp.dic\n"
+"GR_dict:dic/dtalk_gr.dic\n"
+"LA_dict:dic/dtalk_la.dic\n"
+"FR_dict:dic/dtalk_fr.dic\n"
+"US_udict:udict_us.dic\n"
+"UK_udict:udict_uk.dic\n"
+"SP_udict:udict_sp.dic\n"
+"GR_udict:udict_gr.dic\n"
+"LA_udict:udict_la.dic\n"
+"FR_udict:udict_fr.dic\n"
+"Speak_xpm_dir:bitmaps/\n"
+"Default_lang:us\n"
+"LANG:us,US English\n"
+"LANG:uk,UK English\n"
+"LANG:sp,Spanish\n"
+"LANG:gr,German\n"
+"LANG:la,Latin American\n"
+"LANG:fr,French\n"
+)
+
+install(TARGETS ${DECTALK_TTS_TARGETS} tts_multi LIBRARY DESTINATION lib)
+install(TARGETS say_cmake RUNTIME DESTINATION .)
+install(TARGETS dic_us dic_uk dic_sp dic_gr dic_la dic_fr RUNTIME DESTINATION tools)
+install(FILES ${DECTALK_DICTIONARY_OUTPUTS} DESTINATION dic)
+install(FILES
+  src/dapi/src/api/ttsapi.h
+  src/dapi/src/osf/dtmmedefs.h
+  ${DECTALK_PHONEME_HEADERS}
+  DESTINATION include/dtk
+)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/generated/DECtalk.conf" DESTINATION .)
+
+add_custom_target(dectalk_cmake_stage
+  COMMAND "${CMAKE_COMMAND}" --install "${CMAKE_CURRENT_BINARY_DIR}" --prefix "${DECTALK_CMAKE_STAGE_DIR}"
+  DEPENDS
+    ${DECTALK_TTS_TARGETS}
+    tts_multi
+    say_cmake
+    dic_us dic_uk dic_sp dic_gr dic_la dic_fr
+    cmake_dictionaries
+)

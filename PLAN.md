@@ -553,7 +553,58 @@ Rules:
 
 ## Phase 8: CMake Parity, Core Linux Build
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Expanded the optional side-by-side Linux CMake build in `CMakeLists.txt`:
+  - added six language-library targets producing `libtts_us.so`,
+    `libtts_uk.so`, `libtts_sp.so`, `libtts_gr.so`, `libtts_la.so`, and
+    `libtts_fr.so`.
+  - added the multi-language `tts_multi` target producing `libtts.so` from
+    `src/dtalkml/src/dtalk_ml.c` and `src/dtalkml/src/init.c`.
+  - added `dic_us`, `dic_uk`, `dic_sp`, `dic_gr`, `dic_la`, and `dic_fr`
+    dictionary compiler targets plus generated dictionary outputs.
+  - installed the generated dictionaries, CMake-built libraries, dictionary
+    tools, selected public headers, `DECtalk.conf`, and `say` into the CMake
+    staging tree.
+  - linked the CMake `say` target through `libtts.so` so the same
+    multi-language `-l us` path used by the Autotools sample is available.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` with current CMake scope,
+  source membership, dictionary generation notes, verification results, and
+  remaining staged-layout gaps.
+- Verification run:
+  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase8-cmake-expanded-2 -DCMAKE_BUILD_TYPE=Release`
+  - `cmake --build baseline-runs/phase8-cmake-expanded-2 --target dectalk_cmake_stage -- -j1`
+  - `tools/baseline/capture_dictionaries.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-dictionaries`
+  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/phase8-cmake-dictionaries --out baseline-runs/phase8-cmake-dictionary-compare`
+  - `tools/baseline/capture_symbols.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-symbols`
+  - `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual baseline-runs/phase8-cmake-symbols --out baseline-runs/phase8-cmake-symbol-compare`
+  - sorted symbol-name set comparison for all `libtts*.so` captures.
+  - `tools/baseline/capture_audio.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-audio-us`
+  - `tools/baseline/compare_audio.py --actual baseline-runs/phase8-cmake-audio-us --metrics-out baseline-runs/phase8-cmake-audio-metrics.tsv`
+  - `tools/baseline/capture_dist_manifest.sh --dist dist --out baseline-runs/phase8-autotools-manifest.txt`
+  - `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-manifest.txt`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase8-autotools-manifest.txt --actual baseline-runs/phase8-cmake-manifest.txt --out baseline-runs/phase8-cmake-manifest.diff`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase8-behavior --expected tests/golden`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - CMake emitted `compile_commands.json`.
+  - CMake staged build completed successfully.
+  - CMake-generated dictionaries matched committed golden hashes exactly.
+  - CMake-staged `say` produced exact US English golden WAVs for speakers 0
+    through 8.
+  - `libtts.so` matched the committed symbol capture exactly.
+  - language-library full symbol captures differ by address and address-sorted
+    order, but sorted symbol-name sets matched for all CMake-built language
+    libraries.
+  - CMake staged manifest is comparable but not yet exact: 541 Autotools dist
+    entries are not yet staged by CMake, with no extra CMake entries.
+  - Autotools behavior verification still passed; default warning-line count was
+    1,829 and strict warning-line count was 29,839.
+- No Autotools files, Visual Studio files, engine source, public API signatures,
+  dictionary sources, committed generated dictionaries, exported symbol names,
+  audio backend behavior, or threading behavior were intentionally changed.
 
 Reasoning checkpoint: extra-high recommended before implementing source
 membership, generated dictionary, staged install layout, or multi-language

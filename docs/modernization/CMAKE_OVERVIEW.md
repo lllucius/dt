@@ -1,30 +1,38 @@
 # CMake Overview
 
-Phase 7 adds a side-by-side CMake build option. It does not replace Autotools,
-Visual Studio project files, GitHub Actions build scripts, or packaging.
+The side-by-side CMake build is optional Linux build scaffolding. It does not
+replace Autotools, Visual Studio project files, GitHub Actions build scripts, or
+packaging, and Autotools remains authoritative until full parity is proven.
 
 ## Current scope
 
-The initial CMake build creates:
+The Phase 8 CMake build creates:
 
-- `tts_us`: a US English shared library with output name `libtts_us.so`.
-- `say_cmake`: a minimal sample tool built from
-  `src/samplosf/src/dtsamples/say.c`.
+- `tts_us`, `tts_uk`, `tts_sp`, `tts_gr`, `tts_la`, and `tts_fr`, with output
+  names `libtts_<lang>.so`.
+- `tts_multi`, with output name `libtts.so`.
+- `dic_us`, `dic_uk`, `dic_sp`, `dic_gr`, `dic_la`, and `dic_fr`.
+- generated dictionaries under the build tree, installed into the staged
+  `dic/` directory.
+- `say_cmake`, with output name `say`, linked through `libtts.so` like the
+  Autotools sample.
+- `dectalk_cmake_stage`, which installs the CMake-built subset into
+  `baseline-runs/.../cmake-dist` by default.
 - `compile_commands.json` for analysis tooling.
 
-Configure example:
+Configure and stage example:
 
 ```sh
 CC=/usr/bin/gcc cmake -S . -B baseline-runs/cmake-build -DCMAKE_BUILD_TYPE=Release
-cmake --build baseline-runs/cmake-build --target tts_us say_cmake -- -j1
+cmake --build baseline-runs/cmake-build --target dectalk_cmake_stage -- -j1
 ```
 
 `CC=/usr/bin/gcc` avoids the host `ccache` wrapper in sandboxed environments.
 
 ## Source membership
 
-The CMake `tts_us` target intentionally starts with the main US Linux DAPI source
-groups that the Autotools build uses for `libtts_us.so`:
+The CMake language libraries use the main Linux DAPI source groups that the
+Autotools build uses for `libtts_<lang>.so`:
 
 - API sources from `src/dapi/src/api`.
 - command/parser sources from `src/dapi/src/cmd`.
@@ -36,20 +44,42 @@ groups that the Autotools build uses for `libtts_us.so`:
 - OSF compatibility support sources used by the Unix build.
 - VTM sources from `src/dapi/src/vtm`.
 
-The CMake build does not yet build:
+The CMake `libtts.so` target uses the Autotools multi-language sources from
+`src/dtalkml/src/dtalk_ml.c` and `src/dtalkml/src/init.c`. The staged `say`
+binary links to this `libtts.so` target, so `-l us` and the multi-language
+loader path are available during CMake runtime checks.
 
-- non-US language variants
-- dictionary compiler targets
-- generated dictionary outputs
-- multi-language `libtts.so`
-- install/dist packaging
-- GTK Speak, windict, tunecheck, or other sample tools
-- Visual Studio, Windows CE, OSF, Solaris, iPAQ, or Emscripten variants
+The dictionary custom commands intentionally pass build-relative output paths to
+`dic_<lang>`. The dictionary compiler treats leading `/` arguments as options,
+so absolute output paths are not accepted by its current command-line parser.
 
-These differences are intentional and must remain documented until parity is
-proven.
+## Remaining Gaps
 
-## Behavior status
+The CMake staged tree is still a build-verification subset. It does not yet
+stage the full Autotools dist layout, including the documentation tree, bitmap
+assets, source sample tree, `usr/bin` symlinks, and additional sample or helper
+tools such as `aclock`, `dtmemory`, `gspeak`, `windic`, and user-dictionary
+tools.
 
-The CMake build is compile/link scaffolding only at this stage. Runtime output
-comparison remains based on the Autotools-built `dist/say` and golden WAV files.
+Do not declare CMake packaging parity until this staged-layout gap is closed and
+the manifest comparison is exact or every remaining difference is explicitly
+approved.
+
+## Phase 8 Verification
+
+Phase 8 checks used `baseline-runs/phase8-cmake-expanded-2/cmake-dist`:
+
+- CMake configured successfully and emitted `compile_commands.json`.
+- `dectalk_cmake_stage` built and installed the CMake subset.
+- generated CMake dictionaries matched `tests/golden/dictionaries` exactly.
+- CMake-staged `say` generated US English WAVs for speakers 0 through 8 that
+  matched `tests/golden/audio/us` exactly.
+- `libtts.so` matched the committed symbol capture exactly.
+- language-library symbol addresses and address-sorted order differ from the
+  Autotools capture, but sorted symbol-name sets match for all `libtts_<lang>.so`
+  libraries.
+- staged manifest comparison is intentionally different at this phase:
+  541 Autotools dist entries are not yet staged by CMake, and CMake has no extra
+  entries.
+- Autotools behavior verification still passed with
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/phase8-behavior --expected tests/golden`.
