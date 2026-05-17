@@ -27,15 +27,48 @@ jobs:
 
       - name: Create configure files
         working-directory: src
-        run: autoreconf -i
+        run: |
+          set -o pipefail
+          mkdir -p ../baseline-runs/ci
+          autoreconf -i 2>&1 | tee ../baseline-runs/ci/autoreconf.log
 
       - name: Configure
         working-directory: src
-        run: ./configure
+        run: |
+          set -o pipefail
+          ./configure 2>&1 | tee ../baseline-runs/ci/configure.log
 
       - name: Make DECtalk
         working-directory: src
-        run: make
+        run: |
+          set -o pipefail
+          make 2>&1 | tee ../baseline-runs/ci/build.log
+
+      - name: Capture baseline visibility
+        if: always()
+        run: |
+          mkdir -p baseline-runs/ci/symbols
+          if [ -f baseline-runs/ci/build.log ]; then
+            grep -n 'warning:' baseline-runs/ci/build.log > baseline-runs/ci/warnings.log || true
+            grep -c 'warning:' baseline-runs/ci/build.log > baseline-runs/ci/warning-count.txt || true
+          fi
+          if [ -d dist ]; then
+            tools/baseline/capture_dist_manifest.sh --out baseline-runs/ci/dist-manifest.txt || true
+          fi
+          if [ -d dist/lib ]; then
+            tools/baseline/capture_symbols.sh --out baseline-runs/ci/symbols || true
+          fi
+          if [ -x dist/say ]; then
+            tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us || true
+            tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us > baseline-runs/ci/audio-compare.log 2>&1 || true
+          fi
+
+      - name: Upload baseline visibility
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-latest-baseline-visibility
+          path: baseline-runs/ci/
 
       - name: Create a `.tar.gz` of the dist/ folder.
         run: tar -cvzf dectalk.tar.gz -C dist/ .
@@ -68,15 +101,40 @@ jobs:
 
       - name: Create configure files
         working-directory: src
-        run: autoreconf -i
+        run: |
+          set -o pipefail
+          mkdir -p ../baseline-runs/ci
+          autoreconf -i 2>&1 | tee ../baseline-runs/ci/autoreconf.log
 
       - name: Configure
         working-directory: src
-        run: ./configure
+        run: |
+          set -o pipefail
+          ./configure 2>&1 | tee ../baseline-runs/ci/configure.log
 
       - name: Make DECtalk
         working-directory: src
-        run: make
+        run: |
+          set -o pipefail
+          make 2>&1 | tee ../baseline-runs/ci/build.log
+
+      - name: Capture baseline visibility
+        if: always()
+        run: |
+          if [ -f baseline-runs/ci/build.log ]; then
+            grep -n 'warning:' baseline-runs/ci/build.log > baseline-runs/ci/warnings.log || true
+            grep -c 'warning:' baseline-runs/ci/build.log > baseline-runs/ci/warning-count.txt || true
+          fi
+          if [ -d dist ]; then
+            find dist -print | sort > baseline-runs/ci/dist-paths.txt
+          fi
+
+      - name: Upload baseline visibility
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-latest-baseline-visibility
+          path: baseline-runs/ci/
 
       - name: Create a `.tar.gz` of the dist/ folder.
         run: tar -cvzf dectalk.tar.gz -C dist/ .
@@ -103,11 +161,27 @@ jobs:
 
       - name: Make DECtalk
         shell: cmd
-        run: devops\vs6\dt_buildall.bat
+        run: |
+          mkdir baseline-runs\ci
+          call devops\vs6\dt_buildall.bat > baseline-runs\ci\build.log 2>&1
+          set BUILD_EXIT=%ERRORLEVEL%
+          type baseline-runs\ci\build.log
+          exit /b %BUILD_EXIT%
 
       - name: Copy files to the "/dist" folder
         shell: cmd
-        run: devops\vs6\dt_copyfiles.bat
+        run: |
+          call devops\vs6\dt_copyfiles.bat > baseline-runs\ci\copyfiles.log 2>&1
+          set COPY_EXIT=%ERRORLEVEL%
+          type baseline-runs\ci\copyfiles.log
+          exit /b %COPY_EXIT%
+
+      - name: Upload baseline visibility
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vs6-baseline-visibility
+          path: baseline-runs/ci/
 
       - name: Create artifacts
         uses: actions/upload-artifact@v4
@@ -128,11 +202,27 @@ jobs:
 
       - name: Make DECtalk
         shell: cmd
-        run: devops\vs2022\dt_buildall.bat
+        run: |
+          mkdir baseline-runs\ci
+          call devops\vs2022\dt_buildall.bat > baseline-runs\ci\build.log 2>&1
+          set BUILD_EXIT=%ERRORLEVEL%
+          type baseline-runs\ci\build.log
+          exit /b %BUILD_EXIT%
 
       - name: Copy files to the "/dist" folder
         shell: cmd
-        run: devops\vs2022\dt_copyfiles.bat
+        run: |
+          call devops\vs2022\dt_copyfiles.bat > baseline-runs\ci\copyfiles.log 2>&1
+          set COPY_EXIT=%ERRORLEVEL%
+          type baseline-runs\ci\copyfiles.log
+          exit /b %COPY_EXIT%
+
+      - name: Upload baseline visibility
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vs2022-baseline-visibility
+          path: baseline-runs/ci/
 
       - name: Create artifacts
         uses: actions/upload-artifact@v4

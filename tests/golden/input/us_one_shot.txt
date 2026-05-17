@@ -1,0 +1,1 @@
+DECtalk modernization baseline. This is a fixed one-shot synthesis sample.

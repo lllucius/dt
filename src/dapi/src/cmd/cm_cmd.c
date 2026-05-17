@@ -61,7 +61,7 @@
 #include "dectalkf.h"
 #include "cm_def.h"
 
-#ifdef ARM7 || defined (__APPLE__)
+#if defined(ARM7) || defined(__APPLE__)
 #include "string.h"
 #endif
 
