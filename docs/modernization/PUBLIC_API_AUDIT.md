@@ -44,6 +44,41 @@ Exported symbols are versioned under `tests/golden/symbols/` and compared by
 `tools/baseline/compare_symbols.sh`. Any difference in those files is
 API/ABI-relevant until explicitly reviewed and accepted.
 
+## API Smoke Matrix
+
+`tools/baseline/check_api_smoke.sh` compiles
+`tools/baseline/api_smoke.c` against installed `dist/include` headers and
+`dist/lib` libraries, then runs from `dist/` so `DECtalk.conf`, dictionaries,
+and relative library loading match the installed Linux layout.
+
+Current deterministic coverage:
+
+- error-safe `TextToSpeechShutdown(NULL)` return handling
+- `TextToSpeechEnumLangs()` for the six installed language entries from
+  `DECtalk.conf`
+- `TextToSpeechVersion()`, `TextToSpeechGetFeatures()`, and
+  `TextToSpeechVersionEx()`
+- `TextToSpeechStartLang("us")` and default `TextToSpeechSelectLang()`
+- `TextToSpeechGetCaps()` stable scalar fields
+- no-audio `TextToSpeechStartup()`
+- get/set/error cases for rate, speaker, language, and main volume, with state
+  restored before audio generation
+- `TextToSpeechGetStatus(INPUT_CHARACTER_COUNT)`
+- WAV-file output through `TextToSpeechOpenWaveOutFile()`,
+  `TextToSpeechSpeak()`, `TextToSpeechSync()`,
+  `TextToSpeechCloseWaveOutFile()`, and `TextToSpeechShutdown()`
+- byte-for-byte comparison against the accepted US English speaker 0 WAV
+
+Explicitly unsupported in the smoke matrix:
+
+- live audio hardware
+- callback ordering or timing
+- in-memory output buffers and phoneme arrays
+- phoneme/text log capture
+- non-US speech output
+- thread lifecycle, queue, pipe, or audio-backend behavior
+- full public API conformance
+
 ## Policy
 
 - Do not reformat public headers.

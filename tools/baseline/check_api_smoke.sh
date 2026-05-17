@@ -3,19 +3,22 @@
 # Linux install outputs.
 # Scope: baseline verification using dist/include, dist/lib, and committed
 # deterministic US English input.
-# Behavior preservation: this script only compiles a test program, generates a
-# WAV through public APIs, and compares it against an accepted golden WAV.
-# Limitations: no live audio hardware, callback, in-memory output, or non-US
-# language path is exercised.
+# Behavior preservation: this script only compiles a test program, checks
+# stable public API scalar behavior, generates a WAV through public APIs, and
+# compares it against an accepted golden WAV.
+# Limitations: no live audio hardware, callback, in-memory output,
+# phoneme-capture path, timing-sensitive metadata, or non-US speech output is
+# exercised.
 set -euo pipefail
 
 usage() {
   cat <<'USAGE'
 Usage: tools/baseline/check_api_smoke.sh [--dist DIR] [--input FILE] [--expected FILE] [--out DIR] [--cc CC]
 
-Compiles tools/baseline/api_smoke.c against the staged Linux dist tree, runs
-startup/speak-to-WAV/close/shutdown through the public API, and compares the
-generated WAV with an accepted deterministic baseline.
+Compiles tools/baseline/api_smoke.c against the staged Linux dist tree, checks
+stable public API scalar behavior, runs startup/speak-to-WAV/close/shutdown
+through the public API, and compares the generated WAV with an accepted
+deterministic baseline.
 USAGE
 }
 
@@ -156,6 +159,7 @@ sha256sum "$input_file" "$expected_file" "$actual_file" > "$out_dir/sha256.txt"
   printf 'input=%s\n' "$input_file"
   printf 'expected=%s\n' "$expected_file"
   printf 'actual=%s\n' "$actual_file"
+  printf 'run_log=%s\n' "$run_log"
   printf 'compare=%s\n' "$compare_log"
 } > "$out_dir/summary.txt"
 

@@ -399,7 +399,7 @@ Implementation Summary:
 
 ## Phase 4: Public API Smoke Matrix Expansion
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -432,6 +432,54 @@ Rules:
 - Do not modify public headers.
 - Do not change exported symbol names or public API signatures.
 - Do not claim full API conformance.
+
+Implementation Summary:
+
+- Expanded `tools/baseline/api_smoke.c` from a narrow speak-to-WAV smoke test
+  into a deterministic public API smoke matrix while preserving the existing
+  byte-for-byte US English speaker 0 WAV comparison.
+- Updated `tools/baseline/check_api_smoke.sh` to describe scalar API coverage
+  and record the API run log in its summary.
+- Updated `docs/modernization/PUBLIC_API_AUDIT.md` with the current smoke
+  matrix coverage and explicit unsupported areas.
+- Files changed: `tools/baseline/api_smoke.c`,
+  `tools/baseline/check_api_smoke.sh`,
+  `docs/modernization/PUBLIC_API_AUDIT.md`, and `PLAN.md`.
+- New smoke coverage includes `TextToSpeechShutdown(NULL)`,
+  `TextToSpeechEnumLangs`, `TextToSpeechVersion`,
+  `TextToSpeechGetFeatures`, `TextToSpeechVersionEx`,
+  `TextToSpeechStartLang`, `TextToSpeechSelectLang`,
+  `TextToSpeechGetCaps`, no-audio `TextToSpeechStartup`, get/set/error cases
+  for rate, speaker, language, and main volume, and
+  `TextToSpeechGetStatus(INPUT_CHARACTER_COUNT)`.
+- The smoke test restores rate, speaker, and volume state before generating the
+  accepted speaker 0 WAV artifact.
+- Verification run:
+  `tools/baseline/check_api_smoke.sh --out baseline-runs/next2-phase4-api-smoke-probe`.
+- Verification result: API smoke matrix passed and the generated WAV compared
+  exactly with `tests/golden/audio/us/speaker_0.wav`.
+- Full verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase4-api-smoke --expected tests/golden`.
+- Full verification results: default warning-line count 1,793; strict
+  warning-line count 29,778; parser-visible default warnings 1,772; warning
+  budget status `ok`; public headers matched; expanded API smoke output
+  matched the committed speaker 0 golden WAV exactly; exported symbols matched;
+  generated dictionaries matched; generated US user-dictionary fixture output
+  matched; one-shot US English golden WAVs matched for speakers 0 through 8;
+  expanded US audio suites matched for speakers 0 through 8; detailed
+  Autotools dist manifest matched the committed baseline.
+- Additional verification run:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public headers did not change.
+- Exported symbols did not change.
+- Dictionaries did not change.
+- Golden audio did not change.
+- Behavior risk level: low to medium. This phase changed only verification
+  tooling and documentation, but the tool now exercises additional public API
+  behavior before future API-boundary cleanup.
+- Known limitations: the smoke matrix still does not test live audio hardware,
+  callbacks, in-memory output, phoneme/log capture, non-US speech output,
+  thread lifecycle, queue/pipe timing, or full API conformance.
 
 ## Phase 5: CMake Packaging Gap Closure
 
