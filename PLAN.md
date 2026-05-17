@@ -2,45 +2,67 @@
 
 ## Objective
 
-Complete the DECtalk modernization while preserving current Linux behavior.
+Continue DECtalk modernization after the completed baseline-modernization plan,
+while preserving current Linux behavior.
 
-The end state is a codebase that is easier to build, easier to verify, easier to
-warning-clean, easier to port, and easier to maintain without accidental changes
-to speech output, public API behavior, generated dictionaries, packaging, or
+This plan moves into higher-risk objectives only after strengthening the
+verification net. The goal is to reduce remaining warning debt, improve build
+parity, and prepare isolated runtime cleanup without accidental changes to
+speech output, public API behavior, generated dictionaries, packaging, or
 runtime behavior.
 
 ## Guiding Principle
 
-Measure behavior first. Refactor second. Retire complexity only after it is
-classified, isolated, and covered by checks.
+Prove the behavior boundary before changing code inside it.
+
+For this phase of modernization, cleanup is subordinate to reproducibility.
+Every risky change must be preceded by a baseline that can detect the relevant
+class of regression.
 
 ## Existing Knowledge Base
 
-The previous plan established the modernization foundation:
+The previous plan is complete and summarized by:
 
+- `docs/modernization/READINESS_REVIEW.md`
+- `docs/modernization/README.md`
+- `docs/modernization/BASELINE_PROCEDURE.md`
 - `docs/modernization/BUILD_OVERVIEW.md`
 - `docs/modernization/RISK_AREAS.md`
+- `docs/modernization/WARNING_INVENTORY.md`
 - `docs/modernization/MACRO_INVENTORY.md`
-- `docs/modernization/BASELINE_PROCEDURE.md`
+- `docs/modernization/PUBLIC_API_AUDIT.md`
+- `docs/modernization/DICTIONARY_BASELINE.md`
+- `docs/modernization/PACKAGING_LAYOUT.md`
 - `docs/modernization/CMAKE_OVERVIEW.md`
 - `docs/modernization/HISTORICAL_TARGETS.md`
+- `docs/modernization/AUDIO_BACKEND.md`
 - `tools/baseline/`
-- `tests/golden/input/us_one_shot.txt`
-- `tests/golden/audio/us/speaker_0.wav` through `speaker_8.wav`
+- `tests/golden/`
 - `src/platform/`
-- initial side-by-side `CMakeLists.txt`
 
-Known baseline facts:
+Known Phase 19 readiness facts:
 
-- Autotools default Linux build succeeds.
-- Strict warning build succeeds.
-- Post-cleanup warning-line counts were last observed as:
-  - default build: 1,828
-  - strict build: 29,839
-- US English golden WAVs for speakers 0 through 8 compare exactly after rebuild.
-- Exported symbols matched the Phase 1 symbol baseline after the first cleanup.
-- CMake currently builds only initial Linux US `libtts_us.so` and `say_cmake`.
-- CMake behavior parity is not yet claimed.
+- Autotools remains the authoritative Linux build path.
+- `tools/baseline/verify_current.sh --run-dir baseline-runs/phase19-readiness --expected tests/golden`
+  passed.
+- Default warning-line count: 1,805.
+- Strict warning-line count: 29,815.
+- Parser-visible default warnings: 1,784.
+- US English golden WAVs for speakers 0 through 8 matched exactly.
+- Exported symbols matched the committed symbol baselines.
+- Main dictionaries and the US user-dictionary fixture matched committed
+  baselines.
+- Public header allowlists matched.
+- The initial warning budget for `src/dapi/src/dic/dic_comm.c` `-Wformat=`
+  remained at zero.
+- `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/phase19-readiness-cmake --expected tests/golden`
+  passed.
+- CMake is still side-by-side only. It is not ready to replace Autotools.
+- CMake staged packaging remains a subset of Autotools packaging.
+- Live audio hardware behavior and non-current platform builds were not
+  verified.
+- Existing high-risk warning debt remains in synthesis, phoneme, LTS, VTM,
+  HLSYN, public API, threading, and audio code.
 
 ## Operating Rules
 
@@ -48,13 +70,15 @@ Known baseline facts:
 - Do not advance while the current phase has failing checks or unresolved
   regressions.
 - Keep each subtask small enough to leave the tree buildable and testable.
-- Update this plan immediately after each completed phase with an Implementation
-  Summary.
+- Update this plan immediately after each completed phase with an
+  Implementation Summary.
 - Commit often while executing the plan. Each logical subtask should end in a
-  stable, verified commit when feasible. After completing the requested plan
-  scope, create a pull request with an appropriate body summarizing changes,
-  verification, behavior risk, and limitations, then automatically merge that PR
-  once required checks and repository policy allow it.
+  stable, verified commit when feasible.
+- Automatically add intended files to git and commit completed checkpoints.
+- After completing the requested plan scope, create a pull request with an
+  appropriate body summarizing changes, verification, behavior risk, and
+  limitations, then automatically merge that PR once required checks and
+  repository policy allow it.
 - Do not delete historical target code without explicit approval.
 - Do not change speech output, phoneme output, dictionary behavior, public API
   signatures, exported symbols, install layout, sample rate, default voice,
@@ -62,1219 +86,674 @@ Known baseline facts:
   that change and verification proves the result.
 - Every newly created source or header file must include standard project
   documentation at the top of the file: purpose, scope, behavior-preservation
-  notes, and any important limitations or ownership boundaries. Keep comments
+  notes, and important limitations or ownership boundaries. Keep comments
   concise and avoid changing existing file headers unless the phase explicitly
   requires it.
-- Execute ordinary phases with high reasoning. At each reasoning escalation
-  checkpoint, stop before implementation, call out the need for extra-high
-  reasoning, and wait for explicit approval before continuing that phase.
+- Before executing this plan, inspect the current tree and ask all upfront
+  clarification questions in one response if any phase requirement is ambiguous.
+- Execute ordinary phases with high reasoning.
+- At each reasoning escalation checkpoint, stop before implementation, call out
+  the need for extra-high reasoning, and wait for explicit approval before
+  continuing that phase.
+- If consecutive phases use the same reasoning level, continue without asking
+  again unless a new ambiguity or regression appears.
 - When extra-high checkpoint work is complete and the next work can return to
   ordinary high reasoning, stop before continuing, call out that the reasoning
   level should change back to high, and wait for explicit approval.
 
 ## Reasoning Escalation Checkpoints
 
-Extra-high reasoning is recommended before starting these phases or subtasks:
+Extra-high reasoning is required before:
 
-- Phase 8: CMake parity decisions involving source membership, generated
-  dictionaries, staged install layout, or `libtts.so` multi-language behavior.
-- Phase 10: any decision to wire thread, mutex, or event wrappers into existing
-  runtime code.
-- Phase 11: any decision to route audio behavior through new backend
-  abstractions.
-- Phase 13: medium-risk warning cleanup involving conversions, callback
-  signatures, thread function signatures, `volatile`, or concurrency.
-- Phase 14: public header, ABI, calling convention, or exported-symbol policy
-  decisions.
-- Phase 18: CMake promotion recommendation.
-- Phase 19: final modernization readiness conclusions and any recommendation to
-  proceed to higher-risk objectives.
+- accepting or updating any golden behavior baseline
+- adding non-US or phoneme/output baselines that may expose previously
+  untracked differences
+- changing CMake source membership, generated dictionary flow, staged packaging
+  layout, or multi-language `libtts.so` behavior
+- changing public headers, public API signatures, calling conventions, exported
+  symbols, installed header layout, or ABI-sensitive structures
+- changing API implementation near `ttsapi.c`, `tts.h`, `ttsapi.h`, `init.c`,
+  callback paths, or multi-language loader behavior
+- changing medium-risk warnings involving conversions, pointer qualifiers,
+  pointer/integer casts, callback signatures, thread function signatures,
+  `volatile`, structure layout, or size truncation
+- wiring `src/platform` thread, mutex, event, filesystem, time, or audio
+  wrappers into existing runtime code
+- changing `src/dapi/src/nt/opthread.c` or `src/dapi/src/nt/linux_audio.c`
+- simplifying sound-critical or language-selection macros
+- quarantining historical target source branches beyond build-system opt-in
+- promoting CMake to a primary Linux build path
 
-If any earlier phase finds an unexplained audio, dictionary, symbol, manifest,
-or API delta, treat that investigation as an extra-high reasoning checkpoint
-even if the phase is not listed above.
+If any phase finds an unexplained audio, dictionary, symbol, manifest, public
+header, API, phoneme, or timing delta, treat the investigation as an extra-high
+reasoning checkpoint.
 
 ## Standard Verification Gate
 
 Every phase that changes code or build behavior must run the narrowest relevant
-checks and state the result:
+checks and state the result.
 
-- `tools/baseline/build_unix.sh --strict-warnings --run-dir baseline-runs/<phase>`
-- `tools/baseline/capture_symbols.sh --out baseline-runs/<phase>/symbols`
-- compare exported symbols against the previous accepted baseline
-- `tools/baseline/capture_audio.sh --out baseline-runs/<phase>/audio-us`
-- `tools/baseline/compare_audio.py --actual baseline-runs/<phase>/audio-us --metrics-out baseline-runs/<phase>/audio-metrics.tsv`
-- capture or compare `dist` manifest when packaging/install behavior might be
-  affected
-- `git diff --check`, with explicit note if legacy CRLF files require scoped
-  exclusion
+Default gate:
+
+```sh
+tools/baseline/verify_current.sh --run-dir baseline-runs/<phase> --expected tests/golden
+git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'
+```
+
+Use additional checks when relevant:
+
+- `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/<phase>-cmake --expected tests/golden`
+- `tools/baseline/capture_dist_manifest.sh --format metadata-hash --out baseline-runs/<phase>/dist-manifest-detailed.txt`
+- `tools/baseline/check_public_headers.sh --out baseline-runs/<phase>/public-headers --expected tests/golden/public-headers`
+- `tools/baseline/summarize_warnings.py --log baseline-runs/<phase>/build/build.log --out-dir baseline-runs/<phase>/warnings-default`
+- `tools/baseline/check_warning_budgets.py --warnings baseline-runs/<phase>/warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/<phase>/warning-budget.tsv`
 
 Do not claim behavior preservation unless the relevant checks were run.
 
----
-
-## Phase 1: Verification Hardening
+## Phase 1: Post-Merge Baseline Refresh
 
 Status: completed
 
-Implementation Summary:
-
-- Added baseline comparison and verification scripts:
-  - `tools/baseline/compare_symbols.sh`
-  - `tools/baseline/compare_manifest.sh`
-  - `tools/baseline/capture_dictionaries.sh`
-  - `tools/baseline/compare_dictionaries.sh`
-  - `tools/baseline/verify_current.sh`
-- Updated `tools/baseline/README.md` and
-  `docs/modernization/BASELINE_PROCEDURE.md` with the new capture/compare
-  workflow.
-- Added additional committed US English fixed input texts for future golden
-  coverage:
-  - `tests/golden/input/us_abbreviations.txt`
-  - `tests/golden/input/us_commands_markup.txt`
-  - `tests/golden/input/us_punctuation_numbers.txt`
-- Verification run:
-  - `tools/baseline/capture_symbols.sh --out baseline-runs/phase1-hardening-expected/symbols`
-  - `tools/baseline/capture_dist_manifest.sh --out baseline-runs/phase1-hardening-expected/dist-manifest.txt`
-  - `tools/baseline/capture_dictionaries.sh --out baseline-runs/phase1-hardening-expected/dictionaries`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase1-hardening-current --expected baseline-runs/phase1-hardening-expected`
-- Verification results:
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched the expected capture.
-  - dist manifest matched the expected capture.
-  - generated dictionary file list, sizes, and SHA-256 hashes matched the
-    expected capture.
-  - default warning-line count: 1,829.
-  - strict warning-line count: 29,854.
-- No engine code, public headers, dictionary sources, generated committed audio,
-  exported symbols, or install layout were changed.
+Reasoning checkpoint: high.
 
 Goals:
 
-- Convert the existing baseline scripts into a stronger verification harness.
-- Add machine-readable comparison reports for symbols, manifests, warning counts,
-  and audio.
-- Add deterministic dictionary output/hash capture.
-- Add broader fixed text inputs before deeper cleanup begins.
-- Make it easy to compare a new run against the last accepted baseline without
-  hand-written shell loops.
+- Re-sync the local working tree to the merged modernization PR.
+- Re-run the current accepted Linux baseline from the merged branch.
+- Record the post-merge baseline as the starting point for this plan.
 
-Suggested work:
+Required work:
 
-- Add `tools/baseline/compare_symbols.sh` or equivalent.
-- Add `tools/baseline/compare_manifest.sh`.
-- Add `tools/baseline/capture_dictionaries.sh`.
-- Add `tools/baseline/compare_dictionaries.sh`.
-- Add more committed text inputs under `tests/golden/input/`.
-- Keep generated logs and comparison outputs under ignored `baseline-runs/`.
+- Ensure local `develop` tracks the merged remote `develop` branch.
+- Run the Autotools verification gate against `tests/golden`.
+- Run the CMake subset verification gate.
+- Capture current warning counts and compare them to Phase 19 readiness values.
+- Document the refreshed run in `docs/modernization/READINESS_REVIEW.md` or a
+  new follow-on note.
 
 Success criteria:
 
-- A single documented command sequence rebuilds, captures, and compares the
-  current tree to accepted baselines.
-- Symbol comparisons are exact.
-- Golden audio comparisons are exact for the existing US speaker set.
-- Dictionary hashes are captured and compared.
-- No engine code changes are made in this phase.
+- Local tree is clean before modifications begin.
+- Autotools accepted baselines reproduce.
+- CMake subset baselines reproduce.
+- Warning counts are recorded.
+- No source behavior changes are made.
 
 Rules:
 
-- Do not update golden WAVs unless the current committed WAVs are proven
-  incomplete or invalid and the reason is documented.
-- Do not make CI fail on warnings yet.
-
----
-
-## Phase 2: CI Verification Gates
-
-Status: completed
+- This phase is a synchronization and verification checkpoint only.
+- Do not update golden files in this phase.
 
 Implementation Summary:
 
-- Added committed exact baselines for CI verification:
-  - `tests/golden/symbols/`
-  - `tests/golden/dictionaries/`
-- Added README files documenting how to regenerate and compare those baselines.
-- Updated Ubuntu CI in `.github/workflows/build.yml` with a `Verify baseline
-  outputs` step that fails on:
-  - exported symbol drift against `tests/golden/symbols`
-  - generated dictionary file/hash/size drift against `tests/golden/dictionaries`
-  - US English golden audio drift against `tests/golden/audio/us`
-- Kept warning logs non-fatal and kept the dist manifest as an artifact/report
-  capture rather than a failing gate.
-- Updated baseline procedure docs to point comparisons at the committed golden
-  symbol and dictionary baselines.
+- Re-synced local `develop` with merged `origin/develop` by fetching the remote
+  merge commit, rebasing the new plan commit onto `origin/develop`, and setting
+  local `develop` to track `origin/develop`.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the follow-on Phase 1
+  post-merge baseline refresh results.
 - Verification run:
-  - `tools/baseline/capture_symbols.sh --out baseline-runs/phase2-ci-gates/symbols`
-  - `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual baseline-runs/phase2-ci-gates/symbols --out baseline-runs/phase2-ci-gates/symbol-compare`
-  - `tools/baseline/capture_dictionaries.sh --out baseline-runs/phase2-ci-gates/dictionaries`
-  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/phase2-ci-gates/dictionaries --out baseline-runs/phase2-ci-gates/dictionary-compare`
-  - `tools/baseline/capture_audio.sh --out baseline-runs/phase2-ci-gates/audio-us`
-  - `tools/baseline/compare_audio.py --actual baseline-runs/phase2-ci-gates/audio-us`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase2-golden-current-2 --expected tests/golden`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated dictionary file list, sizes, and SHA-256 hashes matched committed
-    baselines.
-  - default warning-line count: 1,828.
-  - strict warning-line count: 29,853.
-- Full GitHub Actions execution was not run locally.
-- No engine code, public headers, dictionary sources, generated audio, exported
-  symbols, or install layout were intentionally changed.
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase1-post-merge --expected tests/golden`,
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase1-post-merge-cmake --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: Autotools accepted baselines reproduced for US English
+  golden audio, exported symbols, main dictionaries, the US user-dictionary
+  fixture, public header allowlists, and the narrow warning budget. CMake
+  subset verification reproduced dictionaries, US English golden audio, exact
+  `libtts.so` symbols, language-library symbol name/type sets, and
+  `compile_commands.json`.
+- Warning counts changed only by observation after the post-merge refresh:
+  default warning-line count was 1,804, strict warning-line count was 29,815,
+  and parser-visible default warnings were 1,783. The warning budget remained
+  `ok`.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change. Behavior risk is low for this documentation and verification
+  phase.
+- Known limitations remain: CMake packaging is still a subset, live audio
+  hardware behavior was not tested, and non-current platform builds were not
+  verified.
+
+## Phase 2: Baseline Coverage Expansion Plan
+
+Status: completed
+
+Reasoning checkpoint: high for inventory; extra-high before accepting new
+golden outputs.
 
 Goals:
 
-- Move from CI artifact visibility to CI verification.
-- Keep warnings non-fatal initially, but fail CI on behavior regressions that
-  should be exact.
-- Publish concise comparison reports as artifacts.
+- Decide which additional deterministic behavior baselines are worth adding
+  before higher-risk cleanup.
+- Prefer no-hardware checks.
 
-Suggested work:
+Candidate coverage:
 
-- Add Ubuntu CI steps for exact symbol comparison.
-- Add Ubuntu CI steps for exact golden audio comparison.
-- Add Ubuntu CI steps for dictionary hash comparison.
-- Add dist manifest comparison in report-only mode first.
-- Keep VS6 and VS2022 jobs present and artifact-producing.
+- Additional US English fixed text inputs already committed under
+  `tests/golden/input/`.
+- Optional non-US language WAV baselines.
+- Optional phoneme or text-mode output captures if stable command paths exist.
+- Optional API smoke tests for public open/close/speak-to-file behavior.
+- Optional detailed packaging manifest baseline under `tests/golden/`.
+
+Required work:
+
+- Inventory available command-line options and test paths without changing
+  runtime code.
+- Document which baselines are stable, useful, and cheap enough for CI.
+- Identify which baselines require explicit approval before committing outputs.
 
 Success criteria:
 
-- CI fails on golden audio mismatch.
-- CI fails on exported symbol mismatch for public libraries.
-- CI fails on generated dictionary hash mismatch once the dictionary baseline is
-  established.
-- Warning logs remain published, but warnings are not fatal.
+- A written recommendation identifies the next baselines to add.
+- No golden outputs are accepted without extra-high approval.
+- No behavior-changing source edits are made.
 
 Rules:
 
-- Do not change packaging layout.
-- Do not remove existing CI jobs.
-- Do not make warning cleanup block unrelated PRs yet.
-
----
-
-## Phase 3: Warning Taxonomy and Ownership
-
-Status: completed
+- Do not broaden CI runtime substantially without documenting cost.
+- Do not add flaky live-audio or hardware-dependent checks.
 
 Implementation Summary:
 
-- Added `tools/baseline/summarize_warnings.py`, a GCC-style warning inventory
-  parser that normalizes nested `make` warning paths and writes TSV reports by
-  flag, category, file, and risk.
-- Added `docs/modernization/WARNING_INVENTORY.md` with strict/default warning
-  counts, top warning categories, high-risk ownership boundaries, and the
-  intended first cleanup wave.
-- Updated `tools/baseline/README.md` with the warning summarizer workflow.
-- Verification run:
-  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase2-golden-current-2/build/build.log --out-dir baseline-runs/phase3-warning-taxonomy/default`
-  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase2-golden-current-2/build/build-strict-warnings.log --out-dir baseline-runs/phase3-warning-taxonomy/strict`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - parser-visible default warnings: 1,808.
-  - parser-visible strict warnings: 29,828.
-  - strict risk split: 9,523 high, 4,985 medium, 1,850 low, 13,470 unknown.
-  - no warning cleanup was performed.
-- No engine code, public headers, dictionary sources, generated audio,
-  exported symbols, install layout, or runtime behavior were changed.
+- Added `docs/modernization/BASELINE_EXPANSION_PLAN.md` with the Phase 2
+  inventory findings and recommendations for deterministic baseline expansion.
+- Updated `docs/modernization/README.md` to link the baseline expansion plan.
+- Inventory commands reviewed `dist/say -h`, existing audio capture/comparison
+  scripts, committed input files, public header audit tooling, and temporary
+  WAV probes under `baseline-runs/next-phase2-inventory/`.
+- Verification run: `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: docs-only phase; no source, build, dictionary, symbol,
+  public-header, or golden audio files changed. Temporary probes showed the
+  additional committed US inputs and installed non-US language paths can produce
+  RIFF/WAVE PCM, 16-bit, mono, 11025 Hz files.
+- Warning counts were not rerun in this docs-only phase; Phase 1 counts remain
+  the current baseline. Public exports did not change. Dictionaries did not
+  change. Golden audio did not change. Behavior risk is low.
+- Known limitations: no new golden outputs were accepted; non-US baselines need
+  language-specific input selection; phoneme/text output baselines need a
+  stable textual capture path before they are recommended for CI.
+
+## Phase 3: Deterministic Baseline Expansion
+
+Status: completed
+
+Reasoning checkpoint: extra-high before accepting new golden outputs.
 
 Goals:
 
-- Turn strict warning output into a category-by-category cleanup queue.
-- Separate low-risk warnings from medium-risk and high-risk warnings.
-- Identify files that should be cleaned first because they are tools, samples, or
-  build-only code rather than synthesis-critical code.
+- Add the approved deterministic baselines from Phase 2.
+- Make the new baselines reproducible through `tools/baseline/`.
 
-Suggested work:
+Required work:
 
-- Add a warning parser that groups by warning flag, file, and category.
-- Produce `docs/modernization/WARNING_INVENTORY.md`.
-- Create a cleanup order that starts outside synthesis-critical paths.
-- Mark high-risk warnings that should not be touched without additional audio or
-  phoneme coverage.
+- Add or extend capture and comparison scripts for the approved baseline types.
+- Commit only generated outputs that are intentionally accepted as golden
+  baselines.
+- Update CI to run the added baseline checks when runtime cost is reasonable.
+- Document exact generation commands and limitations.
 
 Success criteria:
 
-- Warning categories have owners/risk levels.
-- First cleanup wave is clearly scoped.
-- No warning cleanup is performed in this phase unless it is needed to validate
-  the parser.
+- New baselines reproduce exactly on the current Linux target.
+- Existing Phase 19 baselines still reproduce.
+- CI runs the relevant new checks or explicitly documents why they remain local.
 
 Rules:
 
-- Do not edit synthesis arithmetic.
-- Do not alter public headers as part of inventory.
-
----
-
-## Phase 4: Low-Risk Warning Cleanup, Tools and Samples
-
-Status: completed
+- Any golden output delta is a behavior decision and must be explicitly
+  approved before commit.
+- Do not use live audio hardware.
 
 Implementation Summary:
 
-- Cleaned a narrow first wave of low-risk warnings in auxiliary code only:
-  - `src/samplosf/src/dtsamples/dump_vdf.c`
-  - `src/licunix/src/license.c`
-  - `src/licunix/src/csn.c`
-- Used internal linkage for private helper functions and explicit `(void)`
-  markers for intentionally unused `main` parameters.
-- Did not touch synthesis, phoneme, LTS, VTM, HLSYN, public API, dictionary
-  source, audio, or threading paths.
+- Added expanded US English audio suite tooling:
+  - `tools/baseline/capture_audio_suites.sh`
+  - `tools/baseline/compare_audio_suites.sh`
+- Updated `tools/baseline/verify_current.sh`,
+  `tools/baseline/verify_cmake_subset.sh`, and `.github/workflows/build.yml`
+  so local verification and Ubuntu CI capture and compare the expanded audio
+  suites.
+- Added accepted expanded US English WAV baselines:
+  - `tests/golden/audio/us/us_abbreviations/speaker_0.wav` through
+    `speaker_8.wav`
+  - `tests/golden/audio/us/us_commands_markup/speaker_0.wav` through
+    `speaker_8.wav`
+  - `tests/golden/audio/us/us_punctuation_numbers/speaker_0.wav` through
+    `speaker_8.wav`
+- Added accepted detailed Autotools packaging manifest baseline:
+  - `tests/golden/dist-manifest-detailed.txt`
+- Updated baseline documentation in `tools/baseline/README.md`,
+  `docs/modernization/BASELINE_PROCEDURE.md`,
+  `docs/modernization/PACKAGING_LAYOUT.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/BASELINE_EXPANSION_PLAN.md`, and
+  `tests/golden/audio/us/README.md`.
 - Verification run:
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase4-tools-samples --expected tests/golden`
-  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase4-tools-samples/build/build-strict-warnings.log --out-dir baseline-runs/phase4-tools-samples/warnings-strict`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated dictionary file list, sizes, and SHA-256 hashes matched committed
-    baselines.
-  - default warning-line count: 1,828.
-  - strict warning-line count: 29,838.
-  - parser-visible strict warnings: 29,818.
-- No public headers, exported symbols, generated dictionaries, generated audio,
-  install layout, or runtime behavior were intentionally changed.
+  `tools/baseline/capture_audio_suites.sh --out baseline-runs/next-phase3-audio-suites`,
+  `tools/baseline/compare_audio_suites.sh --actual baseline-runs/next-phase3-audio-suites --metrics-out baseline-runs/next-phase3-audio-suite-metrics`,
+  `tools/baseline/capture_dist_manifest.sh --format metadata-hash --out baseline-runs/next-phase3-dist-manifest-detailed.txt`,
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual baseline-runs/next-phase3-dist-manifest-detailed.txt --out baseline-runs/next-phase3-dist-manifest-detailed.diff`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase3-verify --expected tests/golden`,
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase3-cmake --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: all 27 expanded US WAV files compared exactly; the
+  detailed Autotools manifest compared exactly and contains 1,126 lines;
+  Autotools accepted baselines reproduced for original US golden audio,
+  exported symbols, main dictionaries, the US user-dictionary fixture, public
+  header allowlists, warning budget, expanded US audio suites, and detailed
+  manifest. CMake subset verification reproduced dictionaries, original US
+  audio, expanded US audio suites, exact `libtts.so` symbols,
+  language-library symbol name/type sets, and `compile_commands.json`.
+- Warning counts did not improve in this phase: the full Autotools run observed
+  1,805 default warning lines and 29,815 strict warning lines. The warning
+  budget remained `ok`.
+- Public exports did not change. Dictionaries did not change. Existing golden
+  audio did not change; new golden audio suites were intentionally accepted
+  under the extra-high checkpoint. Behavior risk is low because runtime code was
+  not changed.
+- Known limitations: expanded WAV baselines remain US English only; non-US
+  language baselines and phoneme/text baselines remain deferred; live audio
+  hardware behavior was not tested.
+
+## Phase 4: CMake Packaging Parity, Non-Promoting
+
+Status: completed
+
+Reasoning checkpoint: extra-high before changing staged layout or install
+semantics.
 
 Goals:
 
-- Reduce warnings in command-line tools, samples, and auxiliary utilities.
-- Avoid behavior-critical engine paths.
-- Establish the cleanup pattern for future waves.
+- Reduce the CMake staged packaging gap while keeping Autotools authoritative.
+- Make CMake useful for analysis and Linux verification without promotion.
 
-Allowed categories:
+Required work:
 
-- missing includes
-- missing prototypes in private `.c` files
-- duplicate declarations
-- unused parameters with explicit `(void)` markers
-- obvious format-string fixes
-- obvious local initialization where current behavior is unambiguous
+- Compare detailed Autotools and CMake staged manifests.
+- Add missing low-risk staged assets where the source of truth is obvious.
+- Preserve library names, tool names, dictionary layout, and `DECtalk.conf`
+  semantics.
+- Keep `tools/baseline/verify_cmake_subset.sh` authoritative for CMake subset
+  checks.
 
 Success criteria:
 
-- Default and strict warning counts decrease.
-- Golden audio still compares exactly.
-- Exported symbols are unchanged.
-- Dist manifest is unchanged unless a tool-only artifact change is explicitly
-  documented.
+- CMake staged manifest gap is reduced and documented.
+- CMake dictionaries, US English WAVs, and symbols still match accepted
+  baselines.
+- Autotools accepted baselines still pass.
+- CMake is not promoted.
 
 Rules:
 
-- No public header signature changes.
-- No dictionary source changes.
-- No audio/threading changes.
-
----
-
-## Phase 5: Low-Risk Warning Cleanup, API Boundaries
-
-Status: completed
+- Do not remove Autotools, Visual Studio files, legacy project files, or
+  existing packaging paths.
+- Do not change runtime install layout unless explicitly approved.
 
 Implementation Summary:
 
-- Reviewed API-boundary warnings from the Phase 4 strict warning inventory.
-- Added `docs/modernization/API_BOUNDARY_WARNINGS.md` with the API warning
-  paths and warning types found under the API build context.
-- Deferred API implementation cleanup because the remaining tracked API
-  warnings are concentrated in high-risk or medium-risk areas:
-  - `src/dapi/src/api/ttsapi.c`
-  - `src/dapi/src/api/init.c`
-  - `src/dapi/src/api/coop.h`
-  - API-build-context objects for `services.c` and `usa_init.c`
+- Updated `CMakeLists.txt` so `dectalk_cmake_stage` installs low-risk static
+  packaging assets whose Autotools sources are explicit:
+  - `README`
+  - bitmap assets from `src/samplosf/src/speak/bitmaps/`
+  - selected sample source files under `src/DECtalk/`
+  - documentation under `doc/DECtalk/ps`, `doc/DECtalk/pdf`,
+    `doc/DECtalk/man`, and `doc/DECtalk/html`
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` and
+  `docs/modernization/PACKAGING_LAYOUT.md` with the new CMake staged-layout
+  status and remaining packaging gaps.
 - Verification run:
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-  - Phase 4 verification remains the current accepted behavior check:
-    `tools/baseline/verify_current.sh --run-dir baseline-runs/phase4-tools-samples --expected tests/golden`
-- Verification results:
-  - no API source or public header files were changed.
-  - no exported-symbol, public-header, audio, dictionary, or install-layout
-    behavior changes were introduced by this documentation-only phase.
-  - warning counts remain at the Phase 4 accepted baseline: default 1,828,
-    strict 29,838.
-- `src/dapi/src/api/ttsapi.h` and `src/dapi/src/api/tts.h` were intentionally
-  left unchanged.
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase4-cmake --expected tests/golden`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase4-autotools --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: CMake subset verification passed for dictionaries,
+  original US audio, expanded US audio suites, exact `libtts.so` symbols,
+  language-library symbol name/type sets, and `compile_commands.json`.
+  Autotools accepted baselines also reproduced for audio, expanded audio
+  suites, symbols, detailed manifest, dictionaries, user dictionaries, public
+  headers, and warning budget.
+- Detailed CMake staged manifest moved from 90 lines and 541 missing Autotools
+  paths to 1,041 lines and 59 missing Autotools paths. There were no extra
+  CMake-only paths.
+- Warning counts did not improve in this phase: the full Autotools run observed
+  1,805 default warning lines and 29,815 strict warning lines. The warning
+  budget remained `ok`.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change. Behavior risk is low to medium because CMake staging changed, but
+  runtime code and Autotools packaging were not changed.
+- Known limitations: CMake packaging parity is still incomplete; remaining gaps
+  include unbuilt top-level tools, generated sample text files, additional
+  helper/user-dictionary tools, and `/usr/bin` symlinks. CMake is not promoted.
+
+## Phase 5: Warning Budget Expansion, Low-Risk Files
+
+Status: completed
+
+Reasoning checkpoint: high for low-risk auxiliary files; extra-high if cleanup
+touches API, dictionary internals, synthesis, threading, or audio paths.
 
 Goals:
 
-- Reduce warnings near API implementation files while preserving ABI.
-- Clean internal prototypes/includes where they do not alter public headers.
-- Document any warning that appears low-risk but touches public API surfaces.
+- Expand warning-budget enforcement one cleaned category at a time.
+- Avoid broad warning suppressions.
 
-Candidate areas:
+Preferred targets:
 
-- private declarations in `src/dapi/src/api/*.c`
-- private helper prototypes
-- internal duplicate declarations
-- sample/API boundary include hygiene
+- auxiliary tools
+- samples
+- private command utilities
+- already-cleaned categories with low behavior risk
+
+Required work:
+
+- Use `tools/baseline/summarize_warnings.py` to identify candidate warnings.
+- Clean one narrow category/file group per checkpoint.
+- Add matching entries to `tests/golden/warnings/default-cleaned.tsv`.
+- Keep warnings non-fatal outside cleaned budgets.
 
 Success criteria:
 
-- Exported symbols exactly match the accepted baseline.
-- Installed public headers are byte-for-byte unchanged unless explicitly
-  approved.
-- Golden audio still compares exactly.
-- Warning counts decrease or unchanged with clear explanation.
+- Default or strict warning counts decrease or a cleaned category becomes
+  budgeted.
+- Autotools accepted baselines pass.
+- No public exports, dictionaries, or golden audio change.
 
 Rules:
 
-- Do not change `ttsapi.h` or `tts.h` without explicit review.
-- Do not change public API signatures or calling conventions.
-
----
-
-## Phase 6: Dictionary Baseline Expansion
-
-Status: completed
+- Do not mix unrelated warning categories.
+- Do not silence warnings globally to make budgets pass.
 
 Implementation Summary:
 
-- Added deterministic US user dictionary fixture input:
-  - `tests/golden/dictionaries/user/input/us_custom_pronunciations.tab`
-- Added committed user dictionary compiler expected captures:
-  - `tests/golden/dictionaries/user/expected/files.txt`
-  - `tests/golden/dictionaries/user/expected/sha256.txt`
-  - `tests/golden/dictionaries/user/expected/sizes.tsv`
-  - `tests/golden/dictionaries/user/expected/logs/us_custom_pronunciations.log`
-- Added `tools/baseline/capture_user_dictionaries.sh` to compile fixture `.tab`
-  files with `dist/tools/udic_us` and capture `.dtu` output metadata.
-- Updated `tools/baseline/verify_current.sh` and Ubuntu CI to compare the user
-  dictionary fixture output against the committed expected capture.
-- Added `docs/modernization/DICTIONARY_BASELINE.md` and updated baseline
-  documentation with the main/user dictionary capture workflow.
+- Cleaned one low-risk warning category in one auxiliary sample tool:
+  converted the `set_baud` and `set_format` definitions in
+  `src/samplosf/src/dtsamples/mfg_load.c` from K&R-style parameter declarations
+  to prototype-style definitions.
+- Added a warning budget entry for
+  `src/samplosf/src/dtsamples/mfg_load.c`, `-Wold-style-definition`, maximum
+  count `0`.
+- Updated `docs/modernization/WARNING_INVENTORY.md` to document the expanded
+  warning-budget ratchet.
+- Updated `tests/golden/dist-manifest-detailed.txt` only for the rebuilt
+  `tools/mfg_load` binary hash; the detailed manifest path, type, mode, and
+  size entries did not change.
 - Verification run:
-  - `tools/baseline/capture_user_dictionaries.sh --out baseline-runs/phase6-user-dictionaries`
-  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries/user/expected --actual baseline-runs/phase6-user-dictionaries --out baseline-runs/phase6-user-dictionaries-compare`
-  - `tools/baseline/capture_dictionaries.sh --out baseline-runs/phase6-main-dictionaries`
-  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/phase6-main-dictionaries --out baseline-runs/phase6-main-dictionaries-compare`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase6-dictionary-baseline --expected tests/golden`
-- Verification results:
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated main dictionary file list, sizes, and SHA-256 hashes matched
-    committed baselines.
-  - generated user dictionary fixture file list, size, and SHA-256 hash matched
-    committed baselines.
-  - default warning-line count: 1,829.
-  - strict warning-line count: 29,839.
-- No dictionary source text, dictionary format, generated committed `.dic`
-  files, public headers, exported symbols, generated audio, install layout, or
-  runtime behavior were intentionally changed.
+  `tools/baseline/summarize_warnings.py --log baseline-runs/next-phase4-autotools/build/build-strict-warnings.log --out-dir baseline-runs/next-phase5-strict-inventory`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase5-mfg-load-3 --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: warning budget status was `ok`; the new
+  `mfg_load.c` `-Wold-style-definition` budget had actual count `0`;
+  original US golden audio, expanded US audio suites, exported symbols,
+  detailed manifest, main dictionaries, the US user-dictionary fixture, and
+  public header allowlists all matched accepted baselines.
+- Warning counts improved: default warning-line count decreased from 1,805 to
+  1,793 and strict warning-line count decreased from 29,815 to 29,801.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change. Behavior risk is low because the source change is limited to two
+  equivalent function-definition signatures in an auxiliary sample loader.
+- Known limitations: the file still has unrelated medium/unknown/low strict
+  warnings; no live serial-port hardware behavior was exercised; broader
+  warning debt remains non-blocking outside explicit budgets.
+
+## Phase 6: Public API Smoke Coverage
+
+Status: completed
+
+Reasoning checkpoint: extra-high before adding API tests or changing any API
+implementation.
 
 Goals:
 
-- Make dictionary generation and lookup behavior safer to modernize.
-- Capture generated dictionaries and dictionary tool behavior.
-- Add focused checks around user dictionary tools.
+- Add small public API behavior coverage before API-boundary cleanup.
+- Keep public headers and exported symbols stable.
 
-Suggested work:
+Required work:
 
-- Capture hashes for all generated `dist/dic/*.dic`.
-- Capture dictionary compiler logs.
-- Add fixed user dictionary input samples.
-- Add compare scripts for dictionary outputs.
-- Document dictionary source-to-output relationships.
+- Identify a minimal C smoke test that includes installed public headers and
+  exercises open, speak-to-file, and close behavior without live audio.
+- Build the smoke test against the staged Linux install.
+- Compare generated output with accepted deterministic baselines where
+  practical.
+- Add CI coverage if stable.
 
 Success criteria:
 
-- Dictionary outputs can be regenerated and compared exactly.
-- CI catches generated dictionary changes.
-- No dictionary format or lookup behavior changes are made.
+- Public API smoke test compiles and runs on Linux.
+- Existing public header and exported-symbol checks still pass.
+- No public API signature or ABI change is made.
 
 Rules:
 
-- Do not normalize dictionary source text.
-- Do not change generated `.dic` files except through an explicit approved
-  baseline update.
-
----
-
-## Phase 7: Golden Audio Expansion
-
-Status: completed
+- Do not reformat public headers.
+- Do not change installed header paths.
+- Do not change exported symbol names.
 
 Implementation Summary:
 
-- Expanded golden audio verification reporting without adding non-US baselines.
-  This preserves the previously approved scope: US English, speakers 0 through
-  8, one fixed input, WAV output.
-- Updated `tools/baseline/compare_audio.py` to optionally write a TSV metrics
-  report with SHA-256 hashes, frame counts, sample rates, peak/RMS levels, and
-  max sample deltas.
-- Updated `tools/baseline/verify_current.sh` and Ubuntu CI to publish
-  `audio-metrics.tsv` alongside exact audio comparison logs.
-- Added documentation headers to `tools/baseline/capture_audio.sh` and updated
-  `tools/baseline/README.md`, `tests/golden/audio/us/README.md`, and
+- Added `tools/baseline/api_smoke.c`, a small public C smoke test that includes
+  installed `dtk/ttsapi.h` and exercises US language selection, no-audio
+  startup, speaker 0 selection, `TextToSpeechOpenWaveOutFile`,
+  `TextToSpeechSpeak`, `TextToSpeechSync`, `TextToSpeechCloseWaveOutFile`, and
+  `TextToSpeechShutdown`.
+- Added `tools/baseline/check_api_smoke.sh`, which compiles the smoke test
+  against staged `dist/include` and `dist/lib`, runs it from the staged `dist/`
+  directory so `DECtalk.conf` and dictionaries resolve the same way as the
+  install layout, and compares the generated WAV byte-for-byte against
+  `tests/golden/audio/us/speaker_0.wav`.
+- Wired the API smoke into `tools/baseline/verify_current.sh` and the Ubuntu CI
+  baseline verification and visibility artifact steps.
+- Documented the public API smoke in `tools/baseline/README.md` and
   `docs/modernization/BASELINE_PROCEDURE.md`.
 - Verification run:
-  - `tools/baseline/capture_audio.sh --out baseline-runs/phase7-audio-us`
-  - `tools/baseline/compare_audio.py --actual baseline-runs/phase7-audio-us --metrics-out baseline-runs/phase7-audio-us/audio-metrics.tsv`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase7-audio-verification --expected tests/golden`
-- Verification results:
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - audio metrics reported 56,729 frames, 11025 Hz, matching SHA-256 hashes,
-    and max sample delta 0 for every committed speaker WAV.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated main and user dictionary file lists, sizes, and SHA-256 hashes
-    matched committed baselines.
-  - default warning-line count: 1,828.
-  - strict warning-line count: 29,839.
-- No generated WAV baselines, dictionary outputs, public headers, exported
-  symbols, install layout, sample rate, or runtime behavior were intentionally
-  changed.
+  `tools/baseline/check_api_smoke.sh --out baseline-runs/next-phase6-api-smoke-2`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase6-full --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: API smoke WAV comparison was exact; public header audit
+  matched accepted lists; all exported symbol baselines matched; detailed
+  manifest, dictionaries, user dictionary fixture, original US audio, expanded
+  US audio suites, and warning budgets matched accepted baselines.
+- Public headers were not modified. Exported symbols did not change.
+  Dictionaries and golden audio did not change. Behavior risk is low because
+  the implementation only adds external test coverage and CI wiring.
+- Known limitations: API smoke coverage currently covers Linux, US English,
+  speaker 0, dynamic linking, and WAV file output only; it does not exercise
+  live audio hardware, callbacks, in-memory output, or non-US languages.
 
-Goals:
-
-- Increase confidence before touching language, parser, phoneme, timing, or
-  synthesis code.
-- Cover more text shapes and language paths without relying on live audio
-  hardware.
-
-Suggested work:
-
-- Add fixed text inputs for punctuation, numbers, abbreviations, commands, and
-  common DECtalk markup.
-- Add one or more non-US language golden sets after dictionary baselines are
-  stable.
-- Capture raw output or WAV output consistently.
-- Add sample count, hash, peak, RMS, and max-delta reports.
-
-Success criteria:
-
-- Expanded golden set can be regenerated exactly on the supported Linux target.
-- Comparison reports are concise enough for CI artifacts.
-- CI runs the expanded set within acceptable time.
-
-Rules:
-
-- Do not use microphone/live audio hardware.
-- Do not approve speech-output changes without explicit baseline update.
-
----
-
-## Phase 8: CMake Parity, Core Linux Build
+## Phase 7: API-Boundary Warning Cleanup
 
 Status: completed
 
-Implementation Summary:
-
-- Expanded the optional side-by-side Linux CMake build in `CMakeLists.txt`:
-  - added six language-library targets producing `libtts_us.so`,
-    `libtts_uk.so`, `libtts_sp.so`, `libtts_gr.so`, `libtts_la.so`, and
-    `libtts_fr.so`.
-  - added the multi-language `tts_multi` target producing `libtts.so` from
-    `src/dtalkml/src/dtalk_ml.c` and `src/dtalkml/src/init.c`.
-  - added `dic_us`, `dic_uk`, `dic_sp`, `dic_gr`, `dic_la`, and `dic_fr`
-    dictionary compiler targets plus generated dictionary outputs.
-  - installed the generated dictionaries, CMake-built libraries, dictionary
-    tools, selected public headers, `DECtalk.conf`, and `say` into the CMake
-    staging tree.
-  - linked the CMake `say` target through `libtts.so` so the same
-    multi-language `-l us` path used by the Autotools sample is available.
-- Updated `docs/modernization/CMAKE_OVERVIEW.md` with current CMake scope,
-  source membership, dictionary generation notes, verification results, and
-  remaining staged-layout gaps.
-- Verification run:
-  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase8-cmake-expanded-2 -DCMAKE_BUILD_TYPE=Release`
-  - `cmake --build baseline-runs/phase8-cmake-expanded-2 --target dectalk_cmake_stage -- -j1`
-  - `tools/baseline/capture_dictionaries.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-dictionaries`
-  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/phase8-cmake-dictionaries --out baseline-runs/phase8-cmake-dictionary-compare`
-  - `tools/baseline/capture_symbols.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-symbols`
-  - `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual baseline-runs/phase8-cmake-symbols --out baseline-runs/phase8-cmake-symbol-compare`
-  - sorted symbol-name set comparison for all `libtts*.so` captures.
-  - `tools/baseline/capture_audio.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-audio-us`
-  - `tools/baseline/compare_audio.py --actual baseline-runs/phase8-cmake-audio-us --metrics-out baseline-runs/phase8-cmake-audio-metrics.tsv`
-  - `tools/baseline/capture_dist_manifest.sh --dist dist --out baseline-runs/phase8-autotools-manifest.txt`
-  - `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/phase8-cmake-expanded-2/cmake-dist --out baseline-runs/phase8-cmake-manifest.txt`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase8-autotools-manifest.txt --actual baseline-runs/phase8-cmake-manifest.txt --out baseline-runs/phase8-cmake-manifest.diff`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase8-behavior --expected tests/golden`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - CMake emitted `compile_commands.json`.
-  - CMake staged build completed successfully.
-  - CMake-generated dictionaries matched committed golden hashes exactly.
-  - CMake-staged `say` produced exact US English golden WAVs for speakers 0
-    through 8.
-  - `libtts.so` matched the committed symbol capture exactly.
-  - language-library full symbol captures differ by address and address-sorted
-    order, but sorted symbol-name sets matched for all CMake-built language
-    libraries.
-  - CMake staged manifest is comparable but not yet exact: 541 Autotools dist
-    entries are not yet staged by CMake, with no extra CMake entries.
-  - Autotools behavior verification still passed; default warning-line count was
-    1,829 and strict warning-line count was 29,839.
-- No Autotools files, Visual Studio files, engine source, public API signatures,
-  dictionary sources, committed generated dictionaries, exported symbol names,
-  audio backend behavior, or threading behavior were intentionally changed.
-
-Reasoning checkpoint: extra-high recommended before implementing source
-membership, generated dictionary, staged install layout, or multi-language
-library changes in this phase.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Bring side-by-side CMake closer to the Autotools Linux build.
-- Keep CMake optional and non-authoritative until parity is proven.
-- Preserve artifact names where compatibility matters.
+- Reduce a narrow set of API-adjacent warnings after smoke coverage exists.
+- Preserve public API and ABI.
 
-Suggested work:
+Allowed candidates:
 
-- Build all language-specific `libtts_<lang>.so` libraries.
-- Build the multi-language `libtts.so` if source membership is understood.
-- Build dictionary compiler targets.
-- Generate/copy dictionary outputs into a CMake staging directory.
-- Build minimal CLI tools needed for verification.
-- Install/stage files into a CMake dist tree matching the Autotools layout.
+- missing private prototypes in implementation files
+- local unused parameters with explicit `(void)` markers
+- missing standard includes where the declaration is unambiguous
+- local initialization fixes where behavior is clear and verified
+
+Required work:
+
+- Select one warning category and one ownership area.
+- Prove public headers and exported symbols are unchanged.
+- Run API smoke coverage and accepted behavior baselines.
+- Add warning budget entries only for cleaned categories.
 
 Success criteria:
 
-- CMake emits `compile_commands.json`.
-- CMake-built source membership differences are documented and shrinking.
-- CMake staged manifest can be compared to Autotools `dist`.
-- CMake-built libraries export expected symbols, or differences are documented
-  as known gaps.
+- Target warning category is reduced.
+- API smoke test passes.
+- Public headers and exported symbols are unchanged.
+- Dictionaries and golden audio are unchanged.
 
 Rules:
 
-- Do not remove Autotools.
-- Do not remove Visual Studio projects.
-- Do not declare CMake parity until symbols, dictionaries, and staged layout are
-  compared.
-
----
-
-## Phase 9: Platform Abstraction, Time and Filesystem
-
-Status: completed
+- Do not change public signatures, structure layout, calling conventions, or
+  callback contracts.
+- Do not clean pointer/integer or callback warnings casually.
 
 Implementation Summary:
 
-- Added internal POSIX filesystem wrapper scaffolding:
-  - `src/platform/dt_filesystem.h`
-  - `src/platform/dt_filesystem_posix.c`
-- Expanded the existing internal time wrapper with
-  `dt_monotonic_milliseconds()` in:
-  - `src/platform/dt_time.h`
-  - `src/platform/dt_time_posix.c`
-- Added a CMake-only developer smoke tool,
-  `tools/platform/dt_platform_smoke.c`, to exercise the time and filesystem
-  wrappers without installing the tool or routing DECtalk runtime behavior
-  through the wrappers.
-- Updated `CMakeLists.txt` with a private `dt_platform` static library and
-  `dt_platform_smoke` executable target.
-- Updated `src/platform/README.md` to describe the current wrapper scope and the
-  CMake-only smoke target.
+- Selected one strict warning category and one API-adjacent ownership area:
+  `-Wmissing-prototypes` in `src/dapi/src/api/init.c`.
+- Added file-local prototypes for the platform-selected shared-memory init/fini
+  entry points: existing Solaris demo `__init_shared_mem`/`__fini_shared_mem`,
+  Solaris `_init`/`_fini`, and the default
+  `__init_shared_mem`/`__fini_shared_mem` path.
+- Did not change public headers, function signatures, structure layout,
+  calling conventions, callbacks, threading behavior, or audio behavior.
+- Updated `tests/golden/dist-manifest-detailed.txt` for the expected rebuilt
+  language-library hash changes caused by recompiling `init.c`; path, type,
+  mode, and size coverage remained unchanged.
 - Verification run:
-  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase9-platform-cmake -DCMAKE_BUILD_TYPE=Release`
-  - `cmake --build baseline-runs/phase9-platform-cmake --target dt_platform_smoke -- -j1`
-  - `baseline-runs/phase9-platform-cmake/dt_platform_smoke . PLAN.md`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase9-behavior --expected tests/golden`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - CMake smoke target built and ran successfully.
-  - Autotools behavior verification passed with exact golden audio, exported
-    symbols, generated dictionaries, and user dictionaries.
-  - default warning-line count was 1,829 and strict warning-line count was
-    29,839.
-- No engine source, public headers, dictionary sources, threading code, audio
-  backend code, exported symbols, or runtime behavior paths were intentionally
-  changed.
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase7-api-prototypes-2 --expected tests/golden`,
+  `tools/baseline/summarize_warnings.py --log baseline-runs/next-phase7-api-prototypes-2/build/build-strict-warnings.log --out-dir baseline-runs/next-phase7-api-prototypes-2/warnings-strict`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: strict warning-line count decreased from 29,803 to
+  29,779; parser-visible strict warnings in `src/dapi/src/api/init.c`
+  decreased from 55 to 36; `src/dapi/src/api/init.c` no longer reports
+  `-Wmissing-prototypes`.
+- API smoke WAV comparison was exact; public header audit matched accepted
+  lists; all exported symbol baselines matched; detailed manifest,
+  dictionaries, user dictionary fixture, original US audio, expanded US audio
+  suites, and warning budgets matched accepted baselines.
+- Golden audio did not change. Dictionaries did not change. Public exports did
+  not change. Behavior risk is low because the code change adds prototypes only.
+- Known limitations: the remaining `init.c` strict warnings are
+  `-Wunused-variable` for legacy local declarations; those were left alone to
+  keep this phase to one warning category.
+
+## Phase 8: Platform Wrapper Wiring Decision
+
+Status: completed
+
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Start using platform wrappers in the lowest-risk areas.
-- Keep thread and audio paths untouched until later phases.
+- Decide whether any `src/platform` wrappers are ready to be wired into runtime
+  code.
+- Prefer decision documentation over implementation unless verification is
+  strong enough.
 
-Suggested work:
+Required work:
 
-- Expand `src/platform/dt_time.*` only where behavior is simple and covered.
-- Add `src/platform/dt_filesystem.*` for path helpers that wrap existing logic.
-- Use wrappers first in tools or non-critical sample code.
+- Compare existing runtime ownership in `opthread.c`, `linux_audio.c`, and
+  related API paths with the wrapper scaffolding.
+- Identify the smallest possible wrapper wiring candidate, if any.
+- Define the exact behavior checks needed before and after wiring.
+- Recommend proceed, defer, or add more tests.
 
 Success criteria:
 
-- Existing build succeeds.
-- Golden audio and exported symbols are unchanged.
-- No thread/audio behavior changes occur.
+- Written decision is added to modernization docs.
+- No runtime wrapper wiring happens unless this phase explicitly approves it
+  and lists the verification gates.
 
 Rules:
 
-- Do not replace `opthread.c`.
-- Do not change `linux_audio.c`.
-- Avoid public headers.
-
----
-
-## Phase 10: Platform Abstraction, Threads and Synchronization
-
-Status: completed
+- Do not change thread lifecycle, queue behavior, pipe behavior, callback
+  timing, sample rate, or audio backend selection in this decision phase.
 
 Implementation Summary:
 
-- Added internal POSIX thread and synchronization wrapper scaffolding:
-  - `src/platform/dt_thread.h`
-  - `src/platform/dt_thread_posix.c`
-  - `src/platform/dt_mutex.h`
-  - `src/platform/dt_mutex_posix.c`
-  - `src/platform/dt_event.h`
-  - `src/platform/dt_event_posix.c`
-- The new wrappers provide opaque internal handles for thread create/join/exit,
-  mutex create/lock/unlock/destroy, and manual-reset/auto-reset event
-  create/set/reset/wait/destroy.
-- Extended the CMake-only `dt_platform` static library and
-  `tools/platform/dt_platform_smoke.c` so the smoke target compiles and runs the
-  thread, mutex, and event wrappers without installing them or routing existing
-  runtime behavior through them.
-- Updated `src/platform/README.md` to document the added wrapper scope.
-- Verification run:
-  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase10-platform-cmake -DCMAKE_BUILD_TYPE=Release`
-  - `cmake --build baseline-runs/phase10-platform-cmake --target dt_platform_smoke -- -j1`
-  - `baseline-runs/phase10-platform-cmake/dt_platform_smoke . PLAN.md`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase10-behavior --expected tests/golden`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - CMake smoke target built and ran successfully, including thread create/join,
-    mutex lock/unlock, and event wait/set behavior.
-  - Autotools behavior verification passed with exact golden audio, exported
-    symbols, generated dictionaries, and user dictionaries.
-  - default warning-line count was 1,829 and strict warning-line count was
-    29,837.
-- No existing runtime thread lifecycle, `opthread.c`, `linux_audio.c`, callback,
-  queue, pipe, audio, dictionary, public API, or exported-symbol behavior was
-  intentionally changed.
-
-Reasoning checkpoint: extra-high recommended before wiring any thread, mutex, or
-event wrapper into existing runtime code.
-
-Goals:
-
-- Prepare thread/mutex/event wrappers without changing runtime behavior.
-- Contain platform-specific threading APIs behind narrow interfaces.
-
-Suggested work:
-
-- Add `dt_thread.h`, `dt_mutex.h`, and `dt_event.h`.
-- Implement POSIX wrappers by delegating to existing semantics.
-- Add small standalone tests or compile checks for wrappers.
-- Only wire wrappers into code after exact audio and API checks are stable.
-
-Success criteria:
-
-- Wrapper code compiles standalone.
-- Existing thread/audio runtime paths remain unchanged unless explicitly approved
-  in a later subtask.
-- Behavior baselines still pass.
-
-Rules:
-
-- Do not rewrite thread lifecycle in one step.
-- Do not change callback, queue, or pipe semantics.
-
----
-
-## Phase 11: Audio Backend Containment
-
-Status: completed
-
-Implementation Summary:
-
-- Added `docs/modernization/AUDIO_BACKEND.md` documenting the current
-  Autotools audio options, backend selection order, `/dev/dsp` and `/dev/audio`
-  legacy device behavior, ALSA `ALSA_DEFAULT` behavior, CMake audio-option gap,
-  and deterministic no-hardware WAV verification policy.
-- Added passive CMake-only audio metadata scaffolding:
-  - `src/platform/dt_audio_backend.h`
-  - `src/platform/dt_audio_backend.c`
-- Updated `CMakeLists.txt` so `dt_platform` compiles the new metadata
-  scaffolding.
-- Updated `tools/platform/dt_platform_smoke.c` to print compiled audio backend
-  metadata without opening audio devices or linking audio libraries.
-- Updated `src/platform/README.md` and
-  `docs/modernization/CMAKE_OVERVIEW.md` to describe the containment scope and
-  current CMake audio limitations.
-- Verification run:
-  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase11-audio-cmake -DCMAKE_BUILD_TYPE=Release`
-  - `cmake --build baseline-runs/phase11-audio-cmake --target dt_platform_smoke -- -j1`
-  - `baseline-runs/phase11-audio-cmake/dt_platform_smoke . PLAN.md`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase11-behavior --expected tests/golden`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - CMake smoke reported current Linux metadata with audio enabled, OSS
-    available, no CMake ALSA/PulseAudio defines, and `/dev/dsp` as the legacy
-    OSS device.
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated dictionary and user dictionary captures matched committed
-    baselines.
-  - default warning-line count: 1,829.
-  - strict warning-line count: 29,839.
-- `src/dapi/src/nt/linux_audio.c`, sample rate, callback timing, live backend
-  selection, public headers, exported symbols, dictionaries, and runtime audio
-  behavior were not changed.
-
-Reasoning checkpoint: extra-high recommended before routing any existing audio
-behavior through a new backend abstraction.
-
-Goals:
-
-- Isolate audio backend selection without changing default audio behavior.
-- Make no-hardware WAV generation remain deterministic.
-
-Suggested work:
-
-- Document current `/dev/dsp`, ALSA, PulseAudio, and disabled-audio behavior.
-- Add compile-time scaffolding for backend interfaces.
-- Keep `linux_audio.c` intact until a wrapper can delegate exactly to existing
+- Added `docs/modernization/PLATFORM_WRAPPER_DECISION.md`.
+- Updated `docs/modernization/README.md` to link the Phase 8 decision.
+- Compared `src/platform` scaffolding with current runtime ownership in
+  `src/dapi/src/nt/opthread.c`, `src/dapi/src/nt/opthread.h`,
+  `src/dapi/src/nt/linux_audio.c`, and `src/dapi/src/nt/linux_audio.h`.
+- Decision: defer runtime wrapper wiring. No Phase 9 runtime pilot is approved.
+- Smallest future candidate: add OP/platform parity tests first, covering
+  manual-reset and auto-reset events, finite event timeouts, thread create/join,
+  mutex lock/unlock, and sleep/yield behavior. Only after that evidence should
+  an adapter-style wrapper pilot be reconsidered.
+- Rationale: current `dt_thread`, `dt_mutex`, `dt_event`, and `dt_time`
+  wrappers are not drop-in equivalents for legacy `OP_*` stack-size, priority,
+  timeout, handle ownership, scheduler-yield, and lightweight-lock behavior.
+  `dt_audio_backend` is metadata-only and does not model `linux_audio.c`
+  backend routing, state machine, message queue, callback, buffer, or timing
   behavior.
+- Verification run:
+  `CC=/usr/bin/gcc cmake -S . -B baseline-runs/next-phase8-platform-decision/build -DCMAKE_BUILD_TYPE=Release`,
+  `cmake --build baseline-runs/next-phase8-platform-decision/build --target dt_platform_smoke -- -j1`,
+  `baseline-runs/next-phase8-platform-decision/build/dt_platform_smoke . PLAN.md`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: `dt_platform_smoke` built and ran successfully, reported
+  `thread_value=42`, detected `PLAN.md`, and reported the current Linux
+  metadata-only audio backend inventory as OSS enabled with `/dev/dsp`.
+- Runtime behavior was not changed. Thread lifecycle, queue behavior, pipe
+  behavior, callback timing, sample rate, and audio backend selection were left
+  untouched.
+
+## Phase 9: Runtime Wrapper Pilot
+
+Status: completed (deferred by Phase 8 decision)
+
+Reasoning checkpoint: extra-high.
+
+Goals:
+
+- If Phase 8 approves a candidate, wire exactly one low-risk wrapper path.
+- Preserve runtime behavior.
+
+Required work:
+
+- Implement only the approved wrapper integration.
+- Keep the change mechanically small and easy to revert.
+- Run all behavior gates identified in Phase 8.
+- Capture before/after evidence.
 
 Success criteria:
 
-- WAV output baselines remain exact.
-- Live backend code paths are not altered unless explicitly approved.
-- Configure/CMake audio options are documented.
+- Approved wrapper pilot passes all required checks.
+- No audio, dictionary, symbol, public header, or packaging regression occurs.
+- If a delta appears, stop and either fix it or revert the pilot.
 
 Rules:
 
-- Do not change sample rate.
-- Do not change callback timing.
-- Do not change default backend selection.
-
----
-
-## Phase 12: Historical Target Quarantine, Source Level
-
-Status: completed
+- Do not combine wrapper wiring with warning cleanup.
+- Do not touch live audio backend routing unless explicitly approved.
 
 Implementation Summary:
 
-- Added a source-level historical target opt-in gate for platform scaffolding:
-  - `src/platform/dt_legacy_targets.h`
-  - `src/platform/dt_legacy_targets.c`
-- Updated `src/platform/dt_platform.h` with standard project documentation.
-- Updated `CMakeLists.txt` so the CMake platform smoke target compiles the
-  historical target inventory and defines
-  `DECTALK_ENABLE_LEGACY_TARGET_SOURCE` only when
-  `DECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON` is set.
-- Updated `src/configure.ac` and `src/config.h.in` so Autotools current Linux
-  configuration remains default, while historical/non-current target triplets
-  require `./configure --enable-legacy-targets`.
-- Updated platform smoke output to report historical target macro inventory and
-  the source opt-in state.
-- Updated modernization docs:
-  - `docs/modernization/HISTORICAL_TARGETS.md`
-  - `docs/modernization/BUILD_OVERVIEW.md`
-  - `docs/modernization/CMAKE_OVERVIEW.md`
-  - `docs/modernization/MACRO_INVENTORY.md`
-  - `src/platform/README.md`
-- Verification run:
-  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase12-legacy-cmake -DCMAKE_BUILD_TYPE=Release`
-  - `cmake --build baseline-runs/phase12-legacy-cmake --target dt_platform_smoke -- -j1`
-  - `baseline-runs/phase12-legacy-cmake/dt_platform_smoke . PLAN.md`
-  - `(cd src && autoreconf -i)`
-  - `(cd src && ./configure --target=sparc-sun-solaris)`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase12-behavior --expected tests/golden`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - CMake platform smoke reported all historical target indicators inactive on
-    the current Linux build and `legacy_source_opt_in=0`.
-  - `./configure --target=sparc-sun-solaris` stopped with the new
-    `--enable-legacy-targets` opt-in requirement.
-  - Current Linux Autotools verification still passed.
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated dictionary and user dictionary captures matched committed
-    baselines.
-  - default warning-line count: 1,829.
-  - strict warning-line count: 29,839.
-- No historical code was deleted. No engine files, public headers, dictionary
-  sources, runtime audio/threading paths, exported symbols, or Linux default
-  runtime behavior were changed.
+- No runtime wrapper pilot was implemented.
+- Phase 8 did not approve a runtime wiring candidate and explicitly
+  recommended deferring Phase 9 until OP/platform parity tests exist.
+- Runtime thread lifecycle, queue behavior, pipe behavior, callback timing,
+  sample rate, and audio backend selection were left untouched.
+- `src/platform` remains isolated CMake-only scaffolding.
+- Verification run: `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Follow-up required before reconsidering a pilot: add parity tests for the
+  exact legacy `OP_*` behavior that a wrapper candidate would replace.
 
-Goals:
-
-- Reduce accidental interaction between Linux cleanup and historical branches.
-- Move from documentation-only quarantine to explicit opt-in guards where safe.
-
-Suggested work:
-
-- Add legacy-target option names for Autotools/CMake where appropriate.
-- Quarantine whole historical build branches before touching mixed source files.
-- Document each quarantine with target, macro, files, and verification impact.
-
-Success criteria:
-
-- Linux default build is unchanged.
-- Historical paths are still present but harder to activate accidentally.
-- No historical code is deleted.
-
-Rules:
-
-- Inventory first.
-- Quarantine second.
-- Delete only with explicit approval.
-
----
-
-## Phase 13: Medium-Risk Warning Cleanup
+## Phase 10: CMake Promotion Reassessment
 
 Status: completed
 
-Implementation Summary:
-
-- Addressed one focused warning category: dictionary compiler diagnostic
-  format-string type mismatches in `src/dapi/src/dic/dic_comm.c`.
-- Changed diagnostic-only formats so they match the values being printed:
-  - `pid_t` from `getpid()` is printed through an explicit `long` cast with
-    `%ld`.
-  - `linenumber` uses `%ld`.
-  - `header.no_of_entries` uses `%lu`.
-- Focused verification strategy:
-  - treat `dic_comm.c` as dictionary-generation sensitive.
-  - require exact generated dictionary and user dictionary comparisons.
-  - require exact golden audio and exported symbol comparisons after rebuild.
-  - compare the captured dist manifest against the previous accepted Phase 12
-    manifest.
-- Verification run:
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase13-format --expected tests/golden`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase12-behavior/dist-manifest.txt --actual baseline-runs/phase13-format/dist-manifest.txt --out baseline-runs/phase13-format/dist-manifest-compare.diff`
-  - `rg -n "dic_comm.c:.*warning: format" baseline-runs/phase13-format/build/build.log baseline-runs/phase13-format/build/build-strict-warnings.log`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - targeted `dic_comm.c` format warnings were eliminated.
-  - default warning-line count decreased from 1,829 to 1,805.
-  - strict warning-line count decreased from 29,839 to 29,815.
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - all captured shared-library symbol lists matched committed baselines.
-  - generated dictionary and user dictionary captures matched committed
-    baselines.
-  - dist manifest matched the Phase 12 manifest exactly.
-- No dictionary write logic, dictionary binary structures, engine code, public
-  headers, runtime audio/threading paths, exported symbols, or speech behavior
-  were intentionally changed.
-
-Reasoning checkpoint: extra-high recommended before changing conversions,
-callback signatures, thread function signatures, `volatile`, or
-concurrency-related code.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Address warnings that may affect types, conversions, callbacks, or sizes.
-- Proceed only with expanded baselines in place.
-
-Candidate categories:
-
-- signed/unsigned conversions
-- pointer/integer casts
-- size truncation
-- callback signature mismatches
-- thread function signatures
-- volatile/concurrency-related warnings
-
-Success criteria:
-
-- Each category has a focused verification strategy.
-- Golden audio, dictionaries, symbols, and dist manifests remain unchanged unless
-  an explicit behavior change is approved.
-- Warning counts decrease by category.
-
-Rules:
-
-- Do not mix categories in one change.
-- Stop on any unexplained output difference.
-
----
-
-## Phase 14: Public Header and Export Audit
-
-Status: completed
-
-Implementation Summary:
-
-- Added `docs/modernization/PUBLIC_API_AUDIT.md` documenting the current Linux
-  installed header set, ABI-sensitive non-installed `tts.h`, feasible header
-  isolation checks, installed phoneme headers that are intentionally not
-  isolated, and exported-symbol policy.
-- Added public header audit tooling:
-  - `tools/baseline/check_public_headers.sh`
-- Added committed public header allowlists:
-  - `tests/golden/public-headers/installed-linux.txt`
-  - `tests/golden/public-headers/self-compile-linux.txt`
-  - `tests/golden/public-headers/known-not-isolated-linux.txt`
-  - `tests/golden/public-headers/README.md`
-- Updated `tools/baseline/verify_current.sh` so expected runs containing
-  `public-headers/` also compare public header audit outputs.
-- Updated `.github/workflows/build.yml` so the Ubuntu verification gate runs
-  the public header audit against the committed allowlists.
-- Updated `tools/baseline/README.md` with the public header audit command.
-- Header self-compile coverage now includes:
-  - `ttsapi.h`
-  - `tts.h`
-  - `dtmmedefs.h`
-  - `l_com_ph.h`
-  - `l_fr_ph.h`
-- Verification run:
-  - `tools/baseline/check_public_headers.sh --out baseline-runs/phase14-public-headers --expected tests/golden/public-headers`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase14-api --expected tests/golden`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase13-format/dist-manifest.txt --actual baseline-runs/phase14-api/dist-manifest.txt --out baseline-runs/phase14-api/dist-manifest-compare.diff`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - public header audit matched committed allowlists.
-  - all feasible header self-compile checks passed.
-  - exported symbol comparisons matched committed baselines for all shared
-    libraries.
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - generated dictionary and user dictionary captures matched committed
-    baselines.
-  - dist manifest matched the Phase 13 manifest exactly.
-  - default warning-line count: 1,805.
-  - strict warning-line count: 29,815.
-- No public headers, public API signatures, exported symbol names, calling
-  conventions, structure layouts, runtime code, dictionaries, or speech behavior
-  were changed.
-
-Reasoning checkpoint: extra-high recommended before changing public headers,
-ABI surfaces, calling conventions, or exported-symbol policy.
-
-Goals:
-
-- Make public API boundaries explicit and testable.
-- Prevent accidental ABI/API drift.
-
-Suggested work:
-
-- Document installed public headers.
-- Add header self-compile checks.
-- Add exported-symbol allowlists for public libraries.
-- Add CI enforcement after allowlists are accepted.
-
-Success criteria:
-
-- Public headers compile in isolation where feasible.
-- Export lists are versioned and compared in CI.
-- No public API signature changes are made unless explicitly approved.
-
-Rules:
-
-- Treat public headers as high risk.
-- Do not reformat public headers.
-
----
-
-## Phase 15: Packaging and Install Layout Parity
-
-Status: completed
-
-Implementation Summary:
-
-- Extended `tools/baseline/capture_dist_manifest.sh` with opt-in manifest
-  formats while preserving the existing default output:
-  - `basic`: path, type, and symlink target.
-  - `metadata`: path, type, mode, size, and symlink target.
-  - `metadata-hash`: metadata plus SHA-256 hashes for regular files.
-- Added `docs/modernization/PACKAGING_LAYOUT.md` documenting the current
-  Autotools `dist/` layout, generated `DECtalk.conf`, detailed manifest modes,
-  and current CMake staging limitations.
-- Updated `tools/baseline/README.md` with detailed packaging manifest commands.
-- Verification run:
-  - `tools/baseline/capture_dist_manifest.sh --out baseline-runs/phase15-default-dist-manifest.txt`
-  - `tools/baseline/capture_dist_manifest.sh --format metadata-hash --out baseline-runs/phase15-autotools-dist-manifest-detailed.txt`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase14-api/dist-manifest.txt --actual baseline-runs/phase15-default-dist-manifest.txt --out baseline-runs/phase15-default-manifest-compare.diff`
-  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase15-cmake -DCMAKE_BUILD_TYPE=Release`
-  - `cmake --build baseline-runs/phase15-cmake --target dectalk_cmake_stage -- -j1`
-  - `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/phase15-cmake/cmake-dist --out baseline-runs/phase15-cmake-dist-manifest.txt`
-  - `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/phase15-cmake/cmake-dist --format metadata-hash --out baseline-runs/phase15-cmake-dist-manifest-detailed.txt`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase15-autotools-dist-manifest-detailed.txt --actual baseline-runs/phase15-cmake-dist-manifest-detailed.txt --out baseline-runs/phase15-cmake-vs-autotools-detailed.diff`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase15-behavior --expected tests/golden`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase14-api/dist-manifest.txt --actual baseline-runs/phase15-behavior/dist-manifest.txt --out baseline-runs/phase15-behavior/dist-manifest-compare.diff`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - default path/type manifest output remained compatible and matched the Phase
-    14 manifest exactly.
-  - detailed Autotools manifest capture produced 1,126 lines.
-  - detailed CMake staged manifest capture produced 90 lines.
-  - CMake-vs-Autotools detailed manifest comparison intentionally differed,
-    with 1,064 removed lines and 28 added lines in the diff, confirming CMake
-    packaging remains a subset.
-  - documented remaining CMake packaging gaps include docs, bitmaps, source
-    sample trees, `/usr/bin` symlinks, `README`, and helper/sample tools such as
-    `aclock`, `dtmemory`, `gspeak`, `windic`, `tunecheck`, user-dictionary
-    tools, and demo tools.
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - exported symbols, generated dictionaries, user dictionaries, public header
-    audit, and default dist manifest comparisons all passed.
-  - default warning-line count: 1,805.
-  - strict warning-line count: 29,814.
-- Existing install layout was not changed. No libraries, tools, headers,
-  dictionaries, generated `DECtalk.conf` keys, symlinks, runtime code, or speech
-  behavior were intentionally changed.
-
-Goals:
-
-- Make install/dist output reproducible and comparable.
-- Prepare for CMake packaging parity without replacing Autotools.
-
-Suggested work:
-
-- Add manifest comparison with path, type, mode, symlink target, and optional
-  hash modes.
-- Compare Autotools dist against CMake staged output.
-- Document generated config files such as `DECtalk.conf`.
-
-Success criteria:
-
-- Packaging changes are visible as manifest diffs.
-- CMake staged layout differences are documented and intentionally reduced.
-- Existing install layout is unchanged unless explicitly approved.
-
-Rules:
-
-- Do not rename libraries or tools.
-- Do not move installed headers.
-
----
-
-## Phase 16: Documentation Consolidation
-
-Status: completed
-
-Implementation Summary:
-
-- Added `docs/modernization/README.md` as the modern maintenance index linking
-  build overview, baseline procedure, risk areas, warning and macro inventory,
-  public API audit, packaging layout, dictionary baseline, CMake status,
-  historical targets, audio backend notes, and API-boundary warning notes.
-- Updated `README.md` with a concise current-modernization section that:
-  - states Linux is the current modernization and cleanup target.
-  - clarifies historical platforms are preserved but not current cleanup
-    targets unless a phase explicitly says so.
-  - links to `docs/modernization/README.md`.
-  - shows the main Linux verification gate:
-    `tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected tests/golden`.
-- Verification run:
-  - checked that every documentation file linked from the modernization index
-    exists.
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- No legacy documentation was deleted or rewritten wholesale. No build scripts,
-  source files, public headers, runtime behavior, symbols, dictionaries, or
-  packaging layout were changed.
-
-Goals:
-
-- Make modern build, verification, and cleanup workflows discoverable.
-- Keep historical documentation intact while adding modern entry points.
-
-Suggested work:
-
-- Update `README.md` with current Linux build and verification workflow.
-- Add a modernization index in `docs/modernization/README.md`.
-- Link baseline scripts, CMake status, warning inventory, and historical target
-  docs.
-- Document what is supported now versus preserved historically.
-
-Success criteria:
-
-- A new contributor can build, run baseline checks, and understand supported
-  targets from docs.
-- Historical documentation is not deleted.
-
-Rules:
-
-- Do not rewrite legacy docs wholesale.
-
----
-
-## Phase 17: Warning Policy Ratchet
-
-Status: completed
-
-Implementation Summary:
-
-- Added narrow warning budget tooling:
-  - `tools/baseline/check_warning_budgets.py`
-- Added committed warning budget documentation and baseline:
-  - `tests/golden/warnings/README.md`
-  - `tests/golden/warnings/default-cleaned.tsv`
-- Established the first cleaned-category budget:
-  - `src/dapi/src/dic/dic_comm.c`
-  - `-Wformat=`
-  - maximum count `0`
-- Updated `.github/workflows/build.yml` so Ubuntu CI summarizes default build
-  warnings and fails only if committed cleaned-category budgets regress.
-- Updated `tools/baseline/verify_current.sh` so local verification summarizes
-  default warnings and checks accepted warning budgets when present under the
-  expected directory.
-- Updated `tools/baseline/README.md` and
-  `docs/modernization/WARNING_INVENTORY.md` with the warning-budget ratchet
-  workflow and policy.
-- Verification run:
-  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase15-behavior/build/build.log --out-dir baseline-runs/phase17-warnings-default`
-  - `tools/baseline/check_warning_budgets.py --warnings baseline-runs/phase17-warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/phase17-warning-budget.tsv`
-  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase17-policy --expected tests/golden`
-  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase15-behavior/dist-manifest.txt --actual baseline-runs/phase17-policy/dist-manifest.txt --out baseline-runs/phase17-policy/dist-manifest-compare.diff`
-  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
-- Verification results:
-  - warning budget status was `ok`.
-  - `dic_comm.c` `-Wformat=` actual count was `0` against budget `0`.
-  - default warning-line count: 1,805.
-  - strict warning-line count: 29,815.
-  - US English golden audio matched exactly for speakers 0 through 8.
-  - exported symbols, generated dictionaries, user dictionaries, public header
-    audit, and dist manifest comparisons all passed.
-- No compiler-wide warning fatal policy was added. No broad suppressions were
-  introduced. Existing legacy warning debt remains tracked but non-blocking
-  unless it is covered by an explicit cleaned-category budget.
-
-Goals:
-
-- Move warning cleanup from ad hoc progress to enforceable policy.
-- Avoid blocking unrelated work on legacy warning debt too early.
-
-Suggested work:
-
-- Establish per-category warning budgets.
-- Fail CI only on new warnings in cleaned categories.
-- Keep total-warning trend reports as artifacts.
-- Later, make specific low-risk categories fatal.
-
-Success criteria:
-
-- CI prevents warning regressions in cleaned files/categories.
-- Existing warning debt remains tracked but does not block unrelated changes.
-
-Rules:
-
-- Do not make all warnings fatal.
-- Do not introduce broad suppressions to hide warnings.
-
----
-
-## Phase 18: CMake Promotion Decision
-
-Status: completed
-
-Reasoning checkpoint: extra-high recommended before making the promotion
-recommendation.
-
-Goals:
-
-- Decide whether CMake is ready to become a primary Linux build path.
-- Keep old build systems until parity is proven and approved.
+- Reassess whether CMake is closer to primary Linux build readiness.
+- Keep the decision separate from implementation.
 
 Required evidence:
 
 - CMake builds all intended Linux artifacts.
-- CMake staged manifest matches Autotools or differences are approved.
-- Symbols match or differences are approved.
+- CMake staged manifest matches Autotools or every difference is approved.
+- Symbols match or differences are explicitly accepted as non-ABI-relevant.
 - Generated dictionaries match.
-- Golden audio matches.
+- Golden audio and any expanded baselines match.
 - CI runs CMake checks.
 - `compile_commands.json` works for analysis tooling.
 
 Success criteria:
 
-- A written recommendation is added to `docs/modernization/CMAKE_OVERVIEW.md`.
+- `docs/modernization/CMAKE_OVERVIEW.md` contains an updated recommendation.
 - No build system is removed in this phase.
 
 Rules:
@@ -1283,50 +762,45 @@ Rules:
 
 Implementation Summary:
 
-- Added `tools/baseline/verify_cmake_subset.sh` to configure, build, stage,
-  and verify the side-by-side CMake Linux subset without promoting it.
-- Updated `.github/workflows/build.yml` so Ubuntu CI installs CMake and runs the
-  CMake subset verifier; the always-run visibility step also captures the CMake
-  subset evidence if the verifier did not complete earlier.
-- Updated `docs/modernization/CMAKE_OVERVIEW.md` with the Phase 18 promotion
-  recommendation: do not promote CMake to the primary Linux build path yet;
-  keep Autotools authoritative until staged packaging parity is closed or the
-  remaining differences are explicitly approved.
-- Updated `tools/baseline/README.md` with the CMake subset verification
-  command.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` with the Phase 10 CMake
+  promotion reassessment.
+- Recommendation: do not promote CMake to the primary Linux build path yet;
+  Autotools remains authoritative.
 - Verification run:
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/phase18-cmake-subset --expected tests/golden`
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase10-cmake --expected tests/golden`
   and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Verification results: CMake built `dectalk_cmake_stage`;
-  `compile_commands.json` was present; generated dictionaries matched the
-  accepted golden dictionaries; US English WAV output matched speakers 0
-  through 8 exactly; `libtts.so` exported symbols matched exactly; language
-  library exported symbol name/type sets matched. The detailed CMake staged
-  manifest remains a subset of Autotools packaging, so no build system was
-  removed or promoted.
+- Verification results: CMake configured, built the side-by-side subset,
+  generated non-empty `compile_commands.json`, matched generated dictionaries,
+  matched original US golden audio, matched expanded US audio suites, matched
+  `libtts.so` exported symbols exactly, and matched language-library exported
+  symbol name/type sets.
+- Detailed manifest evidence: 589 Autotools paths, 530 CMake staged paths,
+  59 missing Autotools paths, and 0 extra CMake paths.
+- Promotion blockers remain: unbuilt `aclock` and `dtmemory` tools, generated
+  sample text files, helper/user-dictionary tools, `/usr/bin` symlinks, and
+  missing live-audio backend option parity.
+- No build system was removed or promoted.
 
----
-
-## Phase 19: Final Modernization Readiness Review
+## Phase 11: Final Readiness Review For This Plan
 
 Status: completed
 
-Reasoning checkpoint: extra-high recommended before final readiness conclusions
-and before recommending any higher-risk follow-on objectives.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Confirm modernization goals are met without hidden behavior changes.
+- Confirm the higher-risk follow-on plan completed without hidden behavior
+  changes.
 - Produce a concise state-of-the-codebase report.
 
 Required review areas:
 
 - Linux build reproducibility.
 - CI reliability.
-- warning counts and policy.
-- public headers and exports.
+- warning counts and budgets.
+- public headers, API smoke coverage, and exports.
 - dictionary generation.
-- golden audio coverage.
+- golden audio and any expanded deterministic baselines.
 - CMake status.
 - platform abstraction status.
 - historical target quarantine status.
@@ -1334,39 +808,85 @@ Required review areas:
 
 Success criteria:
 
-- `docs/modernization/READINESS_REVIEW.md` exists.
+- `docs/modernization/READINESS_REVIEW.md` is updated or a new dated follow-on
+  readiness review exists.
 - All accepted baselines are reproducible.
 - Known limitations are explicit.
 - No behavior preservation claim is made beyond checks actually run.
 
 Implementation Summary:
 
-- Added `docs/modernization/READINESS_REVIEW.md` with the final state of the
-  current modernization plan, local verification evidence, review-area
-  conclusions, known limitations, and higher-risk follow-on recommendations.
-- Updated `docs/modernization/README.md` to link the readiness review from the
-  modernization documentation index.
+- Updated `docs/modernization/READINESS_REVIEW.md` with a follow-on plan final
+  readiness review dated 2026-05-17.
+- Files changed: `.github/workflows/build.yml`,
+  `docs/modernization/READINESS_REVIEW.md`, `PLAN.md`,
+  `tools/baseline/README.md`, `tools/baseline/compare_manifest.sh`, and
+  `tools/baseline/compare_symbols.sh`,
+  `tools/baseline/verify_cmake_subset.sh`.
+- The review documents the final state of Linux build reproducibility, local CI
+  script reliability, warning counts and budgets, public headers, API smoke
+  coverage, exports, dictionary generation, deterministic golden audio, CMake
+  status, platform abstraction status, historical target quarantine status,
+  known limitations, and deferred work.
 - Verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/phase19-readiness --expected tests/golden`
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase11-readiness --expected tests/golden`.
+- Verification results: default warning-line count 1,793; strict warning-line
+  count 29,779; parser-visible default warnings 1,772; warning budget status
+  `ok`; public headers matched; public API smoke output matched the committed
+  speaker 0 golden WAV exactly; exported symbols matched; generated
+  dictionaries matched; generated US user-dictionary fixture output matched;
+  one-shot US English golden WAVs matched for speakers 0 through 8; expanded US
+  audio suites matched for speakers 0 through 8; Autotools dist manifest
+  matched the committed detailed manifest baseline and contained 589 basic
+  entries.
+- Additional verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase11-cmake --expected tests/golden`.
+- Additional verification results: CMake configured and built
+  `dectalk_cmake_stage`; `compile_commands.json` had 3,127 lines; generated
+  dictionaries matched; one-shot and expanded US audio matched; `libtts.so`
+  exported symbols matched exactly; language-library exported symbol name/type
+  sets matched.
+- Warning counts changed compared with the follow-on Phase 1 baseline: default
+  warning-line count decreased from 1,804 to 1,793 and strict warning-line
+  count decreased from 29,815 to 29,779. Warning debt remains substantial.
+- Public exports did not change according to the committed symbol comparisons.
+- Dictionaries did not change according to the committed dictionary
+  comparisons.
+- Golden audio did not change according to the committed one-shot and expanded
+  deterministic WAV comparisons.
+- Behavior risk level: low. This phase changed documentation only after both
+  final readiness gates passed.
+- Known limitations: GitHub-hosted CI was not run locally; live audio hardware,
+  callbacks, backend device selection, timing, non-current platform builds, and
+  full API conformance remain untested; CMake packaging parity remains
+  incomplete; behavior preservation is claimed only for the deterministic checks
+  listed above.
+- PR CI portability checkpoint: the first hosted Ubuntu PR run exposed
+  runner-specific exact symbol address, binary metadata, optional GTK tool, and
+  long CMake artifact path differences. Added `name-type` symbol comparison and
+  `path-type-subset` manifest comparison modes for CI, updated hosted CI to use
+  those stable checks, and shortened the CI CMake run directory to
+  `baseline-runs/cm` so expanded-suite WAV paths stay below the legacy runtime
+  path-length limit. Local exact symbol and manifest comparisons remain the
+  default.
+- CMake CI symbol portability checkpoint: the hosted Ubuntu CMake subset step
+  then reached CMake symbol verification and failed on exact `libtts.so` symbol
+  addresses. Added `tools/baseline/verify_cmake_subset.sh --symbol-mode
+  name-type` for hosted CI only; the default local CMake verifier still compares
+  CMake-staged `libtts.so` exactly and continues to compare language-library
+  symbol name/type sets.
+- CI portability verification: the downloaded failed CI artifact passed
+  `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual /tmp/ci-artifact-phase11/symbols --mode name-type --out /tmp/ci-artifact-phase11-symbol-name-type`
   and
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/phase19-readiness-cmake --expected tests/golden`.
-- Verification results: Autotools/Linux accepted baselines reproduced for US
-  English golden audio, exported symbols, main dictionaries, the US
-  user-dictionary fixture, public header allowlists, and the narrow warning
-  budget. CMake subset verification reproduced dictionaries, US English golden
-  audio, exact `libtts.so` symbols, language-library symbol name/type sets, and
-  `compile_commands.json`.
-- Warning counts changed only relative to older plan text: the current Phase 19
-  run observed 1,805 default warning lines, 29,815 strict warning lines, and
-  1,784 parser-visible default warnings. The warning budget remained `ok`.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change. Behavior risk is low for this documentation-only phase.
-- Known limitations remain explicit: not all warnings are fixed; CMake
-  packaging parity is incomplete; live audio hardware behavior and non-current
-  target builds were not verified; public API behavior is guarded by headers and
-  symbols, not a complete conformance suite.
-
----
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual /tmp/ci-artifact-phase11/dist-manifest-detailed.txt --mode path-type-subset --out /tmp/ci-artifact-phase11-manifest-path-type.diff`;
+  exact local symbol and manifest comparisons still passed; reran
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase11-ci-portability --expected tests/golden`
+  and
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm --expected tests/golden`.
+  After adding `--symbol-mode`, reran
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm-default --expected tests/golden`
+  and
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm-name-type --symbol-mode name-type --expected tests/golden`.
 
 ## Definition of Done for Each Phase
 
@@ -1385,6 +905,6 @@ A phase is not complete unless its Implementation Summary states:
 
 ## Current Immediate Next Step
 
-The current plan is complete. Create and merge the modernization PR according
-to the Operating Rules, then use a new plan for higher-risk follow-on
-objectives.
+Before implementing Phase 1, review this plan against the current codebase and
+ask any upfront clarification questions. If there are no blockers, start Phase
+1 with high reasoning.

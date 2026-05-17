@@ -43,9 +43,10 @@ tools/baseline/verify_cmake_subset.sh \
 ```
 
 The subset verifier configures and builds the CMake stage, checks
-`compile_commands.json`, compares generated dictionaries and US English WAVs
-against golden outputs, compares `libtts.so` symbols exactly, and compares
-language-library exported symbol name/type sets.
+`compile_commands.json`, compares generated dictionaries, compares the original
+US English WAVs and expanded US audio suites against golden outputs, compares
+`libtts.so` symbols exactly, and compares language-library exported symbol
+name/type sets.
 
 ## Source membership
 
@@ -81,15 +82,23 @@ so absolute output paths are not accepted by its current command-line parser.
 
 ## Remaining Gaps
 
-The CMake staged tree is still a build-verification subset. It does not yet
-stage the full Autotools dist layout, including the documentation tree, bitmap
-assets, source sample tree, `usr/bin` symlinks, and additional sample or helper
-tools such as `aclock`, `dtmemory`, `gspeak`, `windic`, and user-dictionary
-tools.
+The CMake staged tree is still a build-verification subset. Phase 4 of the
+follow-on plan stages low-risk static assets whose Autotools source paths are
+explicit: README, bitmap assets, documentation, and selected sample source
+files. It does not yet stage the full Autotools dist layout, including
+`usr/bin` symlinks, generated sample text files, or additional sample/helper
+tools such as `aclock`, `dtmemory`, `gspeak`, `windic`, `tunecheck_*`, and
+user-dictionary tools.
 
 Do not declare CMake packaging parity until this staged-layout gap is closed and
 the manifest comparison is exact or every remaining difference is explicitly
 approved.
+
+Phase 4 verification reduced the detailed staged manifest gap from 541 missing
+paths to 59 missing paths, with no extra CMake-only paths. Remaining gaps are
+the unbuilt `aclock` and `dtmemory` top-level tools, generated sample text
+files under `src/DECtalk/dtsamples/`, additional helper/user-dictionary tools
+under `tools/`, and staged `/usr/bin` symlinks.
 
 ## Phase 18 Promotion Recommendation
 
@@ -118,6 +127,43 @@ CMake should become a primary Linux build path only after the staged layout gap
 is closed or each remaining packaging difference is explicitly accepted, and
 after the symbol-address/order differences for language libraries are either
 eliminated or explicitly accepted as non-ABI-relevant.
+
+## Phase 10 Reassessment
+
+Recommendation: do not promote CMake to the primary Linux build path yet.
+Autotools remains authoritative.
+
+Current evidence from
+`tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase10-cmake --expected tests/golden`:
+
+- CMake configures and builds the side-by-side subset.
+- `compile_commands.json` is generated and non-empty.
+- generated CMake dictionaries match `tests/golden/dictionaries` exactly.
+- CMake-staged `say` produces exact original US English golden WAVs for
+  speakers 0 through 8.
+- CMake-staged `say` also produces exact expanded US audio suite WAVs.
+- CMake-staged `libtts.so` matches the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets match the committed
+  baselines.
+- Ubuntu CI runs `tools/baseline/verify_cmake_subset.sh`.
+
+Promotion blockers:
+
+- CMake still does not stage all intended Linux artifacts. The current detailed
+  manifest comparison has 589 Autotools paths, 530 CMake paths, 59 missing
+  Autotools paths, and 0 extra CMake paths.
+- Remaining missing paths are still the unbuilt `aclock` and `dtmemory`
+  top-level tools, generated sample text files under `src/DECtalk/dtsamples/`,
+  helper/user-dictionary tools under `tools/`, and staged `/usr/bin` symlinks.
+- CMake does not expose the live audio backend options used by the Autotools
+  runtime build.
+- CMake packaging parity is not proven, and the remaining layout differences
+  have not been explicitly accepted as final.
+
+Next CMake work should close the staged-layout gap or document explicit
+acceptance for each remaining difference. Promotion should remain a separate
+decision after exact or accepted packaging parity is available.
 
 ## Phase 8 Verification
 

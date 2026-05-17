@@ -111,6 +111,10 @@ Committed WAV outputs:
 - `tests/golden/audio/us/speaker_6.wav`
 - `tests/golden/audio/us/speaker_7.wav`
 - `tests/golden/audio/us/speaker_8.wav`
+- expanded suites under:
+  - `tests/golden/audio/us/us_abbreviations/`
+  - `tests/golden/audio/us/us_commands_markup/`
+  - `tests/golden/audio/us/us_punctuation_numbers/`
 
 Generation command pattern:
 
@@ -125,18 +129,36 @@ Audio comparisons can also emit a metrics report:
 
 ```sh
 tools/baseline/compare_audio.py --actual baseline-runs/current/audio-us --metrics-out baseline-runs/current/audio-metrics.tsv
+tools/baseline/capture_audio_suites.sh --out baseline-runs/current/audio-us-suites
+tools/baseline/compare_audio_suites.sh --actual baseline-runs/current/audio-us-suites --metrics-out baseline-runs/current/audio-suite-metrics
 ```
 
 The metrics report includes SHA-256 hashes, frame counts, sample rates, peak and
 RMS levels, and max sample deltas. Exact WAV equality remains the pass/fail
 condition.
 
+## Public API Smoke
+
+The public API smoke test compiles against the staged Linux install headers and
+libraries:
+
+```sh
+tools/baseline/check_api_smoke.sh --out baseline-runs/current/api-smoke
+```
+
+It includes `dtk/ttsapi.h`, links against `dist/lib/libtts.so`, starts the US
+language path, opens a no-audio TTS handle, selects speaker 0, writes
+`tests/golden/input/us_one_shot.txt` through `TextToSpeechOpenWaveOutFile`,
+closes the WAV file, and shuts down. The generated WAV must match
+`tests/golden/audio/us/speaker_0.wav` byte-for-byte.
+
 ## Limitations
 
 - Baseline audio covers US English only.
-- Baseline audio covers one fixed input text and speakers 0 through 8.
-- Additional committed input files expand future coverage, but they do not yet
-  have committed WAV baselines.
+- Baseline audio covers the original one-shot input plus three expanded US
+  input suites. Each suite covers speakers 0 through 8.
+- Public API smoke coverage currently covers US English speaker 0, public
+  header inclusion, dynamic linking, and speak-to-WAV only.
 - No live audio hardware path was tested.
 - Optional GTK, ALSA, and PulseAudio development packages were not available on
   the host used for Phase 1.

@@ -130,7 +130,10 @@ Phase 17 adds a narrow warning-budget check for categories that have already
 been cleaned. The first budget is:
 
 - `src/dapi/src/dic/dic_comm.c`, `-Wformat=`, maximum count `0`.
+- `src/samplosf/src/dtsamples/mfg_load.c`, `-Wold-style-definition`, maximum
+  count `0`.
 
 This prevents regression of the Phase 13 dictionary compiler format cleanup
-without making unrelated legacy warning debt fatal. New budgets should be added
-only after a focused cleanup has passed the relevant behavior checks.
+and the Phase 5 sample loader prototype-definition cleanup without making
+unrelated legacy warning debt fatal. New budgets should be added only after a
+focused cleanup has passed the relevant behavior checks.

@@ -10,15 +10,22 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: tools/baseline/verify_cmake_subset.sh [--run-dir DIR] [--expected DIR]
+Usage: tools/baseline/verify_cmake_subset.sh [--run-dir DIR] [--expected DIR] [--symbol-mode MODE]
 
 Builds the CMake subset and verifies dictionaries, US WAV output,
 compile_commands.json, libtts.so symbols, and language-library symbol names.
+
+Modes:
+  exact      Compare CMake-staged libtts.so against the exact committed symbol
+             capture. This is the default for local reproducibility gates.
+  name-type  Compare CMake-staged libtts.so symbol type/name sets only. This is
+             useful on hosted CI runners where symbol addresses may vary.
 USAGE
 }
 
 run_dir=""
 expected_dir=""
+symbol_mode="exact"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -38,6 +45,14 @@ while [ "$#" -gt 0 ]; do
       expected_dir="$2"
       shift 2
       ;;
+    --symbol-mode)
+      if [ "$#" -lt 2 ]; then
+        echo "error: --symbol-mode requires a value" >&2
+        exit 2
+      fi
+      symbol_mode="$2"
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -49,6 +64,16 @@ while [ "$#" -gt 0 ]; do
       ;;
   esac
 done
+
+case "$symbol_mode" in
+  exact|name-type)
+    ;;
+  *)
+    echo "error: unknown symbol mode: $symbol_mode" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 if [ -z "$run_dir" ]; then
@@ -99,15 +124,32 @@ fi
 "$repo_root/tools/baseline/compare_audio.py" \
   --actual "$run_dir/audio-us" \
   --metrics-out "$run_dir/audio-metrics.tsv" > "$run_dir/audio-compare.txt"
+"$repo_root/tools/baseline/capture_audio_suites.sh" \
+  --dist "$dist_dir" \
+  --out "$run_dir/audio-us-suites"
+"$repo_root/tools/baseline/compare_audio_suites.sh" \
+  --actual "$run_dir/audio-us-suites" \
+  --metrics-out "$run_dir/audio-suite-metrics" > "$run_dir/audio-suite-compare.txt"
 
 "$repo_root/tools/baseline/capture_symbols.sh" \
   --dist "$dist_dir" \
   --out "$run_dir/symbols"
 if [ -n "$expected_dir" ] && [ -d "$expected_dir/symbols" ]; then
-  diff -u \
-    "$expected_dir/symbols/symbols-libtts.so.txt" \
-    "$run_dir/symbols/symbols-libtts.so.txt" \
-    > "$run_dir/libtts-symbol-compare.diff"
+  if [ "$symbol_mode" = "name-type" ]; then
+    awk '{ print $2 "\t" $3 }' "$expected_dir/symbols/symbols-libtts.so.txt" | sort \
+      > "$run_dir/expected-names-symbols-libtts.so.txt"
+    awk '{ print $2 "\t" $3 }' "$run_dir/symbols/symbols-libtts.so.txt" | sort \
+      > "$run_dir/actual-names-symbols-libtts.so.txt"
+    diff -u \
+      "$run_dir/expected-names-symbols-libtts.so.txt" \
+      "$run_dir/actual-names-symbols-libtts.so.txt" \
+      > "$run_dir/libtts-symbol-compare.diff"
+  else
+    diff -u \
+      "$expected_dir/symbols/symbols-libtts.so.txt" \
+      "$run_dir/symbols/symbols-libtts.so.txt" \
+      > "$run_dir/libtts-symbol-compare.diff"
+  fi
   rm -f "$run_dir/libtts-symbol-compare.diff"
 
   : > "$run_dir/language-symbol-name-compare.txt"
@@ -131,6 +173,7 @@ fi
   printf 'compile_commands=%s\n' "$build_dir/compile_commands.json"
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
+  printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
   [ -f "$run_dir/language-symbol-name-compare.txt" ] && printf 'language_symbol_names=%s\n' "$run_dir/language-symbol-name-compare.txt"
   printf 'dist_manifest_detailed=%s\n' "$run_dir/dist-manifest-detailed.txt"
 } > "$run_dir/summary.txt"

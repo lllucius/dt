@@ -51,8 +51,18 @@ jobs:
           tools/baseline/compare_symbols.sh \
             --expected tests/golden/symbols \
             --actual baseline-runs/ci/symbols \
+            --mode name-type \
             --out baseline-runs/ci/symbol-compare \
             > baseline-runs/ci/symbol-compare.txt
+          tools/baseline/capture_dist_manifest.sh \
+            --format metadata-hash \
+            --out baseline-runs/ci/dist-manifest-detailed.txt
+          tools/baseline/compare_manifest.sh \
+            --expected tests/golden/dist-manifest-detailed.txt \
+            --actual baseline-runs/ci/dist-manifest-detailed.txt \
+            --mode path-type-subset \
+            --out baseline-runs/ci/dist-manifest-detailed.diff \
+            > baseline-runs/ci/dist-manifest-detailed-compare.txt
           tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries
           tools/baseline/compare_dictionaries.sh \
             --expected tests/golden/dictionaries \
@@ -69,9 +79,16 @@ jobs:
           tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
             --metrics-out baseline-runs/ci/audio-metrics.tsv \
             > baseline-runs/ci/audio-compare.log
+          tools/baseline/capture_audio_suites.sh --out baseline-runs/ci/audio-us-suites
+          tools/baseline/compare_audio_suites.sh \
+            --actual baseline-runs/ci/audio-us-suites \
+            --metrics-out baseline-runs/ci/audio-suite-metrics \
+            > baseline-runs/ci/audio-suite-compare.log
           tools/baseline/check_public_headers.sh \
             --out baseline-runs/ci/public-headers \
             --expected tests/golden/public-headers
+          tools/baseline/check_api_smoke.sh \
+            --out baseline-runs/ci/api-smoke
           tools/baseline/summarize_warnings.py \
             --log baseline-runs/ci/build.log \
             --out-dir baseline-runs/ci/warnings-default
@@ -83,7 +100,8 @@ jobs:
       - name: Verify CMake subset
         run: |
           tools/baseline/verify_cmake_subset.sh \
-            --run-dir baseline-runs/ci/cmake-subset \
+            --run-dir baseline-runs/cm \
+            --symbol-mode name-type \
             --expected tests/golden
 
       - name: Capture baseline visibility
@@ -96,6 +114,15 @@ jobs:
           fi
           if [ -d dist ]; then
             tools/baseline/capture_dist_manifest.sh --out baseline-runs/ci/dist-manifest.txt || true
+            tools/baseline/capture_dist_manifest.sh \
+              --format metadata-hash \
+              --out baseline-runs/ci/dist-manifest-detailed.txt || true
+            tools/baseline/compare_manifest.sh \
+              --expected tests/golden/dist-manifest-detailed.txt \
+              --actual baseline-runs/ci/dist-manifest-detailed.txt \
+              --mode path-type-subset \
+              --out baseline-runs/ci/dist-manifest-detailed.diff \
+              > baseline-runs/ci/dist-manifest-detailed-compare.txt 2>&1 || true
           fi
           if [ -d dist/lib ]; then
             tools/baseline/capture_symbols.sh --out baseline-runs/ci/symbols || true
@@ -111,10 +138,19 @@ jobs:
             tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
               --metrics-out baseline-runs/ci/audio-metrics.tsv \
               > baseline-runs/ci/audio-compare.log 2>&1 || true
+            tools/baseline/capture_audio_suites.sh --out baseline-runs/ci/audio-us-suites || true
+            tools/baseline/compare_audio_suites.sh \
+              --actual baseline-runs/ci/audio-us-suites \
+              --metrics-out baseline-runs/ci/audio-suite-metrics \
+              > baseline-runs/ci/audio-suite-compare.log 2>&1 || true
           fi
           tools/baseline/check_public_headers.sh \
             --out baseline-runs/ci/public-headers \
             --expected tests/golden/public-headers || true
+          if [ -f dist/include/dtk/ttsapi.h ] && [ -f dist/lib/libtts.so ]; then
+            tools/baseline/check_api_smoke.sh \
+              --out baseline-runs/ci/api-smoke || true
+          fi
           if [ -f baseline-runs/ci/build.log ]; then
             tools/baseline/summarize_warnings.py \
               --log baseline-runs/ci/build.log \
@@ -126,9 +162,10 @@ jobs:
                 --out baseline-runs/ci/warning-budget.tsv || true
             fi
           fi
-          if [ ! -f baseline-runs/ci/cmake-subset/summary.txt ]; then
+          if [ ! -f baseline-runs/cm/summary.txt ]; then
             tools/baseline/verify_cmake_subset.sh \
-              --run-dir baseline-runs/ci/cmake-subset \
+              --run-dir baseline-runs/cm \
+              --symbol-mode name-type \
               --expected tests/golden || true
           fi
 
@@ -137,7 +174,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ubuntu-latest-baseline-visibility
-          path: baseline-runs/ci/
+          path: |
+            baseline-runs/ci/
+            baseline-runs/cm/
 
       - name: Create a `.tar.gz` of the dist/ folder.
         run: tar -cvzf dectalk.tar.gz -C dist/ .

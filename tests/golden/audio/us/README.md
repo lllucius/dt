@@ -14,3 +14,13 @@ the initial baseline.
 `tools/baseline/compare_audio.py` can also write a TSV metrics report with
 SHA-256, frame counts, peak/RMS, and max sample deltas. Exact SHA-256 equality
 remains the pass/fail condition.
+
+Expanded suites under this directory cover additional US English parser and
+command inputs:
+
+- `us_abbreviations/`
+- `us_commands_markup/`
+- `us_punctuation_numbers/`
+
+Each expanded suite contains `speaker_0.wav` through `speaker_8.wav` and is
+captured with `tools/baseline/capture_audio_suites.sh`.

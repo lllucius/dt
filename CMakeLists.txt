@@ -369,6 +369,32 @@ install(FILES
   DESTINATION include/dtk
 )
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/generated/DECtalk.conf" DESTINATION .)
+install(FILES src/kitosf/kitbld/README DESTINATION .)
+install(DIRECTORY src/samplosf/src/speak/bitmaps/ DESTINATION bitmaps)
+install(FILES
+  src/samplosf/src/dtsamples/aclock.c
+  src/samplosf/src/dtsamples/say.c
+  src/samplosf/src/dtsamples/dtmemory.c
+  src/dapi/src/dic/user.tab
+  DESTINATION src/DECtalk/dtsamples
+)
+install(FILES src/samplosf/src/speak/gspeak.c DESTINATION src/DECtalk/gspeak)
+install(FILES
+  src/docsosf/ps/dtk_install_guide.ps
+  src/docsosf/ps/dtk_prog_guide.ps
+  src/docsosf/ps/dtk_reference_guide.ps
+  DESTINATION doc/DECtalk/ps
+)
+install(FILES
+  src/docsosf/pdf/dtk_install_guide.pdf
+  src/docsosf/pdf/dtk_prog_guide.pdf
+  src/docsosf/pdf/dtk_reference_guide.pdf
+  DESTINATION doc/DECtalk/pdf
+)
+install(DIRECTORY src/docsosf/man/man1/ DESTINATION doc/DECtalk/man/man1)
+install(DIRECTORY src/docsosf/man/man3/ DESTINATION doc/DECtalk/man/man3)
+install(FILES src/docsosf/html/dectalk.htm DESTINATION doc/DECtalk/html RENAME index.html)
+install(DIRECTORY src/docsosf/html/ DESTINATION doc/DECtalk/html)
 
 add_custom_target(dectalk_cmake_stage
   COMMAND "${CMAKE_COMMAND}" --install "${CMAKE_CURRENT_BINARY_DIR}" --prefix "${DECTALK_CMAKE_STAGE_DIR}"
