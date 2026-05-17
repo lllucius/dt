@@ -105,3 +105,57 @@ and use speaker 0 for the additional parser-focused inputs.
 No files under `tests/golden/audio/`, `tests/golden/dictionaries/`, or
 `tests/golden/symbols/` were changed in Phase 2. Accepting new golden outputs
 belongs to Phase 3 and requires the extra-high checkpoint in `PLAN.md`.
+
+## Phase 3 Accepted Baselines
+
+Phase 3 accepted the recommended US English WAV suites and detailed Autotools
+packaging manifest after the extra-high checkpoint was approved.
+
+Accepted US audio suite directories:
+
+- `tests/golden/audio/us/us_abbreviations/`
+- `tests/golden/audio/us/us_commands_markup/`
+- `tests/golden/audio/us/us_punctuation_numbers/`
+
+Each suite contains `speaker_0.wav` through `speaker_8.wav`. The original
+one-shot flat files under `tests/golden/audio/us/` remain unchanged.
+
+Accepted packaging manifest:
+
+- `tests/golden/dist-manifest-detailed.txt`
+
+Verification commands:
+
+```sh
+tools/baseline/capture_audio_suites.sh --out baseline-runs/next-phase3-audio-suites
+tools/baseline/compare_audio_suites.sh \
+  --actual baseline-runs/next-phase3-audio-suites \
+  --metrics-out baseline-runs/next-phase3-audio-suite-metrics
+tools/baseline/capture_dist_manifest.sh \
+  --format metadata-hash \
+  --out baseline-runs/next-phase3-dist-manifest-detailed.txt
+tools/baseline/compare_manifest.sh \
+  --expected tests/golden/dist-manifest-detailed.txt \
+  --actual baseline-runs/next-phase3-dist-manifest-detailed.txt \
+  --out baseline-runs/next-phase3-dist-manifest-detailed.diff
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next-phase3-verify \
+  --expected tests/golden
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next-phase3-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- all 27 expanded US WAV files compared exactly.
+- detailed Autotools manifest compared exactly and contains 1,126 lines.
+- Autotools accepted baselines still reproduced; warning counts were 1,805
+  default warning lines and 29,815 strict warning lines.
+- CMake subset verification reproduced dictionaries, original US WAVs,
+  expanded US WAV suites, exact `libtts.so` symbols, language-library symbol
+  name/type sets, and `compile_commands.json`.
+
+The accepted additions are verification artifacts only. They do not approve
+speech output changes, runtime audio changes, API changes, dictionary changes,
+or CMake promotion.

@@ -1,0 +1,1126 @@
+d 755 32768 doc/DECtalk/html -> 
+d 755 4096  -> 
+d 755 4096 bitmaps -> 
+d 755 4096 dic -> 
+d 755 4096 doc -> 
+d 755 4096 doc/DECtalk -> 
+d 755 4096 doc/DECtalk/man -> 
+d 755 4096 doc/DECtalk/man/man1 -> 
+d 755 4096 doc/DECtalk/man/man3 -> 
+d 755 4096 doc/DECtalk/pdf -> 
+d 755 4096 doc/DECtalk/ps -> 
+d 755 4096 include -> 
+d 755 4096 include/dtk -> 
+d 755 4096 lib -> 
+d 755 4096 src -> 
+d 755 4096 src/DECtalk -> 
+d 755 4096 src/DECtalk/dtsamples -> 
+d 755 4096 src/DECtalk/gspeak -> 
+d 755 4096 tools -> 
+d 755 4096 usr -> 
+d 755 4096 usr/bin -> 
+f 644 1003 bitmaps/den16a.gif -> 
+f 644 10067 doc/DECtalk/html/idh_sdk_2_texttospeechgetrate.htm -> 
+f 644 10070 include/dtk/l_sp_ph.h -> 
+f 644 10085 doc/DECtalk/html/idh_sdk_1_control_and_status_functions.htm -> 
+f 644 1009 bitmaps/bet16a.gif -> 
+f 644 10176 include/dtk/l_gr_ph.h -> 
+f 644 10196 doc/DECtalk/html/idh_nt_apps_to_change_voices_using_the_speaking_voice_menu.htm -> 
+f 644 10216 doc/DECtalk/html/idh_sdk_2_texttospeechcloselogfile.htm -> 
+f 644 10308 include/dtk/l_la_ph.h -> 
+f 644 1041 bitmaps/pau16b.gif -> 
+f 644 1042 bitmaps/fra16b.gif -> 
+f 644 10449 doc/DECtalk/html/idh_sdk_2_texttospeechcloseinmemory.htm -> 
+f 644 10488 doc/DECtalk/html/texttospeechversionex.htm -> 
+f 644 10500 doc/DECtalk/html/idh_sdk_2_texttospeechsetrate.htm -> 
+f 644 10526 doc/DECtalk/html/idh_sdk_1_control_and_status_functions_1.htm -> 
+f 644 10599 doc/DECtalk/html/idh_nt_apps_to_load_a_user_dictionary_from_the_dectalk_speak_applet.htm -> 
+f 644 1062 bitmaps/fra16a.gif -> 
+f 644 1062 bitmaps/pau16a.gif -> 
+f 644 10672 doc/DECtalk/html/idh_sdk_1_loading_the_main_pronunciation_dictionary.htm -> 
+f 644 1071 bitmaps/har16b.gif -> 
+f 644 10750 doc/DECtalk/html/idh_sdk_1_special_text_to_speech_modes_1.htm -> 
+f 644 10756 doc/DECtalk/html/idh_sdk_2_texttospeechshutdown.htm -> 
+f 644 1079510 doc/DECtalk/html/ebx_-1279981187.gif -> 
+f 644 10798 doc/DECtalk/html/idh_sdk_2_texttospeechunloaduserdictionary.htm -> 
+f 644 10834 doc/DECtalk/html/idh_sdk_3_customizing_a_dectalk_software_voice.htm -> 
+f 644 1092 bitmaps/har16a.gif -> 
+f 644 10920 doc/DECtalk/html/multi_language_programming_example.htm -> 
+f 644 11007 doc/DECtalk/html/idh_sdk_1_error_messages.htm -> 
+f 644 11033 doc/DECtalk/html/idh_ref_1_period_pause_period.htm -> 
+f 644 11038 doc/DECtalk/html/idh_nt_apps_to_change_the_speaking_rate_from_the_sample_applet.htm -> 
+f 644 11074 doc/DECtalk/html/idh_sdk_1_special_text_to_speech_modes.htm -> 
+f 644 11083 doc/DECtalk/html/idh_nt_apps_to_edit_a_text_file_from_the_sample_applet.htm -> 
+f 644 11157 doc/DECtalk/html/interpreting_punctuation_marks_as_punctuation.htm -> 
+f 644 1120546 doc/DECtalk/html/ebx_-1525817823.gif -> 
+f 644 1121 doc/DECtalk/html/bssctab0.gif -> 
+f 644 112171 doc/DECtalk/html/idh_ref_3_phonemic_symbols_2.htm -> 
+f 644 11294 doc/DECtalk/html/idh_nt_apps_to_speak_text_with_the_dectalk_tts_server.htm -> 
+f 644 11323 doc/DECtalk/html/idh_ref_1_stereo_volume_control.htm -> 
+f 644 11364 doc/DECtalk/html/how_it_works.htm -> 
+f 644 11452 doc/DECtalk/html/additional_syntax_rules.htm -> 
+f 644 11483 doc/DECtalk/html/idh_sdk_2_texttospeechgetlanguage.htm -> 
+f 644 11513 doc/DECtalk/html/idh_ref_1_rate_selection_rate.htm -> 
+f 644 11569 doc/DECtalk/html/idh_ref_3_phonemic_symbols.htm -> 
+f 644 1160 bitmaps/urs16b.gif -> 
+f 644 11813 doc/DECtalk/html/idh_ref_2_optimizing_the_quality_of_spoken_text.htm -> 
+f 644 1183 bitmaps/urs16a.gif -> 
+f 644 118547 doc/DECtalk/html/ehlpdhtm.js -> 
+f 644 11863 include/dtk/dtmmedefs.h -> 
+f 644 1193 doc/DECtalk/html/nsdnsfix.htm -> 
+f 644 11949 doc/DECtalk/html/idh_ref_1_dial_tones_dial.htm -> 
+f 644 11951 doc/DECtalk/html/idh_ref_1_play_wave_files_play.htm -> 
+f 644 12017 doc/DECtalk/html/idh_ref_1_comma_pause_comma.htm -> 
+f 644 1207 doc/DECtalk/html/ebx_-419816492.gif -> 
+f 644 12092 doc/DECtalk/html/idh_sdk_1_header_files.htm -> 
+f 644 121 doc/DECtalk/html/btn_mini.gif -> 
+f 644 12313 doc/DECtalk/html/texttospeechenumlangs.htm -> 
+f 644 12490 doc/DECtalk/html/idh_sdk_2_texttospeechsetlanguage.htm -> 
+f 644 12543 doc/DECtalk/html/ebx_1825453022.gif -> 
+f 644 12798 doc/DECtalk/html/idh_ref_1_math_mode_example.htm -> 
+f 644 12896 doc/DECtalk/html/idh_ref_1_sync_sync.htm -> 
+f 644 1290 doc/DECtalk/html/ebx_-1838459393.gif -> 
+f 644 12901 doc/DECtalk/html/idh_sdk_1_window_procedure_example.htm -> 
+f 644 12974 doc/DECtalk/html/idh_sdk_2_texttospeechreturnbuffer.htm -> 
+f 644 1300 bitmaps/dtk.gif -> 
+f 644 13036 doc/DECtalk/html/idh_sdk_1_return_of_memory_buffers.htm -> 
+f 644 131004 doc/DECtalk/html/phonemes_in_unicode_sequence.htm -> 
+f 644 13135 doc/DECtalk/html/idh_ref_1_index_mark_index_mark.htm -> 
+f 644 1317 doc/DECtalk/html/ebx_-401230977.gif -> 
+f 644 13212 doc/DECtalk/html/pitch_pitch.htm -> 
+f 644 13222 doc/DECtalk/html/idh_ref_1_tone_tone.htm -> 
+f 644 1348 doc/DECtalk/html/idh_true_1.htm -> 
+f 644 1350 doc/DECtalk/html/idh_false_0.htm -> 
+f 644 13595 doc/DECtalk/html/idh_sdk_2_texttospeechloaduserdictionary.htm -> 
+f 644 13687 doc/DECtalk/html/idh_sdk_3_changing_gender_and_head_size.htm -> 
+f 644 13745 doc/DECtalk/html/english_us_uk.htm -> 
+f 644 1375 doc/DECtalk/html/idh_paul_0_ttsapi_h.htm -> 
+f 644 1375 doc/DECtalk/html/idh_rita_7_ttsapi_h.htm -> 
+f 644 1377 doc/DECtalk/html/idh_betty_1_ttsapi_h.htm -> 
+f 644 1377 doc/DECtalk/html/idh_frank_3_ttsapi_h.htm -> 
+f 644 1377 doc/DECtalk/html/idh_harry_2_ttsapi_h.htm -> 
+f 644 1377 doc/DECtalk/html/idh_wendy_8_ttsapi_h.htm -> 
+f 644 1378 doc/DECtalk/html/idh_kit_5_ttsapi_h.htm -> 
+f 644 137887 doc/DECtalk/html/dectalk.hhs -> 
+f 644 1379 doc/DECtalk/html/idh_dennis_4_ttsapi_h.htm -> 
+f 644 1379 doc/DECtalk/html/idh_ursula_6_ttsapi_h.htm -> 
+f 644 13929 doc/DECtalk/html/idh_nt_apps_to_edit_and_play_text_from_the_dectalk_speak_applet.htm -> 
+f 644 1397 doc/DECtalk/html/idh_status_speaking_1_ttsapi_h.htm -> 
+f 644 13971 doc/DECtalk/html/ebx_1388151752.gif -> 
+f 644 1399 doc/DECtalk/html/idh_sdk_2_tts_force_0x00000001_ttsapi_h_2.htm -> 
+f 644 1399 doc/DECtalk/html/idh_tts_force_0x00000001_ttsapi_h.htm -> 
+f 644 1399 doc/DECtalk/html/idh_tts_normal_0x00000000_ttsapi_h.htm -> 
+f 644 1401 doc/DECtalk/html/idh_log_text_0x00000001_ttsapi_h.htm -> 
+f 644 1403 doc/DECtalk/html/idh_sdk_2_tts_american_english_1_ttsapi_h.htm -> 
+f 644 1403 doc/DECtalk/html/idh_wave_out_device_id_2_ttsapi_h.htm -> 
+f 644 1405 doc/DECtalk/html/idh_sdk_2_typedef_dword_speaker_t_ttsapi_h.htm -> 
+f 644 1407 doc/DECtalk/html/idh_sdk_2_typedef_dword_language_t_ttsapi_h.htm -> 
+f 644 1407 doc/DECtalk/html/idh_typedef_dword_language_t_ttsapi_h.htm -> 
+f 644 1409 doc/DECtalk/html/idh_input_character_count_0_ttsapi_h.htm -> 
+f 644 1409 doc/DECtalk/html/idh_log_phonemes_0x00000002_ttsapi_h.htm -> 
+f 644 1411 doc/DECtalk/html/idh_log_syllables_0x00000010_ttsapi_h.htm -> 
+f 644 1413 doc/DECtalk/html/idh_own_audio_device_0x00000001_ttsapi_h.htm -> 
+f 644 14141 doc/DECtalk/html/idh_ref_2_developing_an_electronic_mail_reading_application.htm -> 
+f 644 1415 doc/DECtalk/html/idh_report_open_error_0x00000002_ttsapi_h.htm -> 
+f 644 1417 doc/DECtalk/html/idh_wave_format_1m16_0x00000004_mmsystem.htm -> 
+f 644 1419 doc/DECtalk/html/idh_wave_format_08m08_0x00001000_ttsapi_h.htm -> 
+f 644 1421 doc/DECtalk/html/idh_wave_format_1m08_0x00000001_mmsystem_h.htm -> 
+f 644 1427 doc/DECtalk/html/idh_do_not_use_audio_device_0x80000000_ttsapi_h.htm -> 
+f 644 1431 doc/DECtalk/html/ebx_-605218328.gif -> 
+f 644 1431 doc/DECtalk/html/idh_sdk_2_proper_name_pronunciation_0x00000001_ttsapi_h.htm -> 
+f 644 14420 doc/DECtalk/html/idh_sdk_3_changing_voice_quality.htm -> 
+f 644 14522 doc/DECtalk/html/idh_nt_apps_to_start_the_sample_applet_and_open_a_text_file.htm -> 
+f 644 14599 doc/DECtalk/html/idh_ref_1_pronounce_pron.htm -> 
+f 644 1471 doc/DECtalk/html/sdk_4.hh -> 
+f 644 14812 doc/DECtalk/html/idh_ref_1_error_error.htm -> 
+f 644 14847 doc/DECtalk/html/what_s_new_in_dectalk_software_v4_6.htm -> 
+f 644 14902 doc/DECtalk/html/ebx_743951634.gif -> 
+f 644 14943 doc/DECtalk/html/dectalk.ftp -> 
+f 644 15096 doc/DECtalk/html/idh_nt_apps_to_associate_a_macro_with_a_tool_bar_button.htm -> 
+f 644 15179 doc/DECtalk/html/idh_ref_1_skip_skip_xx.htm -> 
+f 644 1520 doc/DECtalk/html/ebx_963137719.gif -> 
+f 644 155 doc/DECtalk/html/bssctoc3.gif -> 
+f 644 15621 doc/DECtalk/html/idh_sdk_3_changing_pitch_and_intonation.htm -> 
+f 644 15659 doc/DECtalk/html/idh_ref_1_log_log.htm -> 
+f 644 1568 doc/DECtalk/html/idh_nt_apps_creating_a_word_macro.htm -> 
+f 644 15692 doc/DECtalk/html/idh_nt_apps_to_launch_and_configure_the_dectalk_software_text_to_speech_server.htm -> 
+f 644 15705 doc/DECtalk/html/bsscnbar.js -> 
+f 644 1576 doc/DECtalk/html/idh_nt_apps_building_a_user_dictionary.htm -> 
+f 644 15776 doc/DECtalk/html/idh_sdk_2_texttospeechgetstatus.htm -> 
+f 644 159 doc/DECtalk/html/bsscnav4.gif -> 
+f 644 159 doc/DECtalk/html/bsscnav5.gif -> 
+f 644 1592 doc/DECtalk/html/ref_2.hh -> 
+f 644 1595 doc/DECtalk/html/idh_nt_apps_components_of_the_user_dictionary_build_tool.htm -> 
+f 644 1602 doc/DECtalk/html/idh_nt_apps_arpabet.htm -> 
+f 644 161 doc/DECtalk/html/bsscnav7.gif -> 
+f 644 1611 doc/DECtalk/html/idh_nt_apps_associating_the_macro_with_atool_bar_button.htm -> 
+f 644 16119 doc/DECtalk/html/idh_ref_3_syntactic_symbols.htm -> 
+f 644 16176 doc/DECtalk/html/idh_ref_3_homograph_phonetics_i_l.htm -> 
+f 644 1618 doc/DECtalk/html/idh_nt_apps_using_the_dectalk_software_speak_applet.htm -> 
+f 644 162 doc/DECtalk/html/bsscnav8.gif -> 
+f 644 16215 doc/DECtalk/html/idh_nt_apps_to_save_and_compile_the_user_dictionary.htm -> 
+f 644 1622 doc/DECtalk/html/idh_nt_apps_starting_the_sample_applet_and_opening_a_text_file.htm -> 
+f 644 16220 doc/DECtalk/html/idh_ref_3_homograph_phonetics_a.htm -> 
+f 644 1627 doc/DECtalk/html/idh_nt_apps_changing_dectalk_software_voices.htm -> 
+f 644 1632 doc/DECtalk/html/idh_nt_apps_launching_and_configuring_the_dectalk_tts_server.htm -> 
+f 644 1640 doc/DECtalk/html/idh_nt_apps_speaking_text_with_the_dectalk_software_tts_server.htm -> 
+f 644 1641 README -> 
+f 644 16444 dic/dtalk_sp.dic -> 
+f 644 16444 dic/dtalk_sp_5.dic -> 
+f 644 1645 doc/DECtalk/html/idh_nt_apps_highlighting_text_as_it_is_spoken_illustrated.htm -> 
+f 644 16468 dic/dtalk_la.dic -> 
+f 644 16468 dic/dtalk_la_5.dic -> 
+f 644 16468 doc/DECtalk/html/idh_ref_1_say_say.htm -> 
+f 644 1649 doc/DECtalk/html/idh_nt_apps_saving_and_compiling_the_dictionary.htm -> 
+f 644 16596 doc/DECtalk/html/ebx_735850734.gif -> 
+f 644 1661 doc/DECtalk/html/idh_nt_apps_editing_a_text_file_and_changing_the_speaking_rate.htm -> 
+f 644 166274 doc/DECtalk/html/idxbody.htm -> 
+f 644 1664 doc/DECtalk/html/navpane1.htm -> 
+f 644 16654 doc/DECtalk/html/idh_sdk_3_changing_relative_gains_and_avoiding_overloads.htm -> 
+f 644 167071 doc/DECtalk/html/idxlist.htm -> 
+f 644 17058 doc/DECtalk/html/idh_ref_1_punctuation_punc.htm -> 
+f 644 1729 doc/DECtalk/html/dectalk.hh -> 
+f 644 17473 doc/DECtalk/html/idh_sdk_2_texttospeechreset.htm -> 
+f 644 17975 doc/DECtalk/html/idh_nt_apps_to_build_a_user_dictionary.htm -> 
+f 644 18057 doc/DECtalk/html/ebx_361438578.gif -> 
+f 644 18315645 doc/DECtalk/ps/dtk_install_guide.ps -> 
+f 644 18408 doc/DECtalk/html/idh_ref_2_text_tuning_example.htm -> 
+f 644 18538 doc/DECtalk/html/idh_sdk_2_texttospeechpause.htm -> 
+f 644 18751 doc/DECtalk/html/idh_ref_3_homograph_phonetics_s_w.htm -> 
+f 644 18904 doc/DECtalk/html/macro1_s.gif -> 
+f 644 18937 doc/DECtalk/html/idh_sdk_2_texttospeechaddbuffer.htm -> 
+f 644 189749 doc/DECtalk/html/ebx_533305026.gif -> 
+f 644 190 doc/DECtalk/html/bsscnav2.gif -> 
+f 644 190300 doc/DECtalk/html/dectalk.hhk -> 
+f 644 19088 doc/DECtalk/html/idh_sdk_2_texttospeechgetspeaker.htm -> 
+f 644 19143 doc/DECtalk/html/idh_nt_apps_to_create_a_word_macro_and_associate_it_with_a_file_or_template.htm -> 
+f 644 19388 doc/DECtalk/html/idh_ref_1_mode_mode.htm -> 
+f 644 197533 doc/DECtalk/html/ebx_-527019338.gif -> 
+f 644 19796 doc/DECtalk/html/ebx_-539620645.gif -> 
+f 644 198 doc/DECtalk/html/bssctab4.gif -> 
+f 644 19863 doc/DECtalk/html/ebx_508165749.gif -> 
+f 644 199 doc/DECtalk/html/bsscnav1.gif -> 
+f 644 20219 doc/DECtalk/html/idh_sdk_2_texttospeechsetspeaker.htm -> 
+f 644 20339 doc/DECtalk/html/idh_sdk_2_texttospeechspeak.htm -> 
+f 644 20364 doc/DECtalk/html/supported_sapi_version_5_features.htm -> 
+f 644 20482 doc/DECtalk/html/email_mode_example.htm -> 
+f 644 20535 doc/DECtalk/html/idh_ref_3_homograph_phonetics_m_p.htm -> 
+f 644 2081 doc/DECtalk/html/idh_nt_apps_help_options.htm -> 
+f 644 209 doc/DECtalk/html/bssctab3.gif -> 
+f 644 20964 doc/DECtalk/html/idh_sdk_2_texttospeechstartupex.htm -> 
+f 644 21065 src/DECtalk/dtsamples/dtmemory.c -> 
+f 644 2116 doc/DECtalk/html/idh_ref_1_europe_mode_example.htm -> 
+f 644 212 doc/DECtalk/html/bssctab6.gif -> 
+f 644 2120 doc/DECtalk/html/ref_1.hh -> 
+f 644 21212 include/dtk/l_all_ph.h -> 
+f 644 21307 doc/DECtalk/html/idh_ref_3_homograph_phonetics_r.htm -> 
+f 644 21493 doc/DECtalk/html/idh_nt_apps_overview_of_the_user_dictionary_build_tool.htm -> 
+f 644 215159 doc/DECtalk/html/ftsbody.htm -> 
+f 644 21637 doc/DECtalk/html/ebx_-1147457663.gif -> 
+f 644 2206 doc/DECtalk/html/ref_3.hh -> 
+f 644 22073 doc/DECtalk/html/idh_sdk_2_texttospeechopenwaveoutfile.htm -> 
+f 644 221 doc/DECtalk/html/bssctab5.gif -> 
+f 644 226 doc/DECtalk/html/_blank.htm -> 
+f 644 226 doc/DECtalk/html/bssctab2.gif -> 
+f 644 2281 doc/DECtalk/html/sdk_3.hh -> 
+f 644 22911 doc/DECtalk/html/idh_sdk_2_texttospeechopenlogfile.htm -> 
+f 644 23092 doc/DECtalk/html/registry_entry_information.htm -> 
+f 644 231 doc/DECtalk/html/bsscnav3.gif -> 
+f 644 2318 doc/DECtalk/html/idh_nt_apps_dictionary_options.htm -> 
+f 644 23483 doc/DECtalk/html/macro2_s.gif -> 
+f 644 237 doc/DECtalk/html/bssctab1.gif -> 
+f 644 2371 doc/DECtalk/html/parsing_email.htm -> 
+f 644 2382 doc/DECtalk/html/preprocessor_rules_for_parsing.htm -> 
+f 644 2383 doc/DECtalk/html/webhelp.res -> 
+f 644 2389 doc/DECtalk/html/parsing_punctuation.htm -> 
+f 644 24 src/DECtalk/dtsamples/user.tab -> 
+f 644 24020 doc/DECtalk/html/idh_ref_3_homograph_phonetics_d_g.htm -> 
+f 644 2425 src/DECtalk/dtsamples/noglass.txt -> 
+f 644 24519 doc/DECtalk/html/dectalk.ali -> 
+f 644 2476 doc/DECtalk/html/idh_nt_apps_falling_intonation.htm -> 
+f 644 2482 doc/DECtalk/html/idh_nt_apps_phonemicize.htm -> 
+f 644 24869 doc/DECtalk/html/idh_ref_3_homograph_phonetics_b_c.htm -> 
+f 644 249 src/DECtalk/dtsamples/startup.txt -> 
+f 644 2492 doc/DECtalk/html/idh_nt_apps_allophone.htm -> 
+f 644 2501 doc/DECtalk/html/idh_nt_apps_flush.htm -> 
+f 644 2504 doc/DECtalk/html/idh_nt_apps__tab_file.htm -> 
+f 644 25087 doc/DECtalk/html/idh_ref_1_phoneme_interpretation_phoneme.htm -> 
+f 644 2510 doc/DECtalk/html/idh_nt_apps_phonemic_mode.htm -> 
+f 644 2511 doc/DECtalk/html/idh_nt_apps_emphatic_stress.htm -> 
+f 644 2519 doc/DECtalk/html/idh_nt_apps__dic_file.htm -> 
+f 644 25278 doc/DECtalk/html/idh_sdk_2_dectalk_software_api_function_calls.htm -> 
+f 644 2536 doc/DECtalk/html/idh_nt_apps_phoneme_string.htm -> 
+f 644 2538 doc/DECtalk/html/idh_nt_apps_phoneme_arpabet_command.htm -> 
+f 644 2539 doc/DECtalk/html/idh_nt_apps_wave_file.htm -> 
+f 644 2544 doc/DECtalk/html/idh_nt_apps_applet.htm -> 
+f 644 2548 doc/DECtalk/html/idh_nt_apps_proper_name.htm -> 
+f 644 2549 doc/DECtalk/html/idh_nt_apps_log_file.htm -> 
+f 644 2553 doc/DECtalk/html/idh_nt_apps_user_dictionary_builder.htm -> 
+f 644 2562 doc/DECtalk/html/general_parsing_rules.htm -> 
+f 644 2562 doc/DECtalk/html/idh_nt_apps_silence_phonemes.htm -> 
+f 644 25684 doc/DECtalk/html/idh_sdk_2_texttospeechopeninmemory.htm -> 
+f 644 2572 doc/DECtalk/html/idh_nt_apps_word_mode.htm -> 
+f 644 2575 doc/DECtalk/html/idh_nt_apps_index_marker_flag.htm -> 
+f 644 2599 doc/DECtalk/html/idh_nt_apps_pitch_control_symbols.htm -> 
+f 644 260 dic/dtalk_gr.dic -> 
+f 644 260 dic/dtalk_gr_5.dic -> 
+f 644 260 doc/DECtalk/html/bsscnav6.gif -> 
+f 644 2602 doc/DECtalk/html/idh_nt_apps_secondary_stress.htm -> 
+f 644 2604 doc/DECtalk/html/idh_nt_apps_comma_pause.htm -> 
+f 644 2604 doc/DECtalk/html/idh_nt_apps_period_pause.htm -> 
+f 644 2610 doc/DECtalk/html/idh_nt_apps_user_dictionary.htm -> 
+f 644 2613 doc/DECtalk/html/idh_nt_apps_phrase_boundary.htm -> 
+f 644 2617 doc/DECtalk/html/idh_ref_1_name_mode_example.htm -> 
+f 644 2618 doc/DECtalk/html/idh_nt_apps_voice_control_command.htm -> 
+f 644 2623 doc/DECtalk/html/idh_nt_apps_primary_stress.htm -> 
+f 644 2633 doc/DECtalk/html/idh_nt_apps_heuristic.htm -> 
+f 644 2638 doc/DECtalk/html/idh_nt_apps_wave_form_output.htm -> 
+f 644 2647 doc/DECtalk/html/idh_nt_apps_clause_terminator.htm -> 
+f 644 2657 doc/DECtalk/html/idh_nt_apps_word_boundary.htm -> 
+f 644 2676 doc/DECtalk/html/idh_nt_apps_phoneme.htm -> 
+f 644 2680 doc/DECtalk/html/idh_nt_apps_clause_mode.htm -> 
+f 644 2683 doc/DECtalk/html/idh_nt_apps_morpheme.htm -> 
+f 644 2685 doc/DECtalk/html/idh_nt_apps_clause_boundary.htm -> 
+f 644 2724 doc/DECtalk/html/idh_nt_apps_letter_mode.htm -> 
+f 644 2765 doc/DECtalk/html/static_engine.htm -> 
+f 644 2792 bitmaps/dtk.xpm -> 
+f 644 28315 doc/DECtalk/html/phoneme_notifications.htm -> 
+f 644 2852 doc/DECtalk/html/idh_nt_apps_syntactic_function_words.htm -> 
+f 644 2891 doc/DECtalk/html/dynamic_engine.htm -> 
+f 644 2896 doc/DECtalk/html/general_user.htm -> 
+f 644 29142 doc/DECtalk/html/idh_sdk_2_texttospeechstartup_windows_only.htm -> 
+f 644 2928 doc/DECtalk/html/dectalk_software_dictionaries.htm -> 
+f 644 2928 doc/DECtalk/html/nsdnsfix.jar -> 
+f 644 2978 doc/DECtalk/html/startup_function.htm -> 
+f 644 3002 doc/DECtalk/html/idh_sdk_3_assertiveness_as.htm -> 
+f 644 3026 doc/DECtalk/html/using_the_components.htm -> 
+f 644 3033 doc/DECtalk/html/text_to_speech_dde_server.htm -> 
+f 644 3051 doc/DECtalk/html/idh_nt_apps_homograph.htm -> 
+f 644 3097 doc/DECtalk/html/idh_sdk_1_clause_based_synthesis.htm -> 
+f 644 31259 doc/DECtalk/html/ebx_-1868370115.gif -> 
+f 644 3139 doc/DECtalk/html/rules.htm -> 
+f 644 3156 doc/DECtalk/html/idh_nt_apps_intonation.htm -> 
+f 644 3158 doc/DECtalk/html/idh_sdk_1_blocking_synchronization_function_1.htm -> 
+f 644 3169 doc/DECtalk/html/ebx_-637825421.gif -> 
+f 644 31702 doc/DECtalk/html/supported_sapi_functions.htm -> 
+f 644 31954 doc/DECtalk/html/idh_sdk_2_texttospeechstartup_unix_only.htm -> 
+f 644 3197 doc/DECtalk/html/wave_file_mode.htm -> 
+f 644 3209 doc/DECtalk/html/log_file_mode.htm -> 
+f 644 3214 doc/DECtalk/html/idh_nt_apps_phonemic_transcription.htm -> 
+f 644 3224 doc/DECtalk/html/idh_sdk_1_blocking_synchronization_function.htm -> 
+f 644 3242 doc/DECtalk/html/idh_sdk_3_lax_breathiness_lx.htm -> 
+f 644 32684 dic/dtalk_fr.dic -> 
+f 644 32684 dic/dtalk_fr_5.dic -> 
+f 644 3291 doc/DECtalk/html/punctuation.htm -> 
+f 644 3306 doc/DECtalk/html/application_programmer.htm -> 
+f 644 33131 doc/DECtalk/html/idh_sdk_3_design_voice_dv.htm -> 
+f 644 3322 doc/DECtalk/html/english_uk.htm -> 
+f 644 336432 dic/dtalk_us_s_1997.dic -> 
+f 644 33670 include/dtk/ttsapi.h -> 
+f 644 336716 dic/dtalk_us_s_1998.dic -> 
+f 644 34281 doc/DECtalk/html/idh_ref_1_voice_selection_voice.htm -> 
+f 644 3435 doc/DECtalk/html/navframe.htm -> 
+f 644 3451 doc/DECtalk/html/idh_sdk_3_nopen_fixed_nf.htm -> 
+f 644 3471 doc/DECtalk/html/idh_sdk_1_tts_buffer_t_structure_ttsapi_h.htm -> 
+f 644 3491 doc/DECtalk/html/idh_sdk_3_quickness_qu.htm -> 
+f 644 3544 doc/DECtalk/html/speech_to_memory_mode.htm -> 
+f 644 355108 dic/dtalk_us_5.dic -> 
+f 644 3573 doc/DECtalk/html/idh_sdk_3_stress_rise_sr.htm -> 
+f 644 357380 dic/dtalk_us_2002.dic -> 
+f 644 3636 doc/DECtalk/html/idh_sdk_1_log_file_mode.htm -> 
+f 644 3639 doc/DECtalk/html/idh_sdk_2_the_langauge_params_t_structure_ttsapi_h.htm -> 
+f 644 3646 doc/DECtalk/html/idh_ref_3_dectalk_software_singing_happy_birthday.htm -> 
+f 644 37376 doc/DECtalk/html/idh_ref_1_dectalk_software_in_line_commands_overview.htm -> 
+f 644 3768 doc/DECtalk/html/idh_sdk_1_wave_file_mode.htm -> 
+f 644 3804 doc/DECtalk/html/idh_sdk_3_laryngealization_la.htm -> 
+f 644 3834 doc/DECtalk/html/idh_sdk_3_smoothness_sm.htm -> 
+f 644 3850 doc/DECtalk/html/idh_sdk_3_breathiness_br.htm -> 
+f 644 3905 doc/DECtalk/html/idh_sdk_1_tts_index_t_structure_ttsapi_h.htm -> 
+f 644 39393 src/DECtalk/dtsamples/say.c -> 
+f 644 3964333 doc/DECtalk/ps/dtk_reference_guide.ps -> 
+f 644 397236 dic/dtalk_us_2001.dic -> 
+f 644 397240 dic/dtalk_us_1997.dic -> 
+f 644 397720 dic/dtalk_us.dic -> 
+f 644 3988 include/dtk/l_com_ph.h -> 
+f 644 4011 doc/DECtalk/html/idh_ref_2_changing_rhythm_stress_and_intonation.htm -> 
+f 644 4021 doc/DECtalk/html/sdk_1.hh -> 
+f 644 4028 include/dtk/l_us_ph.h -> 
+f 644 4050 doc/DECtalk/html/idh_sdk_3_sound_source_gains_gv_gh_gf_and_gn.htm -> 
+f 644 4081 doc/DECtalk/html/startup_state.htm -> 
+f 644 4084 doc/DECtalk/html/dectalk_software_apis.htm -> 
+f 644 410 src/DECtalk/dtsamples/birthday.txt -> 
+f 644 4104 doc/DECtalk/html/idh_sdk_3_richness_ri.htm -> 
+f 644 4189 doc/DECtalk/html/spanish_castilian_and_latin_american.htm -> 
+f 644 4231 doc/DECtalk/html/sdk_2.hh -> 
+f 644 4232 doc/DECtalk/html/idh_sdk_1_important_text_queuing_information.htm -> 
+f 644 4261 doc/DECtalk/html/idh_sdk_1_loading_and_unloading_a_user_dictionary_1.htm -> 
+f 644 43688 doc/DECtalk/html/dectalk_csh.htm -> 
+f 644 444110 doc/DECtalk/pdf/dtk_reference_guide.pdf -> 
+f 644 4496 doc/DECtalk/html/idh_sdk_1_speech_to_memory_mode.htm -> 
+f 644 450980 dic/dtalk_uk_5.dic -> 
+f 644 4549 doc/DECtalk/html/idh_sdk_3_save_save.htm -> 
+f 644 4597 doc/DECtalk/html/german.htm -> 
+f 644 4666 doc/DECtalk/html/idh_ref_2_index_marks_for_speech_status.htm -> 
+f 644 4680 include/dtk/l_uk_ph.h -> 
+f 644 471920 doc/DECtalk/pdf/dtk_install_guide.pdf -> 
+f 644 4779 bitmaps/kid16b.xpm -> 
+f 644 4795 bitmaps/kid16a.xpm -> 
+f 644 4795 bitmaps/pau16b.xpm -> 
+f 644 4795 bitmaps/rit16b.xpm -> 
+f 644 4799 doc/DECtalk/html/default_locations_for_dictionaries.htm -> 
+f 644 4811 bitmaps/bet16b.xpm -> 
+f 644 4811 bitmaps/den16a.xpm -> 
+f 644 4811 bitmaps/fra16a.xpm -> 
+f 644 4811 bitmaps/fra16b.xpm -> 
+f 644 4811 bitmaps/har16b.xpm -> 
+f 644 4811 bitmaps/pau16a.xpm -> 
+f 644 4811 bitmaps/rit16a.xpm -> 
+f 644 4811 bitmaps/urs16a.xpm -> 
+f 644 4811 bitmaps/urs16b.xpm -> 
+f 644 4811 bitmaps/wen16b.xpm -> 
+f 644 48236 doc/DECtalk/html/ehlpdht1.js -> 
+f 644 4825 doc/DECtalk/html/idh_sdk_1_audio_output_control_functions.htm -> 
+f 644 4827 bitmaps/bet16a.xpm -> 
+f 644 4827 bitmaps/har16a.xpm -> 
+f 644 4827 bitmaps/wen16a.xpm -> 
+f 644 4849 doc/DECtalk/html/programming_aids.htm -> 
+f 644 4857 doc/DECtalk/html/idh_ref_3_tone_table.htm -> 
+f 644 486 DECtalk.conf -> 
+f 644 4906 doc/DECtalk/html/idh_ref_2_example_of_the_use_of_pauses_in_numerical_strings.htm -> 
+f 644 4928 doc/DECtalk/html/idh_sdk_3_baseline_fall_bf.htm -> 
+f 644 50088 doc/DECtalk/html/phonemic_symbols_french.htm -> 
+f 644 5024744 doc/DECtalk/ps/dtk_prog_guide.ps -> 
+f 644 502992 dic/dtalk_uk.dic -> 
+f 644 507981 doc/DECtalk/pdf/dtk_prog_guide.pdf -> 
+f 644 5085 doc/DECtalk/html/idh_sdk_1_tts_phoneme_t_structure_ttsapi_h.htm -> 
+f 644 51489 doc/DECtalk/html/phonemic_symbols_castilian_spanish.htm -> 
+f 644 51489 doc/DECtalk/html/phonemic_symbols_latin_american_spanish.htm -> 
+f 644 5149 doc/DECtalk/html/components.htm -> 
+f 644 5149 doc/DECtalk/html/idh_sdk_1_audio_output_control_functions_1.htm -> 
+f 644 5266 doc/DECtalk/html/idh_sdk_1_dictionary_functions_unix_only.htm -> 
+f 644 5291 doc/DECtalk/html/idh_sdk_1_dictionary_functions_windows_only.htm -> 
+f 644 5342 doc/DECtalk/html/idh_sdk_3_loudness_g5.htm -> 
+f 644 5371 doc/DECtalk/html/tts_caps_t_structure_ttsapi_h.htm -> 
+f 644 5432 doc/DECtalk/html/idh_sdk_3_sex_sx.htm -> 
+f 644 5435 doc/DECtalk/html/idh_sdk_3_head_size_hs.htm -> 
+f 644 5438 doc/DECtalk/html/email.htm -> 
+f 644 5460 doc/DECtalk/html/idh_nt_apps_to_save_text_as_a_wave_file_from_the_dectalk_speak_application.htm -> 
+f 644 5561 doc/DECtalk/html/closing_a_language.htm -> 
+f 644 5609 doc/DECtalk/html/introduction_to_dectalk_software.htm -> 
+f 644 56145 doc/DECtalk/html/tocdhtml.htm -> 
+f 644 56424 doc/DECtalk/html/dectalk.hhc -> 
+f 644 5646 doc/DECtalk/html/starting_a_language.htm -> 
+f 644 5687 doc/DECtalk/html/selecting_a_language.htm -> 
+f 644 5752 doc/DECtalk/html/idh_nt_apps_running_dectalk_software_from_other_applications.htm -> 
+f 644 58700 doc/DECtalk/html/webhelp4.js -> 
+f 644 5935 doc/DECtalk/html/idh_sdk_1_index_mark_messages.htm -> 
+f 644 5941 doc/DECtalk/html/idh_ref_3_dectalk_software_reference_tables.htm -> 
+f 644 5967 doc/DECtalk/html/idh_sdk_1_buffer_messages.htm -> 
+f 644 60658 doc/DECtalk/html/webhelp0.cab -> 
+f 644 60895 doc/DECtalk/html/toclist.htm -> 
+f 644 6221 doc/DECtalk/html/idh_nt_apps_output_options.htm -> 
+f 644 6258 doc/DECtalk/html/idh_sdk_3_higher_formants_f4_f5_b4_and_b5.htm -> 
+f 644 6284 doc/DECtalk/html/idh_sdk_1_callback_routines_and_window_procedures.htm -> 
+f 644 6292 doc/DECtalk/html/idh_sdk_3_hat_rise_hr.htm -> 
+f 644 6326 doc/DECtalk/html/nt_apps.hh -> 
+f 644 6448 doc/DECtalk/html/features_and_functions.htm -> 
+f 644 6462 doc/DECtalk/html/interpreting_punctuation_marks_as_words.htm -> 
+f 644 6491 doc/DECtalk/html/idh_nt_apps_to_highlight_text_as_it_is_spoken.htm -> 
+f 644 6586 doc/DECtalk/html/texttospeechgetfeatures.htm -> 
+f 644 6611 doc/DECtalk/html/idh_nt_apps_using_the_dectalk_software_speak_applet1.htm -> 
+f 644 6710 doc/DECtalk/html/navpane2.htm -> 
+f 644 6768 doc/DECtalk/html/dectalk.htm -> 
+f 644 6768 doc/DECtalk/html/index.html -> 
+f 644 68159 doc/DECtalk/html/webhelp.cab -> 
+f 644 6819 doc/DECtalk/html/idh_sdk_3_cascade_vocal_tract_gains_g1_g2_g3_and_g4.htm -> 
+f 644 6862 doc/DECtalk/html/ebx_-2061456749.gif -> 
+f 644 6970 doc/DECtalk/html/idh_sdk_1_loading_of_the_user_dictionary.htm -> 
+f 644 70547 doc/DECtalk/html/ehlpdht2.js -> 
+f 644 7067 doc/DECtalk/html/ftsform.htm -> 
+f 644 7126 doc/DECtalk/html/idh_ref_2_adjusting_period_and_comma_pause_durations.htm -> 
+f 644 7153 doc/DECtalk/html/idh_sdk_1_shareable_libraries.htm -> 
+f 644 71843 doc/DECtalk/html/bsscdhtm.js -> 
+f 644 71945 doc/DECtalk/html/phonemic_symbols_german.htm -> 
+f 644 7214 doc/DECtalk/html/idxform.htm -> 
+f 644 7222 doc/DECtalk/html/idh_sdk_3_saving_changes_to_val_s_voice.htm -> 
+f 644 7230 doc/DECtalk/html/idh_nt_apps_changing_voice_selections.htm -> 
+f 644 7235 doc/DECtalk/html/idh_sdk_3_average_pitch_ap_and_pitch_range_pr.htm -> 
+f 644 7267 doc/DECtalk/html/idh_main_index.htm -> 
+f 644 7348 doc/DECtalk/html/idh_sdk_1_loading_of_the_main_pronunciation_dictionary.htm -> 
+f 644 7393 doc/DECtalk/html/dial_tones_dial.htm -> 
+f 644 75381 doc/DECtalk/html/idh_ref_3_tone_table_2.htm -> 
+f 644 7561 doc/DECtalk/html/idh_sdk_2_tts_caps_t_structure_ttsapi_h.htm -> 
+f 644 7573 include/dtk/l_fr_ph.h -> 
+f 644 7578 doc/DECtalk/html/idh_sdk_1_controlling_queuing_with_flags.htm -> 
+f 644 7589 doc/DECtalk/html/idh_ref_3_stress_and_syntactic_symbols.htm -> 
+f 644 7703 doc/DECtalk/html/what_s_new_in_dectalk_v4_61.htm -> 
+f 644 7716 doc/DECtalk/html/loading_the_main_dictionary_static_engine.htm -> 
+f 644 7716 doc/DECtalk/html/texttospeechtyping.htm -> 
+f 644 77510 src/DECtalk/gspeak/gspeak.c -> 
+f 644 778 doc/DECtalk/html/idxdhtml.htm -> 
+f 644 7786 doc/DECtalk/html/idh_ref_2_using_in_line_commands.htm -> 
+f 644 77946 doc/DECtalk/html/phonemic_symbols_u_k_english.htm -> 
+f 644 7900 doc/DECtalk/html/idh_nt_apps_using_the_say_command_line_applet.htm -> 
+f 644 791 bitmaps/kid16b.gif -> 
+f 644 7917 doc/DECtalk/html/how_to_do_multi_language_programming.htm -> 
+f 644 7928 doc/DECtalk/html/idh_sdk_1_initialization_of_memory_buffers.htm -> 
+f 644 793 doc/DECtalk/html/ftsdhtml.htm -> 
+f 644 8044 doc/DECtalk/html/idh_ref_2_avoiding_common_errors.htm -> 
+f 644 8050 doc/DECtalk/html/idh_nt_apps_dectalk_voices_and_their_associated_values.htm -> 
+f 644 8064 src/DECtalk/dtsamples/aclock.c -> 
+f 644 820 bitmaps/kid16a.gif -> 
+f 644 8220 doc/DECtalk/html/sample_program_applet.htm -> 
+f 644 8222 doc/DECtalk/html/idh_nt_apps_about_the_sample_applet.htm -> 
+f 644 8270 doc/DECtalk/html/idh_sdk_1_introduction_to_the_dectalk_software_api.htm -> 
+f 644 83059 doc/DECtalk/html/idh_sdk_3_definitions_of_dectalk_software_voices.htm -> 
+f 644 8319 doc/DECtalk/html/idh_sdk_2_texttospeechversion.htm -> 
+f 644 8325 doc/DECtalk/html/idh_ref_1_volume_volume.htm -> 
+f 644 836164 doc/DECtalk/html/ebx_337801554.gif -> 
+f 644 8469 doc/DECtalk/html/idh_nt_apps_using_the_program_applets_to_learn_dectalk_software_basics.htm -> 
+f 644 8484 doc/DECtalk/html/idh_ref_1_monaural_volume_control.htm -> 
+f 644 85 src/DECtalk/dtsamples/demo.txt -> 
+f 644 8522 doc/DECtalk/html/idh_sdk_1_the_core_api_functions.htm -> 
+f 644 861 doc/DECtalk/html/tabframe.htm -> 
+f 644 8634 doc/DECtalk/html/speak_program_applet.htm -> 
+f 644 8636 doc/DECtalk/html/idh_ref_3_phonemic_syntax_for_singing.htm -> 
+f 644 8657 doc/DECtalk/html/idh_ref_3_homographs.htm -> 
+f 644 8676 doc/DECtalk/html/idh_ref_2_speaking_rate.htm -> 
+f 644 88226 doc/DECtalk/html/phoneme_identifiers_and_phonemic_symbols_english.htm -> 
+f 644 8966 doc/DECtalk/html/voice_control_commands.htm -> 
+f 644 9022 doc/DECtalk/html/texttospeechselectlang.htm -> 
+f 644 9047 doc/DECtalk/html/idh_sdk_1_core_api_functions_1.htm -> 
+f 644 9081 doc/DECtalk/html/idh_nt_apps_to_change_the_speaking_rate_from_the_dectalk_speak_applet.htm -> 
+f 644 9085 doc/DECtalk/html/idh_nt_apps_to_play_selected_text_from_the_sample_applet.htm -> 
+f 644 9121 doc/DECtalk/html/idh_sdk_1_callback_routine_example.htm -> 
+f 644 918 bitmaps/wen16b.gif -> 
+f 644 9204 doc/DECtalk/html/texttospeechcloselang.htm -> 
+f 644 9209 doc/DECtalk/html/idh_nt_apps_to_speak_a_file_using_drag_and_drop.htm -> 
+f 644 9256 doc/DECtalk/html/idh_ref_3_stress_symbols.htm -> 
+f 644 9258 doc/DECtalk/html/idh_sdk_1_sample_programs_unix_only.htm -> 
+f 644 9305 doc/DECtalk/html/idh_sdk_1_sample_programs_windows_only.htm -> 
+f 644 932 bitmaps/rit16b.gif -> 
+f 644 9354 doc/DECtalk/html/idh_nt_apps_to_change_voices_using_voice_control_commands.htm -> 
+f 644 9396 doc/DECtalk/html/texttospeechstartlang.htm -> 
+f 644 9408 doc/DECtalk/html/idh_sdk_2_texttospeechresume.htm -> 
+f 644 9417 doc/DECtalk/html/idh_sdk_1_building_sample_programs.htm -> 
+f 644 944 bitmaps/wen16a.gif -> 
+f 644 945 doc/DECtalk/html/bssctoc1.gif -> 
+f 644 947 doc/DECtalk/html/bssctoc4.gif -> 
+f 644 9477 doc/DECtalk/html/idh_sdk_1_creating_a_user_dictionary_2.htm -> 
+f 644 9506 doc/DECtalk/html/idh_sdk_1_creating_a_user_dictionary.htm -> 
+f 644 95385 doc/DECtalk/html/webhelp.jar -> 
+f 644 957 bitmaps/rit16a.gif -> 
+f 644 959 doc/DECtalk/html/bssctoc2.gif -> 
+f 644 9696 doc/DECtalk/html/ebx_1056557567.gif -> 
+f 644 9713 doc/DECtalk/html/idh_nt_apps_input_options.htm -> 
+f 644 9732 doc/DECtalk/html/idh_nt_apps_inserting_voice_control_commands_syntax_rules.htm -> 
+f 644 9804 doc/DECtalk/html/idh_sdk_2_texttospeechsync.htm -> 
+f 644 983 bitmaps/den16b.gif -> 
+f 644 9835 doc/DECtalk/html/idh_sdk_2_texttospeechgetcaps.htm -> 
+f 644 988 bitmaps/bet16b.gif -> 
+f 644 9932 doc/DECtalk/html/idh_sdk_1_loading_the_user_dictionary.htm -> 
+f 644 9948 doc/DECtalk/html/idh_sdk_2_texttospeechclosewaveoutfile.htm -> 
+f 755 1758632 tools/say_demo_sp -> 
+f 755 1758664 tools/say_demo_la -> 
+f 755 1802616 tools/say_demo_fr -> 
+f 755 1860704 tools/say_demo_uk -> 
+f 755 1874072 tools/say_demo_us -> 
+f 755 1928352 lib/libtts_sp.so -> 
+f 755 1928384 lib/libtts_la.so -> 
+f 755 1972296 lib/libtts_fr.so -> 
+f 755 2014312 lib/libtts_uk.so -> 
+f 755 2031504 lib/libtts_us.so -> 
+f 755 21920 aclock -> 
+f 755 2234920 tools/say_demo_gr -> 
+f 755 2437928 lib/libtts_gr.so -> 
+f 755 25688 dtmemory -> 
+f 755 34776 tools/dump_vdf -> 
+f 755 41064 tools/udic_fr -> 
+f 755 41064 tools/udic_la -> 
+f 755 41064 tools/udic_sp -> 
+f 755 41096 tools/udic_gr -> 
+f 755 41096 tools/udic_uk -> 
+f 755 41096 tools/udic_us -> 
+f 755 43208 tools/mfg_load -> 
+f 755 46136 tools/dic_fr -> 
+f 755 46136 tools/dic_la -> 
+f 755 46136 tools/dic_sp -> 
+f 755 46168 tools/dic_gr -> 
+f 755 46168 tools/dic_uk -> 
+f 755 46176 tools/dic_us -> 
+f 755 59536 say -> 
+f 755 73472 tools/tunecheck_fr -> 
+f 755 73472 tools/tunecheck_gr -> 
+f 755 73472 tools/tunecheck_la -> 
+f 755 73472 tools/tunecheck_sp -> 
+f 755 73472 tools/tunecheck_uk -> 
+f 755 73472 tools/tunecheck_us -> 
+f 755 82712 lib/libtts.so -> 
+l 777 11 usr/bin/say -> ../dist/say
+l 777 14 usr/bin/aclock -> ../dist/aclock
+l 777 14 usr/bin/gspeak -> ../dist/gspeak
+l 777 14 usr/bin/windic -> ../dist/windic
+l 777 16 usr/bin/dtmemory -> ../dist/dtmemory
+l 777 20 usr/bin/dic_fr -> ../dist/tools/dic_fr
+l 777 20 usr/bin/dic_gr -> ../dist/tools/dic_gr
+l 777 20 usr/bin/dic_la -> ../dist/tools/dic_la
+l 777 20 usr/bin/dic_sp -> ../dist/tools/dic_sp
+l 777 20 usr/bin/dic_uk -> ../dist/tools/dic_uk
+l 777 20 usr/bin/dic_us -> ../dist/tools/dic_us
+l 777 21 usr/bin/udic_fr -> ../dist/tools/udic_fr
+l 777 21 usr/bin/udic_gr -> ../dist/tools/udic_gr
+l 777 21 usr/bin/udic_la -> ../dist/tools/udic_la
+l 777 21 usr/bin/udic_sp -> ../dist/tools/udic_sp
+l 777 21 usr/bin/udic_uk -> ../dist/tools/udic_uk
+l 777 21 usr/bin/udic_us -> ../dist/tools/udic_us
+l 777 22 usr/bin/dump_vdf -> ../dist/tools/dump_vdf
+l 777 22 usr/bin/mfg_load -> ../dist/tools/mfg_load
+l 777 25 usr/bin/say_demo_fr -> ../dist/tools/say_demo_fr
+l 777 25 usr/bin/say_demo_gr -> ../dist/tools/say_demo_gr
+l 777 25 usr/bin/say_demo_la -> ../dist/tools/say_demo_la
+l 777 25 usr/bin/say_demo_sp -> ../dist/tools/say_demo_sp
+l 777 25 usr/bin/say_demo_uk -> ../dist/tools/say_demo_uk
+l 777 25 usr/bin/say_demo_us -> ../dist/tools/say_demo_us
+l 777 26 usr/bin/tunecheck_fr -> ../dist/tools/tunecheck_fr
+l 777 26 usr/bin/tunecheck_gr -> ../dist/tools/tunecheck_gr
+l 777 26 usr/bin/tunecheck_la -> ../dist/tools/tunecheck_la
+l 777 26 usr/bin/tunecheck_sp -> ../dist/tools/tunecheck_sp
+l 777 26 usr/bin/tunecheck_uk -> ../dist/tools/tunecheck_uk
+l 777 26 usr/bin/tunecheck_us -> ../dist/tools/tunecheck_us
+ce360c668166fb029120596c5912e0d687b12c561e089020171bb39b92850d63  DECtalk.conf
+5ca7e86bac9e78edd6d989894ed30eb878ea1c4bf99372304a5256d4b1e2a287  README
+b94b9e5e9745b253eba9b5443a4c0dbce0402d33f5774eda9801ab5ad5d3e24d  aclock
+5d63c6276e90eb0836e1b247179b31ce21d5e554f9d7d551cfda5bb6c99ced36  bitmaps/bet16a.gif
+a74dc2e41fcad9c02d4cafd6267fae070225338cac3cd169523d8148852c9d33  bitmaps/bet16a.xpm
+a38034cb842362d9a1ef44d630e97d011db31fbbb179fa548bd2f8f3932d298a  bitmaps/bet16b.gif
+16f068ba1b9bea464bd9f7b76a95ce271e94bb373de61e265da76484d36040da  bitmaps/bet16b.xpm
+3bcb5f59584384142f5c8ab562350a8d72fb895d5d73575579d2e04e745b43cc  bitmaps/den16a.gif
+e06c44d8abf614a5625f55f9bf1c0acc078e8b886ef7feb0195fa4b66574feb1  bitmaps/den16a.xpm
+ccb8f601d01e4c3dff273f2787304d59b3b855faac668274e7cc8fac17e4f6f5  bitmaps/den16b.gif
+8a1da56e0b9d8230e14647dd1227a0a962955d3a60e4f5ddb3562d314dd3bf08  bitmaps/dtk.gif
+ab29ed9ee9dee0633e58213f0fd7df42549c4b7bc17171292f9d37b8434ef420  bitmaps/dtk.xpm
+3213407967e5c81695b32dcaa11f0b05ae0b2dd8d9664ff8a6053705fbc919e9  bitmaps/fra16a.gif
+5152a7ec9367e79eec35bc345eb396ab2686184da1dbc8006979633578aee303  bitmaps/fra16a.xpm
+53605f4a613f62481485e4f8758105ca1f28d4ba2f336434297ca23b5b4617da  bitmaps/fra16b.gif
+eb661b8c463271b94d6612ccf78cba0055ece849233ca6b1c8caa1e5f57df295  bitmaps/fra16b.xpm
+d714d6762ac790898f3f67e7e325720f39054e2d22e8fa6be96b94258954f8cc  bitmaps/har16a.gif
+48a6a4595868b07c9a381064eac2f5cc4211fde51f535e7c176bd0c154f04b3e  bitmaps/har16a.xpm
+3a25b1c3ee91cf94fb4a18f528d16b11ee7ff148395491e87dc1bef81467d244  bitmaps/har16b.gif
+520bd2e5a35bdd473caf9b7035e5ed4ac6965ad0ff056830a7602b703ded65d8  bitmaps/har16b.xpm
+9adcb41be89181bb30e5756f8483c1815f1ac4efbcce31e506701d1355089be6  bitmaps/kid16a.gif
+99d92385d79d6fa6b513b76fd309d8863362992ed02e7adc53231110b97cfe50  bitmaps/kid16a.xpm
+e84704033b32c466e0cc5511ba0385a53b9fb35efa0b70d605ea1546dad83dea  bitmaps/kid16b.gif
+6045e45c27b237747fd7822c11b9f0271a00b0e5b841f3c98ac1d82143b23217  bitmaps/kid16b.xpm
+693e570f45fd56c8c1abefa39fa7ea545dfbc6d1780720abbf6680b75f0959d9  bitmaps/pau16a.gif
+989fe69299d23e927fa0576e55fe5e5bdc48dbfd5727b39b6b48c3057e8ab389  bitmaps/pau16a.xpm
+01f233a3c82761015883b17669543f399ebd5e9bddbc6adbf68ec5458f010863  bitmaps/pau16b.gif
+88f5dd5c3f34b36c4fd4011684c08f5273057ab55007708cc441b49fbb41003f  bitmaps/pau16b.xpm
+9e50385ff6fe8912ef1ebebcab80da25baebef276ba78fb77d55772ccb088413  bitmaps/rit16a.gif
+8f748bbfd094353b749fda3c1ae2be5bf68574d718cb48715705faadd2100e00  bitmaps/rit16a.xpm
+96f57e4e7f138f6a3186284dba94d33d7bc9caa5bfe688888329821e78c27df7  bitmaps/rit16b.gif
+12859ba0ff6899d1377c68731061b91cdbb85a5b8e7ef7f5832df5136a951835  bitmaps/rit16b.xpm
+b66599440c371c9e98b634cb9e2d9e494f08465a877e0019548b0747f3856797  bitmaps/urs16a.gif
+4ec8c8ed5dd5636eb96f24bd4b9a802d386a9c2d99fb2accf2a062b50db5933e  bitmaps/urs16a.xpm
+7acb9e0365bdc515cdee31ac00d4865b5395cf6dbfe1d4837398a24ae7b71a4a  bitmaps/urs16b.gif
+f36cb0f43068300006d213360f0545b78218b2bde68eb9719a9d3700e4ea1b1d  bitmaps/urs16b.xpm
+1fa0f6e512ad2cf6ff198a4b9fa4315ebbd1ba37e1da4b6b8f51fc08d0335404  bitmaps/wen16a.gif
+be50fef4801468d79bde75962b1f63df6738ddc00e305044ad151a7cd3cfb8e9  bitmaps/wen16a.xpm
+d9911c46024c8fd4f8edc57a01945a4f7fa4e8c218f154c54294e70b9469ef58  bitmaps/wen16b.gif
+7b28e0e5b0134f1a1ec799a71bd1f5630fb00bf6dfc67aab5f4b091a7f58f5e6  bitmaps/wen16b.xpm
+8d78f20cb4e4e3e36619a70e446254971f6330452bcd115fa007a0fcdafe7756  dic/dtalk_fr.dic
+8d78f20cb4e4e3e36619a70e446254971f6330452bcd115fa007a0fcdafe7756  dic/dtalk_fr_5.dic
+c8f7532d67b1c195d24f7b984c3eb76b284e19b0f9aa8eed9dfd7a657e9acca5  dic/dtalk_gr.dic
+c8f7532d67b1c195d24f7b984c3eb76b284e19b0f9aa8eed9dfd7a657e9acca5  dic/dtalk_gr_5.dic
+fa8efd71c3786f9c28cb3038e18709f835172056d131422a7a31da9a63287cf5  dic/dtalk_la.dic
+fa8efd71c3786f9c28cb3038e18709f835172056d131422a7a31da9a63287cf5  dic/dtalk_la_5.dic
+1dd5b0669848bad42ed0a4479f7363bd7aadc0d4ff1ea3c6f6316273627eec9d  dic/dtalk_sp.dic
+1dd5b0669848bad42ed0a4479f7363bd7aadc0d4ff1ea3c6f6316273627eec9d  dic/dtalk_sp_5.dic
+2ef895ca65cc14063f69d81272f5c4e187baa01db8515695b23b5ec0d5f30912  dic/dtalk_uk.dic
+03d7872919dca89a3710191140375691b0ea0c0827af8a87abbece530975c336  dic/dtalk_uk_5.dic
+3aab048d867585185bbff239181f46342403a1d151942d2d544a42e5b621373c  dic/dtalk_us.dic
+4ad5be817c22b0332c0744b8cb9ed6f40625283b5080cfdfc0326e98233b1a03  dic/dtalk_us_1997.dic
+db78ec5465accf70940c5f8b0ac4fc626f1859c760ced32c9797e623b43945e3  dic/dtalk_us_2001.dic
+5aca8c2f743ff1fe1d80eb92340f8e0a3ada22e63bff5d4a6d06f1df4ae91b88  dic/dtalk_us_2002.dic
+39b42f3e84c9fb7e7698c6fd4ae0341e61348831db344f007d8e641485a27fe0  dic/dtalk_us_5.dic
+68bcd63d2175b5a99febbbf418c3326e20958bd4e93b58c703e7d2802c3b10e5  dic/dtalk_us_s_1997.dic
+db27341a9d6a0d68eddf71515c2606fa717d601eb130c05775b8461e5cb7a5d7  dic/dtalk_us_s_1998.dic
+c1ba2a9f14ca1ed403aa59da2f6efe6680054f58ac13139e459d0c941525ad87  doc/DECtalk/html/_blank.htm
+411dfe1a24fb3c59263a503711606da00f3aecf9618c3a5be7d2faa1d77f88bc  doc/DECtalk/html/additional_syntax_rules.htm
+5160b37a64abf6284431c56cb62ab2018cc0214ca89a31248579ea92387730f0  doc/DECtalk/html/application_programmer.htm
+71cf4ae00d283b3c83d21289bbc46bd1a3552b77a02a32a56d226ed7132eaf26  doc/DECtalk/html/bsscdhtm.js
+4ad3d9cf30207cd86d2184465e4480ac08f8836e320c8a4fc341ce8b359e3125  doc/DECtalk/html/bsscnav1.gif
+601441b78279ddd9a1f195e5526530023d006ad450b37622e520c8e8e524f6c7  doc/DECtalk/html/bsscnav2.gif
+47fa8c715d98f8c54ae5095d80ff61c8e279bc0b58b7b19533871113a80677e8  doc/DECtalk/html/bsscnav3.gif
+2ed6df41812d5b270fc8f06bd40ccb50812cae140bb5d67fdb19220a7f2599e7  doc/DECtalk/html/bsscnav4.gif
+978c3ff42aa3111c53701f597245e0c249698f914ecb6b377071db058aaddc88  doc/DECtalk/html/bsscnav5.gif
+c04dda79a1d372ba54a4b5c1f25b2d00ec9658b76d84d0bec124be0c8cd4910c  doc/DECtalk/html/bsscnav6.gif
+f087a28de30c5aece0335effb9a5f0cc4e489314486a68b32e2894efcac6654b  doc/DECtalk/html/bsscnav7.gif
+92acecff7ac92da8da8338000a25934c5e0d8ff16ada741492261419115b35c8  doc/DECtalk/html/bsscnav8.gif
+9b5d834013a39ff50b0699982fe71e237170caa40bd5dfc08a102597ed303370  doc/DECtalk/html/bsscnbar.js
+269050b202ef46f8fa097941d2ce7f9b75e467dd02749a906a393ae33b8a9965  doc/DECtalk/html/bssctab0.gif
+192e945a7099fd87cdac4f99ae8144c20d8047130b7f121e9daec23d13557001  doc/DECtalk/html/bssctab1.gif
+cab2860f8f88f82e80209c126f23fda9104c5de7b27ce0b11148ec7146a81c1c  doc/DECtalk/html/bssctab2.gif
+66aaaba618443f5d52513d38dd4fa00012c9d45892a543c259bce1b1556c1b49  doc/DECtalk/html/bssctab3.gif
+20c1a206d04ac4c5b42f46d6f8408e66b5fa2780ad4575bbfa3509afcf7c0bd3  doc/DECtalk/html/bssctab4.gif
+6d3c501fe83967e1a800411d5dc8195ce881918922c5438369ebf65a7dbe6572  doc/DECtalk/html/bssctab5.gif
+875857f593299e344d62df95e4c58b3e951458976083b23e051fa5bee13bf5e2  doc/DECtalk/html/bssctab6.gif
+c87b93d2bba3d23e0385a2d433017b37ddc27f048a80e5916bad52c82791667d  doc/DECtalk/html/bssctoc1.gif
+1594300c0b4bdbdaaadc2f1cbdabf7f775272ff287df82c55dbf2e9c670599cc  doc/DECtalk/html/bssctoc2.gif
+dff2172e8b48f1ec41733b1d762bf897c173d549e5fc5ce308ffcd674091afc2  doc/DECtalk/html/bssctoc3.gif
+31bcadb78f71619ba2210f49d6a1dc6389cf4a25efc38eb56c946545f3a5e680  doc/DECtalk/html/bssctoc4.gif
+04aae74d9555eb95383e063ac65772c4570e255eeea980581ed83a5c3dc9a338  doc/DECtalk/html/btn_mini.gif
+faa04621add1505d2f92a8c113646d77bc3a37451ac2282ac161322685827682  doc/DECtalk/html/closing_a_language.htm
+f7e465c7abf8e9cd85400decf172abe853c5685032f3cf6868e153835cb3041c  doc/DECtalk/html/components.htm
+abcefda10b3f7736af3efeaae20146006cd7f44f8a81e52d196aa5a46698b40f  doc/DECtalk/html/dectalk.ali
+676b933d10bf6bde83a0b7e56f8a5b8c08d3c69141ab028a83ec59ab9d21fafd  doc/DECtalk/html/dectalk.ftp
+011a54b88da0fb0e25dd073101ea3ac283f0a57427e8f8a4d257747cb22f0835  doc/DECtalk/html/dectalk.hh
+44cf8e5d424a5d25acf3370409ab9d692c7dca941cc5d0ab3c97eb95aa36fe3b  doc/DECtalk/html/dectalk.hhc
+e840f22a413d08d5beff37e4f107f9921b05c103927c26f1a4fa668ef3c51e34  doc/DECtalk/html/dectalk.hhk
+4fe5005a9ea9170cf0e5ae1019a969025667285532c808075f35fba3bc8b8957  doc/DECtalk/html/dectalk.hhs
+39c5c2d2bddacf19208a90b6282896186d729970571a478818726a3f0f0c972f  doc/DECtalk/html/dectalk.htm
+504b8b672adc2f3b213d552bfd95f9a615b44f960d82511d6afc104fc99a0db6  doc/DECtalk/html/dectalk_csh.htm
+95ca1fd6b77d493fc06b28b3ee77c7ec9816d2e03f13ebeaeea88eaae3e6dca9  doc/DECtalk/html/dectalk_software_apis.htm
+0ad133129e8efcdd8ccdfed6a6feb99e95a2f283b2734065c27c6903a2614b78  doc/DECtalk/html/dectalk_software_dictionaries.htm
+2c5a4dfd79e0acc168be72dd495cc819f1f2cdb000da3a478078bbc194f77851  doc/DECtalk/html/default_locations_for_dictionaries.htm
+44ae33a4d4e4e30de0df4699f06c151721608cd3b09467a33847e949eadd72dd  doc/DECtalk/html/dial_tones_dial.htm
+a52d5d19dfa247e8c89d200edc6bb38b7884e7cd733909d0034da238d091a310  doc/DECtalk/html/dynamic_engine.htm
+f04f5bb3b9f3aea56a4b7278074360b9f98aa0400c0d203287b579ab11f6c79f  doc/DECtalk/html/ebx_-1147457663.gif
+877a8abaad12e55fd43ee248744f13d1ef0087d922786edbf35df118745db8fe  doc/DECtalk/html/ebx_-1279981187.gif
+885c538ba0fda48d115e1f6b942615a3120d1606ea76b8f28d54774356485f5d  doc/DECtalk/html/ebx_-1525817823.gif
+2e158ee65ae08558d821e443e20d4b463c2181717507cce9dd562fa214bee6b2  doc/DECtalk/html/ebx_-1838459393.gif
+d7db306d8285b75e6f15c8740009a1111ce597c14a55da08c2c383e153b4725a  doc/DECtalk/html/ebx_-1868370115.gif
+a7bfeb01be2136acad7d98d1be4e34446ceb42e0b2d9f7ae978a09c1bfc27a06  doc/DECtalk/html/ebx_-2061456749.gif
+4bfe8b7d41e454b909b9c27d78fd0f084d835523c35a19352a017d7aca336dc3  doc/DECtalk/html/ebx_-401230977.gif
+b52ff04b69c37224f5017e0d176ac50a9422333421bc129fdc288068c48b5f21  doc/DECtalk/html/ebx_-419816492.gif
+4d0a700b463ec0b485ec7e6abd444a9e80a276243734fba85007716fdc306b26  doc/DECtalk/html/ebx_-527019338.gif
+a1e3db1da814cd71e6cbcdb56d06bc661a11fdef363de5d6773102ba6598ef59  doc/DECtalk/html/ebx_-539620645.gif
+4cfdf070c62a756c9c6ff45a9b583229175613fd4b56f76e885f0f83b3b143d2  doc/DECtalk/html/ebx_-605218328.gif
+0041e9e92758108039ca91783019a1d9f49e504f2281cebdf39a361959ba62ea  doc/DECtalk/html/ebx_-637825421.gif
+6b749d1f418a66f2da929d366f1ede66ec1997d4ea96b170f7b765d159df1db3  doc/DECtalk/html/ebx_1056557567.gif
+b78014c23d4703bb37187ecdf33d2f30628a3732bee02602831d0b3d99d56c5c  doc/DECtalk/html/ebx_1388151752.gif
+0c8107712f7664bfd1962e4037327d81ce7a446bec0265c45f4d0264966dc08e  doc/DECtalk/html/ebx_1825453022.gif
+0c57f55f4455762a2e0188f7c6712b9f15d617de6228530c0ede66cfa9c3a7ab  doc/DECtalk/html/ebx_337801554.gif
+19b44bb99565eaf6bbfe04f22da9cfae811c9bc62da9444e7c89a4306d75a42e  doc/DECtalk/html/ebx_361438578.gif
+3fd20173978578974107403ce538d34165254e7d88eb943151ebf3ff60432858  doc/DECtalk/html/ebx_508165749.gif
+91026ca05f01c8704823bfd9b677242605899b03f74dd8296975dbb8043dc762  doc/DECtalk/html/ebx_533305026.gif
+7c67cb8d4ddc9edc1317d760a288f502cf2baa9bf0f507c9042d1733c7cb68dd  doc/DECtalk/html/ebx_735850734.gif
+3619efd065cde6c654a00936bc62c564d8664fd94acb88e409f8bfbef3b1f872  doc/DECtalk/html/ebx_743951634.gif
+77009c7f83fc90ab3d889f379af2102e19ed8fe531399f2f57cd1db88ef95e84  doc/DECtalk/html/ebx_963137719.gif
+48feee3afa0808e63af1ba547aa883478524a737484b5e27b3e3f272e63a9105  doc/DECtalk/html/ehlpdht1.js
+e746949ce8d684f6166dd6af2ffd1a8bff06d5461df18460d207005621397a18  doc/DECtalk/html/ehlpdht2.js
+c68768f30e364d03c9a80c86ba1562d9a4afebb5c64c9c72fd0e4cc769eb5bae  doc/DECtalk/html/ehlpdhtm.js
+2cbcc144021c5c5a3a7069959eb71f44050be758904894551b29c1a089e816ea  doc/DECtalk/html/email.htm
+3bc0ee2475ba65662287ebd57444f495b1e666255bd02dd599208364e8d8db7e  doc/DECtalk/html/email_mode_example.htm
+8e20cfea929c92d35873aec8cd8077836dda7ea63b178526c20227e1bb878ccc  doc/DECtalk/html/english_uk.htm
+a140d589d9b2da4b04b34f21345858705afd9c0c4e47f836b368f6f58c380fdc  doc/DECtalk/html/english_us_uk.htm
+123d4437b0e35137b3272c516a3e909de6e334399e5a69f9501aadd72d1f87bd  doc/DECtalk/html/features_and_functions.htm
+d74088cc4a599aa9802956e835e41592975bad25070bf041ae76d3223edbdf23  doc/DECtalk/html/ftsbody.htm
+2f1d3636f2f1907a8115c1217c12589c9330b7d52807522b63f2233e55418abc  doc/DECtalk/html/ftsdhtml.htm
+931347b99901d4e37c35d7cec57250407998f964cbf41c9d645d17a5423be312  doc/DECtalk/html/ftsform.htm
+cf8fcb8bdfae322e5c8f235d6ea8cd340dabe91dbc1f0f49a83d2fdee6c2ff7a  doc/DECtalk/html/general_parsing_rules.htm
+a594a862499bd1e8ff83c3be66cb962c759bb6e8e64b5d6b87093cd43499f388  doc/DECtalk/html/general_user.htm
+7c171a281cffc4b70cb3f8d8f7618efb1ac297c83b7ec3af4816a6f5eafa9f10  doc/DECtalk/html/german.htm
+2eba2c52c9eef7757a170abafb9cab071876751e6062932a67758fedb7253bb1  doc/DECtalk/html/how_it_works.htm
+e05e32931f17d359a9ab222605040351f47a50ec3419715ecf2847706d918d65  doc/DECtalk/html/how_to_do_multi_language_programming.htm
+f398d608a4bbf99c4ab94c98fc14b959e3b914d57fa45f6819e587f2bd58de6d  doc/DECtalk/html/idh_betty_1_ttsapi_h.htm
+7f7093a379d755bac9df3ef3a1f9c078f8a96b6ae0b071375dc3fd8f5ef76b76  doc/DECtalk/html/idh_dennis_4_ttsapi_h.htm
+28e13d349a7ce1df91c63604d030696f3fea67608aba90be7d76ebdceefd6fa0  doc/DECtalk/html/idh_do_not_use_audio_device_0x80000000_ttsapi_h.htm
+6d5a39abeaa4ed24dc04fda9ee2ccdb023a21f910d25bc18fbd5b5250c6f1554  doc/DECtalk/html/idh_false_0.htm
+fa8f4abe1947b584ca9202a193f7d9296fb1d424850deea298750918338f684b  doc/DECtalk/html/idh_frank_3_ttsapi_h.htm
+d8ecf2aeff8f13b1d9bd96f43fb31d9017c55e9862e25b86455cd2ad5e0c2bb5  doc/DECtalk/html/idh_harry_2_ttsapi_h.htm
+ea28bcc5336dcae7b972f00e4a8282e7bda756fa5b9081117908645162a44ab2  doc/DECtalk/html/idh_input_character_count_0_ttsapi_h.htm
+6e90d926c2bbbe09e2367f3f44d8d3e1494cac83dfb096d9e4eb98133391939f  doc/DECtalk/html/idh_kit_5_ttsapi_h.htm
+5299ed5f451748b0670fc97f960b3490cf65e528b9ce831480328656d64d9750  doc/DECtalk/html/idh_log_phonemes_0x00000002_ttsapi_h.htm
+93dcec5112a55cb7fc0207159fed9862c3b1726c4c2385ab2c457ad174b77ccc  doc/DECtalk/html/idh_log_syllables_0x00000010_ttsapi_h.htm
+054b9bf92c0a328c7d5053464962ad64efff0c8e58318c9ee7f453d04b9feabd  doc/DECtalk/html/idh_log_text_0x00000001_ttsapi_h.htm
+0458eba2a4b23fa08b6680f5ff196160d3d343b785d8b40986c5b4e6d2e5d5e8  doc/DECtalk/html/idh_main_index.htm
+99562d57942b6dbe2a138a15647b14c88efb67bc2900fa2a868128dba6bc761d  doc/DECtalk/html/idh_nt_apps__dic_file.htm
+82abf5c0994e6d631123dd5ea1c0a5389a8d3a9546c0156cc1761bd4da17a4fa  doc/DECtalk/html/idh_nt_apps__tab_file.htm
+b0bb9e8ee6c99cd829ab63f1736a5f1dac79f792ccf209ffb19d345990000b46  doc/DECtalk/html/idh_nt_apps_about_the_sample_applet.htm
+c8d87fa6918ef08da2c62fc6e92e18f22d63737ff88b6e35d4fad05ec1629952  doc/DECtalk/html/idh_nt_apps_allophone.htm
+f92b565146f01da7ee3ee84160bddcae559b0bf921409975708265d674c44417  doc/DECtalk/html/idh_nt_apps_applet.htm
+7033689334d8fa64d8b002f297fb49424c1b45ea69475587db88e6cc35cbfb00  doc/DECtalk/html/idh_nt_apps_arpabet.htm
+9d1fb4c5eeb9f5cdfa399aecaeb33318ed2f6a41def49fad2d5ef012dc881703  doc/DECtalk/html/idh_nt_apps_associating_the_macro_with_atool_bar_button.htm
+700296b5f15a2414fd617b16903d402ab6561996f44a86cb4d7689f8e1d8c496  doc/DECtalk/html/idh_nt_apps_building_a_user_dictionary.htm
+54c25b427f0d8dd1869ae38f1448e8df03e7959613c63c64f4125b611959fd9d  doc/DECtalk/html/idh_nt_apps_changing_dectalk_software_voices.htm
+5219b82475b242a65e1349276d1606a72e299036248050b6d711a243bc953ef7  doc/DECtalk/html/idh_nt_apps_changing_voice_selections.htm
+f8897c1e656832beb74271abb463455802672ad508fff5039606fc3e31372141  doc/DECtalk/html/idh_nt_apps_clause_boundary.htm
+868ce5a333dc2be64a6aa1b296ba195c3525a7b7fdf894d0fc90b2d5775eb890  doc/DECtalk/html/idh_nt_apps_clause_mode.htm
+e209eb996cf26b92cf88b9cbce313409f3257b147afa6d0ce7c7a55ef00ea87a  doc/DECtalk/html/idh_nt_apps_clause_terminator.htm
+2b8c45c572b9974b2b5e72b62c26c20ad7bd9d66e47767608ab6e8e9d6b6d04c  doc/DECtalk/html/idh_nt_apps_comma_pause.htm
+526cf7264807d631160efc07cd86e7c44e6688609e2c904421f88572e6fbec4a  doc/DECtalk/html/idh_nt_apps_components_of_the_user_dictionary_build_tool.htm
+bdb2f3c24800f2a2e3c5d7380aa80bdc62402cb6796eecfe0c17c5fe6e623e28  doc/DECtalk/html/idh_nt_apps_creating_a_word_macro.htm
+aa29edfd9b18ded76fb52509810e38308bb95e66041c420cc1785fd4d1055ae7  doc/DECtalk/html/idh_nt_apps_dectalk_voices_and_their_associated_values.htm
+9689f5753354b4ba2a8adcc9b2ab996ae5533fc51ac5a66d334c06c0ac6adc97  doc/DECtalk/html/idh_nt_apps_dictionary_options.htm
+08c3464a5a775298de96b2c95855706b306783ea53627dd0182fcfebe9c1a548  doc/DECtalk/html/idh_nt_apps_editing_a_text_file_and_changing_the_speaking_rate.htm
+14859c951861327364a679172f7be2223e0bae7958e1cda59d11f8b636efda4f  doc/DECtalk/html/idh_nt_apps_emphatic_stress.htm
+68155efce493895353c0308393a2e9d55699453a50e58da541c2daf59b6c7e37  doc/DECtalk/html/idh_nt_apps_falling_intonation.htm
+e0f535750b7198c393cdc0ee1dca9feb092104aeb54b72d97abce49e82b4f1b9  doc/DECtalk/html/idh_nt_apps_flush.htm
+d40a0b0e7229866106d7952f7269f9f7cbc4683bb86daafae5cb2aab04436874  doc/DECtalk/html/idh_nt_apps_help_options.htm
+1a8192ff845883945c19ea46021a73821733cdd9951c3710148e78e784c33a53  doc/DECtalk/html/idh_nt_apps_heuristic.htm
+a85d0babbd4e6e81be8e8863b2b01d3f9a7589363318fa10e120ff789e06ee7b  doc/DECtalk/html/idh_nt_apps_highlighting_text_as_it_is_spoken_illustrated.htm
+b07d02215ce97390894fc25e981173742bd16eedc306e489da3783d3852c31e4  doc/DECtalk/html/idh_nt_apps_homograph.htm
+6a687141d232b5316991de22adc69c53d2d5e1a1cbe6fdb0aabfd50cc23b212a  doc/DECtalk/html/idh_nt_apps_index_marker_flag.htm
+0797cc2f9abd47a97e0cbf7e958b257c47828d27df8d9f569b05cc6d03705aa5  doc/DECtalk/html/idh_nt_apps_input_options.htm
+f0b965fc171c68015779fabaff395fc631f56616b6a68b5cfed596161de70c65  doc/DECtalk/html/idh_nt_apps_inserting_voice_control_commands_syntax_rules.htm
+e012020fdff98dd9f27644af1fc4fd856bea4b4e4cfde7fb172c851d01dc84f4  doc/DECtalk/html/idh_nt_apps_intonation.htm
+f67cfd2eec2e1065cb5082d51f0ddf777430cdd42713a0231b2ca000b226e913  doc/DECtalk/html/idh_nt_apps_launching_and_configuring_the_dectalk_tts_server.htm
+36400ed2d078d260ca2813c11ff1742cbd95f3b9d4474e4ce65f75f409d7b56f  doc/DECtalk/html/idh_nt_apps_letter_mode.htm
+c4452799947c8fab2162d75fec6d18424926622d2bb3363e9d28963c2dac29eb  doc/DECtalk/html/idh_nt_apps_log_file.htm
+91df2e2ee4eb9d6c3c2f319b1a90607228944950229f060014117623a3750449  doc/DECtalk/html/idh_nt_apps_morpheme.htm
+cba03dc9dab924b81a1c112bd2256453aef83c117168e4f94330c131fb7c3cce  doc/DECtalk/html/idh_nt_apps_output_options.htm
+ccd181dac33af408fe0cca83f216b5fb0d61e3fce8826d38b24fe318c3f69689  doc/DECtalk/html/idh_nt_apps_overview_of_the_user_dictionary_build_tool.htm
+645f5cc858e354ac0b8516c33b69524f1dad124f2240adb0dcb44bfcd2d0bc9a  doc/DECtalk/html/idh_nt_apps_period_pause.htm
+87b999a8d31b20d962050d48c08665681ab2d8f180106e4c0bc5fd25760c01da  doc/DECtalk/html/idh_nt_apps_phoneme.htm
+148f926fcdb69e2e5bc913dc2f8539e208df69a971c40d79583886963888a631  doc/DECtalk/html/idh_nt_apps_phoneme_arpabet_command.htm
+dae4cfd7ba051a67692abb6a25ba621ca2bfc6b51447eb0d016f24706413d487  doc/DECtalk/html/idh_nt_apps_phoneme_string.htm
+c91eb1f0b1d1775ab910822f6fd8073e4da06f5bf3cda3e7b74dcc76002cf36f  doc/DECtalk/html/idh_nt_apps_phonemic_mode.htm
+317ef8ad7892742bbf469a00b87f5b0e16adec24bbfe8add02f49989f6f7c234  doc/DECtalk/html/idh_nt_apps_phonemic_transcription.htm
+8a8896b409f3a4f3720164b3029ae3fe40ab21e22d0b138868fbfc459aa30773  doc/DECtalk/html/idh_nt_apps_phonemicize.htm
+5f2b5d7b59424961be8f371dfca4c1ea14761fb5151ae48d7e516823158964e1  doc/DECtalk/html/idh_nt_apps_phrase_boundary.htm
+0a43fcb4ead839703bffb3575242f6a8e6902dc307ad67302dfa81858ec96c27  doc/DECtalk/html/idh_nt_apps_pitch_control_symbols.htm
+870e97cf65237102c2443c6ddf30b2fcbaa3c3cef185ad14bd9b2e3ee2b6005c  doc/DECtalk/html/idh_nt_apps_primary_stress.htm
+2a5a2dc1e6c28c20760db1efe75830c4643310e38889b0f25b13a3a1a4c78012  doc/DECtalk/html/idh_nt_apps_proper_name.htm
+4ff8c7360114cfd59a6be0ce1eb3a5bd9cbd5ae8ddf1228755dab7c95538e36b  doc/DECtalk/html/idh_nt_apps_running_dectalk_software_from_other_applications.htm
+5706c8c148561a75e13bfaf096d496a73226e025a011e2a6270f47f6623f5334  doc/DECtalk/html/idh_nt_apps_saving_and_compiling_the_dictionary.htm
+7d2d9fed24f99c73083912b33bd5e3a564b71e02ab7afda47525df48cdb58e6c  doc/DECtalk/html/idh_nt_apps_secondary_stress.htm
+aaf7aa4f6a78023b8a776a86a51ffb7ae8034221cefb61ba35618c0619ce78d6  doc/DECtalk/html/idh_nt_apps_silence_phonemes.htm
+bdb1b5fce90a7927494702eeffed2276296ef35473c8df4e5240f2906419f1a7  doc/DECtalk/html/idh_nt_apps_speaking_text_with_the_dectalk_software_tts_server.htm
+3fd6fad6e8ebd4ee5c0526d08f683c39d5592ce2e4ef59d6a1551a3f910a19d9  doc/DECtalk/html/idh_nt_apps_starting_the_sample_applet_and_opening_a_text_file.htm
+409d6c6b4f54a7b41ba9521ba46a8d9b85b9d9d5df91e4bb5881a8dd8bf12cd3  doc/DECtalk/html/idh_nt_apps_syntactic_function_words.htm
+f19b8ac281aa713e953dbce54f8eadc0517c13b654c72cbce24fbcebefb5ffdc  doc/DECtalk/html/idh_nt_apps_to_associate_a_macro_with_a_tool_bar_button.htm
+e666724ac98d7a15ddc136c3d6228378102be001e5dede349831abc9fb09360e  doc/DECtalk/html/idh_nt_apps_to_build_a_user_dictionary.htm
+f961266c185d95d2ea7a63d1c1c5a0db1057464850dbc824c5d1480241b0c57c  doc/DECtalk/html/idh_nt_apps_to_change_the_speaking_rate_from_the_dectalk_speak_applet.htm
+7b255aa3310f7308016de97dae1b07bec2d90c3dcb70c7790f8783b12778af55  doc/DECtalk/html/idh_nt_apps_to_change_the_speaking_rate_from_the_sample_applet.htm
+a83157f72de2a278443da3012ef69a5833055a11b3022b5182ca8ba10a1da724  doc/DECtalk/html/idh_nt_apps_to_change_voices_using_the_speaking_voice_menu.htm
+77c8b35ed83e6f4f33952bda17f597233a85f34b7ee6d133f46fe711b807db12  doc/DECtalk/html/idh_nt_apps_to_change_voices_using_voice_control_commands.htm
+9027693350078081fff8645efbd093f6be241db060eaa0f1a662ba16bdd0a16c  doc/DECtalk/html/idh_nt_apps_to_create_a_word_macro_and_associate_it_with_a_file_or_template.htm
+1165f46d07129c58a1b0156eed182b70c2cef735d5489ca9c020d652e2a20b8b  doc/DECtalk/html/idh_nt_apps_to_edit_a_text_file_from_the_sample_applet.htm
+a73c1cd052556075f4a5bbfc08e68f10d6f753479a0efc74fd2a1f8ef473d28f  doc/DECtalk/html/idh_nt_apps_to_edit_and_play_text_from_the_dectalk_speak_applet.htm
+f6bc449a385dcae6656a07f14cbae4bbf7b3493b3303fb0d87417bdc09acc901  doc/DECtalk/html/idh_nt_apps_to_highlight_text_as_it_is_spoken.htm
+0f601015d1f8086438a264a0cef428e0318e3f0df11a7e15a38d4e387fbb7192  doc/DECtalk/html/idh_nt_apps_to_launch_and_configure_the_dectalk_software_text_to_speech_server.htm
+d0efc6030b863d41fedafc6f5dd5e693ee57c564f1186ff9272b5cc3ed7d5675  doc/DECtalk/html/idh_nt_apps_to_load_a_user_dictionary_from_the_dectalk_speak_applet.htm
+8d162655015957448418be78d6f8a54d5d27be2a45f2a232d9d49f2b9c90f07a  doc/DECtalk/html/idh_nt_apps_to_play_selected_text_from_the_sample_applet.htm
+802c7b9a8852fc0e9f971fc778847421714cf6f5530c2ce844dc31ad786159d5  doc/DECtalk/html/idh_nt_apps_to_save_and_compile_the_user_dictionary.htm
+0d0e4db25b40951c4f2b9e8570f94005477747989f0fdfe54453b17f611b4d92  doc/DECtalk/html/idh_nt_apps_to_save_text_as_a_wave_file_from_the_dectalk_speak_application.htm
+01fa791524b063c41c58b26052fd273e2a52b934824d30668388ab03ee48e192  doc/DECtalk/html/idh_nt_apps_to_speak_a_file_using_drag_and_drop.htm
+3b4a176f403387159ed99ff8bd5b6c9598e68219c7b407ff48531f6ebdc05feb  doc/DECtalk/html/idh_nt_apps_to_speak_text_with_the_dectalk_tts_server.htm
+4707416b2d0a4633659d67bdbee00dfa09a7868ffad51afecf01824d6a46dcbb  doc/DECtalk/html/idh_nt_apps_to_start_the_sample_applet_and_open_a_text_file.htm
+82c706855003fb049ec371fa005ddbb82c07cc8c433464ed53bcb14a97d283a7  doc/DECtalk/html/idh_nt_apps_user_dictionary.htm
+179c2b6ed95833bdf9ed5d098f6f5d783df0d5bb0ed842f5c886df23cde20c3c  doc/DECtalk/html/idh_nt_apps_user_dictionary_builder.htm
+85e736e2327adc1111001cbbb24067e288d734820aec254ab3ba45016a5fab02  doc/DECtalk/html/idh_nt_apps_using_the_dectalk_software_speak_applet.htm
+94eed01a3f8db2e43822c1128aa04740b61acc386d868c5ff9d35675b09c24d0  doc/DECtalk/html/idh_nt_apps_using_the_dectalk_software_speak_applet1.htm
+64ab316a3bbff6f33631d05d97a9199923432e063d4d063c73d67d9a447696bf  doc/DECtalk/html/idh_nt_apps_using_the_program_applets_to_learn_dectalk_software_basics.htm
+55513b764c40fa3b468552f47ddd80eaff521875e372bb44a481c9d66b4dc86f  doc/DECtalk/html/idh_nt_apps_using_the_say_command_line_applet.htm
+97463165fd1b3b60b0d9e871df62f2196b40eb9e7c0deba28fbdc2e6e672401b  doc/DECtalk/html/idh_nt_apps_voice_control_command.htm
+887baf06e88b897d462baceef586e742d131fb30ef732e1444dbc17fb85a50ad  doc/DECtalk/html/idh_nt_apps_wave_file.htm
+5060475efd9798a3598c1829b0f412405da05d766eb0bbc74f5eec8629f28d10  doc/DECtalk/html/idh_nt_apps_wave_form_output.htm
+c3d7d9d9ee8b5bc6b5f0f75f18534bed082fc375bf41a39fdc100619ee3cf746  doc/DECtalk/html/idh_nt_apps_word_boundary.htm
+8d7518a83a38992754bdc81c47aeeca70f06b635dc008ae33c101223ab26e872  doc/DECtalk/html/idh_nt_apps_word_mode.htm
+0c717e8bc65466b0e09b2db6fabd9864789c1218127cfb13cc61b89a23feb7a8  doc/DECtalk/html/idh_own_audio_device_0x00000001_ttsapi_h.htm
+8beb392a3216d4f75ef6c016934996161a641776e064f74aaa4bcfb01806eb5b  doc/DECtalk/html/idh_paul_0_ttsapi_h.htm
+5f9ee82b65e17db0cae580a773aca0a720c34f761e448071ee2f152c985240ed  doc/DECtalk/html/idh_ref_1_comma_pause_comma.htm
+9421d4895c16c5f2243b8596a1324275ea81712574d4a8953aeb59ca14f107e7  doc/DECtalk/html/idh_ref_1_dectalk_software_in_line_commands_overview.htm
+c57e01a43153c17abaca851e93380984085b6982884e1e6043825b293be254a6  doc/DECtalk/html/idh_ref_1_dial_tones_dial.htm
+66bea7410ce483559d46749edab39a118f71039a71535f493f410df514213dbe  doc/DECtalk/html/idh_ref_1_error_error.htm
+030acb7e060abea13bef126023482e5e3421cecfff44922665efed970062ce94  doc/DECtalk/html/idh_ref_1_europe_mode_example.htm
+865f323a12cdd1c0d2a7c9772851e9c950407f78715b8ee3d8b1d2cf28f0111b  doc/DECtalk/html/idh_ref_1_index_mark_index_mark.htm
+32ece2f7ee4351abc376c5b3f57bd8daf3d7ce4c5e6c3e664371dbcb2a754d7f  doc/DECtalk/html/idh_ref_1_log_log.htm
+f759a47dfcc7c2fc9effca87ef6c0762ab97be0fd48610fe3c80148873f399ab  doc/DECtalk/html/idh_ref_1_math_mode_example.htm
+a66f00decf3387bd8b7023c941efa2fe3356fbf2f819b82cbc9a4e6d8295eee4  doc/DECtalk/html/idh_ref_1_mode_mode.htm
+8c763e6b343e24a01dde1f941653f96135e01074787fc2d7cf443241e0372f40  doc/DECtalk/html/idh_ref_1_monaural_volume_control.htm
+367a639c984b6a8cb017c0c226dad7b6e47a71dae080b56fffe006e2dd81da32  doc/DECtalk/html/idh_ref_1_name_mode_example.htm
+6a5e490cbea6c71e3b38f006275e9b1c5c7a0423e1e9fbf2f6ccac289971640d  doc/DECtalk/html/idh_ref_1_period_pause_period.htm
+4df7184b045dd522bbe722e24051b5d81d5a8142911804d0b490a9b188d446a6  doc/DECtalk/html/idh_ref_1_phoneme_interpretation_phoneme.htm
+c439a6e5539534fc6dfa8c6dc1a84607dbe47f1b16ad52232d60b18f54e3370c  doc/DECtalk/html/idh_ref_1_play_wave_files_play.htm
+0dfb6547c47bfc4f72d14e5bfe802392c0e60610997c3e70b525570b22b82b7e  doc/DECtalk/html/idh_ref_1_pronounce_pron.htm
+c3f550a1591f09a873a09ad1009a925d9029e4850f208e4b762b3d94bea55670  doc/DECtalk/html/idh_ref_1_punctuation_punc.htm
+1dcb1775798594cd48daa2c9ea377dd2d6a1a8b4d823de30fe0ead20c770bdf4  doc/DECtalk/html/idh_ref_1_rate_selection_rate.htm
+45b25a60ed329531ea5aefa00e118d20f0145a154fb5523f2289cc8a0076948e  doc/DECtalk/html/idh_ref_1_say_say.htm
+0fc31f73ece0ed6968f0f019a47d1f4e9a67bbec615b74092caa8891cb935550  doc/DECtalk/html/idh_ref_1_skip_skip_xx.htm
+f02905b0f31dd7608ca55b2be93a9f73dc4af96e237e3f240bfd842d0a9763e8  doc/DECtalk/html/idh_ref_1_stereo_volume_control.htm
+828c96cf82f2f133a602cdc4a3092c1c43960ccc113385f2fa85193aade4e6de  doc/DECtalk/html/idh_ref_1_sync_sync.htm
+f2d34f7a348cba2af1da6f141847125d42aed999869a37b222568541c7164e84  doc/DECtalk/html/idh_ref_1_tone_tone.htm
+e40010a1d70c6e2071efb30080497aeb8f2533b955a95d9a3873715ccce07050  doc/DECtalk/html/idh_ref_1_voice_selection_voice.htm
+b12c58ca2af3ee30cd3c67e6adf817c75b71a78b813bb7cdb4338d8f6dde87f1  doc/DECtalk/html/idh_ref_1_volume_volume.htm
+9d1f7d30ce9d264b460424929a5a97b77b78b84d51d95764feadd315ba6d07da  doc/DECtalk/html/idh_ref_2_adjusting_period_and_comma_pause_durations.htm
+f4e8458cc27535862e6eeb25d5f6c7b951c77ceb43ae7c85ec7939d6ac10a2d2  doc/DECtalk/html/idh_ref_2_avoiding_common_errors.htm
+beb208f73175983eaf249990d0c22d1ecb2898f45128882c96d23b0c9d652af7  doc/DECtalk/html/idh_ref_2_changing_rhythm_stress_and_intonation.htm
+04a2b51c4772291e8e40b4faa190350e963640bbc71dd5efcb49f0934ced1cda  doc/DECtalk/html/idh_ref_2_developing_an_electronic_mail_reading_application.htm
+aa43a6926120e0259c5da17375ccf0d0a1110a20e2b3878f90ab8151b29e3649  doc/DECtalk/html/idh_ref_2_example_of_the_use_of_pauses_in_numerical_strings.htm
+ed0941986b87db96e22370474ace35bed1b86cdde7ffcc37d40379760c755041  doc/DECtalk/html/idh_ref_2_index_marks_for_speech_status.htm
+f665f89155cc367a7149b67583d5ce1ac6ce66828a688000357fc30b9f79342c  doc/DECtalk/html/idh_ref_2_optimizing_the_quality_of_spoken_text.htm
+14f8c61f9813df7b5f9317288916d46d229357ffd11ac21a23c2eb7394f97be2  doc/DECtalk/html/idh_ref_2_speaking_rate.htm
+423b3c982948c75f9d884976c813ba26bf4ddcdf2d77c0a216284a2bac7c58bb  doc/DECtalk/html/idh_ref_2_text_tuning_example.htm
+a774757d1a38e76414229d5296d90c3dec0ca6f675132b5dc4dcf0d837536355  doc/DECtalk/html/idh_ref_2_using_in_line_commands.htm
+eedc08be2b2adbd2e884cf6bb9b47cee57cb7ff2f5924689f5cf69991b0b48d7  doc/DECtalk/html/idh_ref_3_dectalk_software_reference_tables.htm
+fafa8ac17ff67812216eb671536805513c2e57ba41be2e13b5e1412bf9e9e442  doc/DECtalk/html/idh_ref_3_dectalk_software_singing_happy_birthday.htm
+65d38dac73b766a36786fc4a973f95a96fe829facf219ae7aa0a23709b150754  doc/DECtalk/html/idh_ref_3_homograph_phonetics_a.htm
+be50bf45105d1f4305cc3bae1a51e93377bf306076401d10acf4fd361a56058d  doc/DECtalk/html/idh_ref_3_homograph_phonetics_b_c.htm
+ff2b09792e0c9f65e8ebfceb068b697c53f3eaa5f81162c668dbdf69520d5f1b  doc/DECtalk/html/idh_ref_3_homograph_phonetics_d_g.htm
+536440f1e075934978a063db7f3b32e37b2687266510e1cf3112d5cbfa4a6f53  doc/DECtalk/html/idh_ref_3_homograph_phonetics_i_l.htm
+a1eca51645a25cfa2c92e539b873a2ec0583b6923d2ee47285cee743e053a1b9  doc/DECtalk/html/idh_ref_3_homograph_phonetics_m_p.htm
+51c7a673d217f05fce64ea6fe154f2c68dee1c5c5c96ae3588c2ebcda766f4b9  doc/DECtalk/html/idh_ref_3_homograph_phonetics_r.htm
+be4c86e600edfe9950f5a9a4fc504c7cc64f9d8f123a19e26bfb60c842dc214a  doc/DECtalk/html/idh_ref_3_homograph_phonetics_s_w.htm
+fb928fadc10d3bc84f6991dda9f6624d3cf00aa86f23e94dbffb67358ce770a8  doc/DECtalk/html/idh_ref_3_homographs.htm
+dd397c10298f455e880ee25c35536182766b9861ecdb192700d95cc98547c7d2  doc/DECtalk/html/idh_ref_3_phonemic_symbols.htm
+95ac3e55dbd8ac21f511dbcbbc82893ae7ae88d012de0911fc2812321bd7a965  doc/DECtalk/html/idh_ref_3_phonemic_symbols_2.htm
+2bf598c30b1eedce2b3722d0ab46b28f9db6823c467801cb0651016603af0c42  doc/DECtalk/html/idh_ref_3_phonemic_syntax_for_singing.htm
+f6e014476800df05a5f5c8d8a15a8ff54575178846d5ceb7a44c9b69b9969536  doc/DECtalk/html/idh_ref_3_stress_and_syntactic_symbols.htm
+3c9fd0f7627c246e4d1b076cd77765a35b4e1132a9438e2fb16261a8fe8ca2ff  doc/DECtalk/html/idh_ref_3_stress_symbols.htm
+e4a03c4f6a368459962bfeb2b5409cff763d2c18affdb67ffb4e4230aae0429c  doc/DECtalk/html/idh_ref_3_syntactic_symbols.htm
+138eabf83ea42f0ac682b5a8c1123e447e6313b2a4dc814351cc16c7370646b5  doc/DECtalk/html/idh_ref_3_tone_table.htm
+30cdacf6303bb824ff307fae57ece429fc625d0b6423a700475436ce6a1dbdf8  doc/DECtalk/html/idh_ref_3_tone_table_2.htm
+8c037ad75377d35f2c6633704e6279c13a656dda9b04979231e5e1de1dd1b68a  doc/DECtalk/html/idh_report_open_error_0x00000002_ttsapi_h.htm
+489e12f1c73b749942d87b466ff983088da46431aa4bfc10e43696e21fb0fcd1  doc/DECtalk/html/idh_rita_7_ttsapi_h.htm
+e43da13088f6d9be9951d4ba6086b92f2a895b33b127a0cf70f7e6716e289b12  doc/DECtalk/html/idh_sdk_1_audio_output_control_functions.htm
+ac6af0aa0b3bfb962a198446129d2729578dfe1107f4d58f881d513433c0bace  doc/DECtalk/html/idh_sdk_1_audio_output_control_functions_1.htm
+a8eb67e995ae1e977cfef94db91989cacf411e672a7e4b408c42923150d9501d  doc/DECtalk/html/idh_sdk_1_blocking_synchronization_function.htm
+fa0f119b2469ef1c944d20c5acc5f0968dfdb4b7f549d8376888748c61f1de7c  doc/DECtalk/html/idh_sdk_1_blocking_synchronization_function_1.htm
+37cb60a3904bb744fb6abd50a69536672c1aab8b3510c159e8c432afe8323853  doc/DECtalk/html/idh_sdk_1_buffer_messages.htm
+0ff354cc5add902025dad1f52187ec8595afeddfb5ccc0107adba381df715044  doc/DECtalk/html/idh_sdk_1_building_sample_programs.htm
+fd923872ecb254099178892c0224047cfbf4c0c845e35b211ef9409a12eee929  doc/DECtalk/html/idh_sdk_1_callback_routine_example.htm
+934c2a7f30d8aae4a839199703a6cc639ba1e20123eebf13be9d2a6f3c57b4fb  doc/DECtalk/html/idh_sdk_1_callback_routines_and_window_procedures.htm
+b24f6187c5a30193899bbf0b5942f2ab92c88cf01a271d3da0f797fcf5ee98e5  doc/DECtalk/html/idh_sdk_1_clause_based_synthesis.htm
+098ab8e6a6930bf7b6ec9789e805c5fb0f5524611a4b7d590124a3defd1ea4e8  doc/DECtalk/html/idh_sdk_1_control_and_status_functions.htm
+298289037e84f20cafee5cb70d381efbba05100d456534dba38a4d7a48d6b214  doc/DECtalk/html/idh_sdk_1_control_and_status_functions_1.htm
+2c725019e51d93d69e5095b1d7a717b88bef5eee4618f22d276bf60c8e908026  doc/DECtalk/html/idh_sdk_1_controlling_queuing_with_flags.htm
+76821fa527e906e81150c8a385f3839dc36c97453e86feb747b3ee8b607e5834  doc/DECtalk/html/idh_sdk_1_core_api_functions_1.htm
+ff942428427ed7fb490c2e70a8fe055d9786a4a8b4a45acbb2d8ff6bb3f71f0d  doc/DECtalk/html/idh_sdk_1_creating_a_user_dictionary.htm
+a041472cbd763046abd0fd8cbe2e4b3067342fe1f5b5aa2dfdfd48b9891e916b  doc/DECtalk/html/idh_sdk_1_creating_a_user_dictionary_2.htm
+3675b40d53c866306328fa1837a1beb366a23d6b1b4b819082b8354bacad80bf  doc/DECtalk/html/idh_sdk_1_dictionary_functions_unix_only.htm
+0b91d5487fe2fd676b40cf84ccb4c89f210f240f8934c0729ae9bb62c27f4934  doc/DECtalk/html/idh_sdk_1_dictionary_functions_windows_only.htm
+9f23e2ffac014166c74711f8e7f690d611a721ace5dfefd92a91e4ed666951a3  doc/DECtalk/html/idh_sdk_1_error_messages.htm
+bfcaacff01ba32ea7486514fb22597c83ac5380760aff493e0e62ed1853e1534  doc/DECtalk/html/idh_sdk_1_header_files.htm
+d369a1c1874692a1ff04eacf23f8a42b11235552a14dd4679bf594d16f8fea6b  doc/DECtalk/html/idh_sdk_1_important_text_queuing_information.htm
+53e3e2302bde66f07f6bfcd5381e459f65184932d323d0b2ec9e4803069be2d4  doc/DECtalk/html/idh_sdk_1_index_mark_messages.htm
+76b9054e7dd6979d3f38f48b13c18cb100c4456d2844a1901814a5daf35346fb  doc/DECtalk/html/idh_sdk_1_initialization_of_memory_buffers.htm
+f874a75bb6a809771b854ad77c37d91b0c3852598a247ab6cb1f53d1b706c4ba  doc/DECtalk/html/idh_sdk_1_introduction_to_the_dectalk_software_api.htm
+cbcd35174353d902517a1c348ad76772fc7be770c98573a3df4487994dcdd378  doc/DECtalk/html/idh_sdk_1_loading_and_unloading_a_user_dictionary_1.htm
+83bcd2ba082138f498f2d906b4c0676699a89ae90876aa87986337a1a526dc92  doc/DECtalk/html/idh_sdk_1_loading_of_the_main_pronunciation_dictionary.htm
+f958a3fe7742b86954056a2741c65607104ab7f9fdd992658def14c0acec6cf3  doc/DECtalk/html/idh_sdk_1_loading_of_the_user_dictionary.htm
+68c833315a68d97ed01bd52f485a94a9b949055369177ce8a6ac013eb1a2e226  doc/DECtalk/html/idh_sdk_1_loading_the_main_pronunciation_dictionary.htm
+c96d586d4448414cc534178d9901536b207a448a3a5b5f8062f7bd3eb1be44ae  doc/DECtalk/html/idh_sdk_1_loading_the_user_dictionary.htm
+ba528881905de4f8f19d592dfa5566aa70f2a88262528c4eed915de5b2d0c16c  doc/DECtalk/html/idh_sdk_1_log_file_mode.htm
+7da1d20cf1836cf55b3f260decba0370433bda8ecf37ec01b450a6c872b429ea  doc/DECtalk/html/idh_sdk_1_return_of_memory_buffers.htm
+761654b9493122e9ab65a25252073e78daa40613db5e7218c7e1b54bc9de0c96  doc/DECtalk/html/idh_sdk_1_sample_programs_unix_only.htm
+1ba4ea95e28c79c29aff661185a5cf3e4c2add623fed2810889ccfa9d2e9c07a  doc/DECtalk/html/idh_sdk_1_sample_programs_windows_only.htm
+012f661bd39645aff7669d785be02072c6f2d93d4ba474ac5d1c61015fb86b1d  doc/DECtalk/html/idh_sdk_1_shareable_libraries.htm
+47c4b5d8c5da57f1338838ec2635f7f4fca4209715c8bdd84168fe3283a504d1  doc/DECtalk/html/idh_sdk_1_special_text_to_speech_modes.htm
+0a854d5ee4e00eb79455ea7113033ed0f02f9c4b2bbcb59080d213838c504ca9  doc/DECtalk/html/idh_sdk_1_special_text_to_speech_modes_1.htm
+118961000fe11fbedb0a4fa33d8e0a84b6da2f537cebd76a22494c88585f74ab  doc/DECtalk/html/idh_sdk_1_speech_to_memory_mode.htm
+99965dc6e0e258458909d4994843e89a985136295474352492ddb330ae97193b  doc/DECtalk/html/idh_sdk_1_the_core_api_functions.htm
+777ce32c09a8a5a7652a81d9095f78ca5266cbdb42212e5a8805c22d49c659b8  doc/DECtalk/html/idh_sdk_1_tts_buffer_t_structure_ttsapi_h.htm
+57560c2896adfa8da47dd6c0380c60911615eb751a43948ee263707912d50e6d  doc/DECtalk/html/idh_sdk_1_tts_index_t_structure_ttsapi_h.htm
+067c324b2b3fe2060889440ef95ceccc4473a2c72ccbfcc60135fdd79f8bdff5  doc/DECtalk/html/idh_sdk_1_tts_phoneme_t_structure_ttsapi_h.htm
+45b940277692d0fe5407ebb9b07997926220550cc122c2c04ce9d6296cd94d43  doc/DECtalk/html/idh_sdk_1_wave_file_mode.htm
+46f68944e06ed8cc4b43a022b3efde479dc114ef69c22535eb599eb5604172e8  doc/DECtalk/html/idh_sdk_1_window_procedure_example.htm
+f4fd3dbb2c87738fb9050d0e5d5265dbc7b935ac76ca1724ee3c70911259eb99  doc/DECtalk/html/idh_sdk_2_dectalk_software_api_function_calls.htm
+81e06e1af9731e728e6733a5ee247dc20fd3e2bf3ea4ea51d49464d2f1e36997  doc/DECtalk/html/idh_sdk_2_proper_name_pronunciation_0x00000001_ttsapi_h.htm
+86abf9b4d6570427da60e911b6227095a0e30aad44ee84301dd4f395999f25ac  doc/DECtalk/html/idh_sdk_2_texttospeechaddbuffer.htm
+78805ce85de758b7372a17138f533e0d9fd7ff4d2bdf2b3254c03095c6948f54  doc/DECtalk/html/idh_sdk_2_texttospeechcloseinmemory.htm
+219ccdd68a2fe6cac87ffce280e227b900369230e37eee81cf9a6c8fbca80062  doc/DECtalk/html/idh_sdk_2_texttospeechcloselogfile.htm
+879c5f5da8741f8d4d79fddd62f44cd8153333173b4d6d73a606a66cf28e8532  doc/DECtalk/html/idh_sdk_2_texttospeechclosewaveoutfile.htm
+993673ef73db065393628e68717401f72529e2f5d26b18b334642c1b01aba5eb  doc/DECtalk/html/idh_sdk_2_texttospeechgetcaps.htm
+2d24351dafb2261af980c0f17b94b020680504bf0ece2987e9ef56d97665fd55  doc/DECtalk/html/idh_sdk_2_texttospeechgetlanguage.htm
+16495bbc74ba3e94518ceb1c60399954db030f8580ccf69119949a70f8d8d2b5  doc/DECtalk/html/idh_sdk_2_texttospeechgetrate.htm
+cba5d61e96c4a7cabb5967658ec229748e0cb2053b74fd34ea64f720ee37cc66  doc/DECtalk/html/idh_sdk_2_texttospeechgetspeaker.htm
+a62d0f2dd609b77e5a6931c5171ea0f868afdfc31399c482cbb1f19ddfb8488f  doc/DECtalk/html/idh_sdk_2_texttospeechgetstatus.htm
+d37360c2a51811fe885e185e36977445eb75a12435691cc9c7a374311c073d53  doc/DECtalk/html/idh_sdk_2_texttospeechloaduserdictionary.htm
+85ee188c942156f04b5dc5304fdf9a16e301395fc9f22d398c29008cfd4e8993  doc/DECtalk/html/idh_sdk_2_texttospeechopeninmemory.htm
+69c1fc01753998a0d0a28b428076de8ee3a97d31643566f71a67c7ea1e548b89  doc/DECtalk/html/idh_sdk_2_texttospeechopenlogfile.htm
+486b709192c2bca969fa77283daeec5fe709abdf10b1eacfe2ca756c175ff7f2  doc/DECtalk/html/idh_sdk_2_texttospeechopenwaveoutfile.htm
+204ae80dc998dbad2a571fa10607487d2284a66134f422446284a68e0210ad4e  doc/DECtalk/html/idh_sdk_2_texttospeechpause.htm
+9536e961c3400d0b909c37cc3437cb59568eef6a264719a2cf16c4c36c9978c6  doc/DECtalk/html/idh_sdk_2_texttospeechreset.htm
+8e81d8f3d6b100aec3a3af8b6b9798c4f874e125d0382f800a281e9df2c9a52b  doc/DECtalk/html/idh_sdk_2_texttospeechresume.htm
+da353559a0a251e423b963c5150de54a14634b8a3ff119686bba6e0c52eabf40  doc/DECtalk/html/idh_sdk_2_texttospeechreturnbuffer.htm
+9557db1fa71de08cc39f8402d4014ea7f5a9924315d42d6a989c26ee1f5cde93  doc/DECtalk/html/idh_sdk_2_texttospeechsetlanguage.htm
+64202bb02fec8d1a6d8f1d00d88192289de19e989e3ca592e7a67411f2c079d6  doc/DECtalk/html/idh_sdk_2_texttospeechsetrate.htm
+80b0eb41b03a61f98ad5c75a9221d93cfda070dc58fa569b12403efcb8866aad  doc/DECtalk/html/idh_sdk_2_texttospeechsetspeaker.htm
+d9722f8a470a069e66d43e15e37cb9fdc773fc4256f8e018743f244c94fc58bc  doc/DECtalk/html/idh_sdk_2_texttospeechshutdown.htm
+29249fc9fb198bd93ad608b250141b350b1aa81ddb481348f49fd9a078b2adaf  doc/DECtalk/html/idh_sdk_2_texttospeechspeak.htm
+edcc43bcfa342d475f6662009273206cb7a26f14bd8ae23c3e58334e6cffcc7a  doc/DECtalk/html/idh_sdk_2_texttospeechstartup_unix_only.htm
+8817bb88cc04e5f862717325cfc7f8ef797bdffb2682d3da9d257980e8a19af0  doc/DECtalk/html/idh_sdk_2_texttospeechstartup_windows_only.htm
+c631d11f76b48821969abe07f92ad2cc02444d261d088fc4de4b25fcb5511846  doc/DECtalk/html/idh_sdk_2_texttospeechstartupex.htm
+946f4cc0bb6b81ff4180ef6abcb4149008e8ffb39d8652cff852dcb848badf8d  doc/DECtalk/html/idh_sdk_2_texttospeechsync.htm
+1bb942660d7b2df55f29ad23974cce4525a5da3ae3b9f9c596a6801b0ee20b3b  doc/DECtalk/html/idh_sdk_2_texttospeechunloaduserdictionary.htm
+a5dcad1f0190b34a0da3891145534c0d173df0e7f14df9ec7df069db10d6733a  doc/DECtalk/html/idh_sdk_2_texttospeechversion.htm
+315c84b99cd99ab17335041794978e5974686c386a6ad600642cd2fa08a9fc6a  doc/DECtalk/html/idh_sdk_2_the_langauge_params_t_structure_ttsapi_h.htm
+eb312f4c6e47f8459c4b3ff4dbc07fd8b2d25a63032c1ae0e172864c865dd58c  doc/DECtalk/html/idh_sdk_2_tts_american_english_1_ttsapi_h.htm
+17ce6fbff7cf29b8144809da72a57ff9c0dd6b67f1bed417ec51e6793f6d4771  doc/DECtalk/html/idh_sdk_2_tts_caps_t_structure_ttsapi_h.htm
+a937f12c140bc02c2c7cba28cdf5c1cef4742a6b68598d80db69f344321beb7e  doc/DECtalk/html/idh_sdk_2_tts_force_0x00000001_ttsapi_h_2.htm
+2385e771d5c5dc145fdb2d372862414e2486bd8142897053333a6209232f07dc  doc/DECtalk/html/idh_sdk_2_typedef_dword_language_t_ttsapi_h.htm
+42972ae10bba2766174e4f907458aeee0a16cb4db33cc7d13d994b6b5e4cb0cb  doc/DECtalk/html/idh_sdk_2_typedef_dword_speaker_t_ttsapi_h.htm
+875287ecf4cfc138e13056c883a59216512ec37d8f2742ee5bc7550db90e7c69  doc/DECtalk/html/idh_sdk_3_assertiveness_as.htm
+52ffa6ceabc83bb625c40ecbbc2f4f18a30b329880faa46f669272b4b35c3261  doc/DECtalk/html/idh_sdk_3_average_pitch_ap_and_pitch_range_pr.htm
+9908bea0776081d58dfb1684332b44e768a9adcfe29db3f62140ebc6257bb0f7  doc/DECtalk/html/idh_sdk_3_baseline_fall_bf.htm
+5f8b2646158b771e6e771dc93f028f919aa72ab4dbf67f607408fa7c5e72af78  doc/DECtalk/html/idh_sdk_3_breathiness_br.htm
+0e2321a478e8da20dd13ec4a2ea17b8675bb2a398fe2a02ba114123e4cf21913  doc/DECtalk/html/idh_sdk_3_cascade_vocal_tract_gains_g1_g2_g3_and_g4.htm
+bbf631c36838a1f7758b16cd39b18e2991a5804d3dc3b501fe6db3eb77b64006  doc/DECtalk/html/idh_sdk_3_changing_gender_and_head_size.htm
+32b3852949acf8c101c619585da3aeb5a36f02206ecd3501c40e3b18bfd9c217  doc/DECtalk/html/idh_sdk_3_changing_pitch_and_intonation.htm
+0b6b4338f5e71bd0e72540154c5a66f69fb806b1d851aebea2e04ca2c6c3b53a  doc/DECtalk/html/idh_sdk_3_changing_relative_gains_and_avoiding_overloads.htm
+48dba0c0da24d376949b794a4553e3edf4273745141282890e2e183dbf81fb32  doc/DECtalk/html/idh_sdk_3_changing_voice_quality.htm
+e287bf5b550581be0d16bc6f0cdd2fbce285f6d8af6bd8d296fcfc4751095669  doc/DECtalk/html/idh_sdk_3_customizing_a_dectalk_software_voice.htm
+64c8ae1a8d4ed072b331363b7741d3c61561ce2fc9d1554be71eb94d2c1def68  doc/DECtalk/html/idh_sdk_3_definitions_of_dectalk_software_voices.htm
+37c35ee7d300c54e1e8b7d2d1df636472cd30d1c08338850a53740bc4d3e5892  doc/DECtalk/html/idh_sdk_3_design_voice_dv.htm
+48191b58c215422634c0cb249e0ad3d2371ad60a407c8fde43952f5384226b8b  doc/DECtalk/html/idh_sdk_3_hat_rise_hr.htm
+64b607eba22cd3cc61c2d78e15bf11e32e1f4a62a6332f956852fe44f86b3955  doc/DECtalk/html/idh_sdk_3_head_size_hs.htm
+a4e4e842dc96165f27ee804b23f149273e7689dc204764ee9a19199bcc516dd8  doc/DECtalk/html/idh_sdk_3_higher_formants_f4_f5_b4_and_b5.htm
+5907300e358e4c2d7ccb4028bfe4da9facb642f0e7e47031cc3e2cd9d13f1836  doc/DECtalk/html/idh_sdk_3_laryngealization_la.htm
+14edc22af800433296e70a860a1b5b25cb3548783341e6bf95c2b06a68a508ad  doc/DECtalk/html/idh_sdk_3_lax_breathiness_lx.htm
+ebd1a91381600fa83c0cab714b6c0094d799c44cdb64fdb128996ad67ea6b6ee  doc/DECtalk/html/idh_sdk_3_loudness_g5.htm
+1a3ed3bad0e113e85e88b8d57b29107415fc6416c193babf372006820439ea1a  doc/DECtalk/html/idh_sdk_3_nopen_fixed_nf.htm
+1be0d29113f66af7df3b436b3b72dee6891bee2d0a4f0c7ac23b750b2aad0a48  doc/DECtalk/html/idh_sdk_3_quickness_qu.htm
+33e06784071eb7e5b373da31a6312b0285603339e200f62c2d3b8b1d80fce703  doc/DECtalk/html/idh_sdk_3_richness_ri.htm
+36494a5150074d8ba12010a8240290c7b491e2d3f51f1f193c8123908d23f6c3  doc/DECtalk/html/idh_sdk_3_save_save.htm
+9bace9d50ea3a275539469cd9cf4cc4ddbf3b3e5e8d075c73f61f738be21c55d  doc/DECtalk/html/idh_sdk_3_saving_changes_to_val_s_voice.htm
+01986bf2d18c2eb19f22bf01cdd2922898e3525b6d852a16722a4752410d1c1c  doc/DECtalk/html/idh_sdk_3_sex_sx.htm
+7979dec4345347d9770099178ce4729fba9de26919fdd5381036a3c9af534563  doc/DECtalk/html/idh_sdk_3_smoothness_sm.htm
+f5666b37b3100d272c09033da2c8c615ec1e3b6f289d04fe8a7bba47fb7a7d64  doc/DECtalk/html/idh_sdk_3_sound_source_gains_gv_gh_gf_and_gn.htm
+e5b5af914af05f4aac952bdcefa2277ff898107c48a0a5681239f94c10085efc  doc/DECtalk/html/idh_sdk_3_stress_rise_sr.htm
+14bbafdef631f6851c508b01983faab7d1890bccbae82804b2e1473c9530a4b8  doc/DECtalk/html/idh_status_speaking_1_ttsapi_h.htm
+e41c9e44384cf08ced179bf93f1ec93ab8fe747c6ae6676bb0644fc0f6aa8fb4  doc/DECtalk/html/idh_true_1.htm
+20b718d27e70e574d4ccaed37c5d9ad69bbb7ee8b604f74cb592c698a7f76496  doc/DECtalk/html/idh_tts_force_0x00000001_ttsapi_h.htm
+c62cac7e3ae2e9fc95bca528264a8dcc1a00163e098c50da357095669b7df888  doc/DECtalk/html/idh_tts_normal_0x00000000_ttsapi_h.htm
+2385e771d5c5dc145fdb2d372862414e2486bd8142897053333a6209232f07dc  doc/DECtalk/html/idh_typedef_dword_language_t_ttsapi_h.htm
+e2c756caea785d75c86b4b9e86cb1e29ab6832c76d1622316c14eb4822c2a9e2  doc/DECtalk/html/idh_ursula_6_ttsapi_h.htm
+e2d1cee468848dbe4d7d8d71155e2f67ef6f0205c4bbd2dff641f5d7906f1d25  doc/DECtalk/html/idh_wave_format_08m08_0x00001000_ttsapi_h.htm
+653ab24dc3b5790c33f93311746ebd86a158f42a404ef79315987692256f7217  doc/DECtalk/html/idh_wave_format_1m08_0x00000001_mmsystem_h.htm
+e5304ee4f0ada12f76a5a1a40eff1e83dcdc7145ad51eef64397641d27e4a661  doc/DECtalk/html/idh_wave_format_1m16_0x00000004_mmsystem.htm
+e1bd40b3ab61df2b0fd8001df8bcd1453416c76ed8cbc0f58ae667880233de82  doc/DECtalk/html/idh_wave_out_device_id_2_ttsapi_h.htm
+421e2d691a78bf7b03e2a73c65a9b6d9b98e4b58f27a87bdf0453ee42a387e0c  doc/DECtalk/html/idh_wendy_8_ttsapi_h.htm
+d517d37c17f4bdc198bcec658f458663beb3ca4f923b7b84e084a5b8690cd274  doc/DECtalk/html/idxbody.htm
+d7caa4bc908d70a2cfb86bb01e890ca1253c4fa97d1581bb958c1894b3b0f5bb  doc/DECtalk/html/idxdhtml.htm
+e577d1a9a483e065b958b21b9c7fcc903f4b78c51f477ef69b91c082e21c8a23  doc/DECtalk/html/idxform.htm
+db0bdfbc9a72ba952b1483c6eff0bc0a18664d27fff6ce8ede2782f53a96ef79  doc/DECtalk/html/idxlist.htm
+39c5c2d2bddacf19208a90b6282896186d729970571a478818726a3f0f0c972f  doc/DECtalk/html/index.html
+4284dc9e9e245117e903d8904f5cf6137ff23c1f778ba02df37254ceaaef0a61  doc/DECtalk/html/interpreting_punctuation_marks_as_punctuation.htm
+e27d84698c6a75e3aac208fa6ad27c47b2adee28e19917e4df019948d8a54abc  doc/DECtalk/html/interpreting_punctuation_marks_as_words.htm
+8099a306182246c2eaafa9ddf5060a458f423a047a66f68a947bb77d97572f80  doc/DECtalk/html/introduction_to_dectalk_software.htm
+c51e24e2ca61c2998ad3d8b4d5ae903c4df674f2d05e77ee410e46623530409f  doc/DECtalk/html/loading_the_main_dictionary_static_engine.htm
+c5222b616011c051b598d36dfdfc31dc1e628e34dec0be9f48dbcb602ff10fe4  doc/DECtalk/html/log_file_mode.htm
+56c6f1b4b123f1196af292e76dc0783d8b4541b6efc3bdbfd077d65d7feaa25c  doc/DECtalk/html/macro1_s.gif
+68c75ebe7a30484d62fa3db6e0025168ade03b7aec5084adcf054de8cd61281a  doc/DECtalk/html/macro2_s.gif
+7f42cb012b48317cb4ce341813510d82fb3164135946e88aa7dbb585d95c24fa  doc/DECtalk/html/multi_language_programming_example.htm
+6c099a6d3ea13cf575e68636e0e6ebb4be3b3e67f5df17be78d971d492f4df50  doc/DECtalk/html/navframe.htm
+764a21964fadf62b1aec470e62a3665cbfc0ef22717eeb80690d4defd8d33323  doc/DECtalk/html/navpane1.htm
+8475c63244b4777bcfd59eb2da43df55f191c213394ec54a9bec11ff39548287  doc/DECtalk/html/navpane2.htm
+f492d9daee75b56536851526fbd652fd9a4111e69b74137a2a42d6de93fc8faa  doc/DECtalk/html/nsdnsfix.htm
+2ec6f27947720d4e36d971cbba881a170927ab7cc62b252340ede42e899449d6  doc/DECtalk/html/nsdnsfix.jar
+728651a85b4e48100e5d37cc572c97407865c1703da97e2af4b0fb97ced59f9e  doc/DECtalk/html/nt_apps.hh
+00c8c2b8dfc0a83f241b8b1c264dca75aabb3c74eaa288bb846dcf81810bb5aa  doc/DECtalk/html/parsing_email.htm
+75b49b94f8f11747c1aa94729debca8dc25663698892eb21f1db707546e75f97  doc/DECtalk/html/parsing_punctuation.htm
+0c9fe983d8dd72dcf308fb836dcbdca87a6409a257067e7b17babdf8c0bc83bd  doc/DECtalk/html/phoneme_identifiers_and_phonemic_symbols_english.htm
+073b643cbf6a5aaa555724a57ff16fc7cb291d096fe2f4d43fbf2ecbc15d4e89  doc/DECtalk/html/phoneme_notifications.htm
+7d77a7c216d7d970c40caf28602278f31039efa98eef124618c9e0bf9a0c9930  doc/DECtalk/html/phonemes_in_unicode_sequence.htm
+bfe2f28de6642ad3a342844d4d9a06c95df278b16ffd069d07c66cd3409fd8b9  doc/DECtalk/html/phonemic_symbols_castilian_spanish.htm
+8f3b5626b6af083a9b2b2d64c9c762883f06ba2bc7af4111b38714cd44138192  doc/DECtalk/html/phonemic_symbols_french.htm
+57b63d58b0d5336b536223912841b50152fc3af6dbdc503515edb1102ce79b60  doc/DECtalk/html/phonemic_symbols_german.htm
+622bb0b9880347fef743d0319a691453f879cd86a000c32d87a5858443da0c97  doc/DECtalk/html/phonemic_symbols_latin_american_spanish.htm
+d334606aa13c8390e229ccc957c5da2df5ab4d2268b44230600de25139c02a51  doc/DECtalk/html/phonemic_symbols_u_k_english.htm
+c06cebf17d33bee524c0f5bbf6879285bb1a58f726ee47b3059b2990725d1ec8  doc/DECtalk/html/pitch_pitch.htm
+631b72f59937e1e113030286ed73f77f8b7e72927759beb0c92d50a0454b7739  doc/DECtalk/html/preprocessor_rules_for_parsing.htm
+7ed392fac6f5b63eb8769573473c4bec5a5ca778b95aea948190c50ab5899c02  doc/DECtalk/html/programming_aids.htm
+11ff09f18a62362550ece20cb20195f529f6c9e540545f942b08b6ee6546ccdd  doc/DECtalk/html/punctuation.htm
+661b9941665984142ac55efaf41026606f6a9809b1bd04d5a9c47ddeba6710a2  doc/DECtalk/html/ref_1.hh
+0f8abf2f6617522187603570a1654865f22f41eeccc63ce2ee491e2629f97527  doc/DECtalk/html/ref_2.hh
+3c27f95ddf6bc1b2bfbdcffb252fdc388c5df86f58066984859719007e53360a  doc/DECtalk/html/ref_3.hh
+4573944af27ef4055311fac8518a4079e52a08aff1ed717674834d82dd96655d  doc/DECtalk/html/registry_entry_information.htm
+aa07e99bb247aa983c12ac2d9de8eb8a03ba578814e996c605246ffcbcc63663  doc/DECtalk/html/rules.htm
+a6b392a2bdeccc2df25d31b8c83bb98fffa70f57acafbe5ad067441579eb3a4a  doc/DECtalk/html/sample_program_applet.htm
+918d779d9e16314fb51399bbd45864c6c32fdcbe5e9ceff5eaba4aa376eaccc0  doc/DECtalk/html/sdk_1.hh
+eadd1b94b796f3406ffa741a89a1232d49b4c44a5599a17e0c82ce02fd600faa  doc/DECtalk/html/sdk_2.hh
+b1bfc6cfb661538513bd25b7ef4c1c067ef85bc0a530c8395c8dd5e785de6113  doc/DECtalk/html/sdk_3.hh
+a4b4e33d3b07b02a71d821645305c9814a8de38cc3ff4126b652a3dcfbc42f89  doc/DECtalk/html/sdk_4.hh
+c4ec24081eb9cb779ab1e16beb7332d1d1bad12be9b19e23f60e507bed9dc20a  doc/DECtalk/html/selecting_a_language.htm
+f9d9717df965e3f97042a48e759ff422a37fc120bf1ea46570c16017f005aabc  doc/DECtalk/html/spanish_castilian_and_latin_american.htm
+6ff58ad40ff47d42b19f3006a059cd68fdf1f35f40e008b6356a612d790b52a0  doc/DECtalk/html/speak_program_applet.htm
+e33ca1412003b915a8e379b88aa30c1e9854855a1524250c3f1ef36e16d323ca  doc/DECtalk/html/speech_to_memory_mode.htm
+37871848fe2010fa08ed65057db8ed0a294a335fbd82167ba2a89bd6cc1f24ad  doc/DECtalk/html/starting_a_language.htm
+0394856d625412d85282b98eeff90e010d32d95a02d545226184e1114e2a90c9  doc/DECtalk/html/startup_function.htm
+13df40ee941543f4cc383edfb79ba627153beb22259d170600f1c92cfa33a0b8  doc/DECtalk/html/startup_state.htm
+af862092ad8fdbbe6afa61004c6fae0c7360d6353a8d9a3b4da9dc7eaced911e  doc/DECtalk/html/static_engine.htm
+ef99d04266291c46c73c0ae41997162d755b9ce460c784c2715cb7227e5748a1  doc/DECtalk/html/supported_sapi_functions.htm
+342cd578d46c8038145f3a8864ba47bf98df757a4dee08705f608b76c7355658  doc/DECtalk/html/supported_sapi_version_5_features.htm
+1dcc961759d8f3e98dba195180ea72871882d2c6d141d5de2198e8f175870786  doc/DECtalk/html/tabframe.htm
+81ed210868557da28098fd0c3a258eb2bcb24a08e01dccac6df665ba2037bf6c  doc/DECtalk/html/text_to_speech_dde_server.htm
+622458f9c19235d68090e6d40128d2621b771bf2446161ab0276fe08a6381482  doc/DECtalk/html/texttospeechcloselang.htm
+9a7f2aa56697c46456beb1da26701b0d4b00339a5b527a837e2bf497aa328ebd  doc/DECtalk/html/texttospeechenumlangs.htm
+d8538074483d9c41565479e5e23773e99f68d4f3f1e2a558d627c01b1625b338  doc/DECtalk/html/texttospeechgetfeatures.htm
+e0d531f10f549b2ad7bed180e260fe4c9ae98d03559f8e8e7e7a96a0960ab4bc  doc/DECtalk/html/texttospeechselectlang.htm
+c32196cf3e0c335fbb06a8ba27404e730acb6509861a69c128c9cefc5e85758c  doc/DECtalk/html/texttospeechstartlang.htm
+5d5d0299abb8b777e2631a6fb78a4f302a64114481bce658a9157cdf514041f6  doc/DECtalk/html/texttospeechtyping.htm
+6304007a9178497fa3ccfcd76c8f119311c71c2c8a35219195ea2c6f093861b2  doc/DECtalk/html/texttospeechversionex.htm
+0139d0c3a1519cb1cbf604fc9f99d7f07fed21390463f3af794b391a555830f3  doc/DECtalk/html/tocdhtml.htm
+e64c9df77748ce0f8e0b5fa66de046a63cae169077942dc04f1f4789c2e7b1f4  doc/DECtalk/html/toclist.htm
+425e3af775c982df871dc11ad902fd1f7dba775cc4cf3ae3259fb1c4dd57423e  doc/DECtalk/html/tts_caps_t_structure_ttsapi_h.htm
+a372fb829dae63ffd256bde0dfd0896ac33228913de0108a557cdcb7d572a8a0  doc/DECtalk/html/using_the_components.htm
+311a7ca91f397d419a6b90b77ed379ad9231cc90637c671cd49e55d3d9868591  doc/DECtalk/html/voice_control_commands.htm
+df9b54b1290b1d12a174b335344d123f3187f9e18718b41d6cb43ed3f557e644  doc/DECtalk/html/wave_file_mode.htm
+d43df71079981e27f5e336b9739334beeacc851e038217595e275b368dc5ba76  doc/DECtalk/html/webhelp.cab
+86335c57ce3fa20c1c3ceff5413208ed4498f4808708c46ea2e5e82109117bac  doc/DECtalk/html/webhelp.jar
+e4453007a835ee698623a5765af16055df77c17fab0bbb5e2d2458bd0fe6f8dc  doc/DECtalk/html/webhelp.res
+3d8b4726efa7fcb6b6541100ba70d0f5631ee792a5d45976a3174247e4948131  doc/DECtalk/html/webhelp0.cab
+417dd973da749678ba05d8aff06a0513890660b167a6a4c6d7e439d46f56cca6  doc/DECtalk/html/webhelp4.js
+adf893e19f609ca4c39b32fcb83a9c9ff8532b4bb2fb9013bf0620fba738a8ba  doc/DECtalk/html/what_s_new_in_dectalk_software_v4_6.htm
+d8d7518302cec45e090fed50800741954022ad372910d494084f6c7a097eb3a1  doc/DECtalk/html/what_s_new_in_dectalk_v4_61.htm
+a11a044d44178fe035514519309a4394b7506d013fb9da6d09a4affc7994beda  doc/DECtalk/pdf/dtk_install_guide.pdf
+1f7ad9181287007a07f70d35b7fc992b0b00a3c70aa2a89aeee8dce4ba66ebaf  doc/DECtalk/pdf/dtk_prog_guide.pdf
+8da1d2daba4c9c42e8fa7547b40a9442d0feb0b955cc317068bd395fd12c8767  doc/DECtalk/pdf/dtk_reference_guide.pdf
+bcca0ef0abdb9835f519517c2497839b8c0dc74356f7165f955731f519c14be4  doc/DECtalk/ps/dtk_install_guide.ps
+2ce3b07655638d4d8964e625d599c18039bb251a059dd18f5134a2b4b0909bfb  doc/DECtalk/ps/dtk_prog_guide.ps
+fafe61d80dc7b7ef8df0d28a18584e32bf0a7aa749b2e5e0b75c1d26475021cc  doc/DECtalk/ps/dtk_reference_guide.ps
+20d6347ef8407505e4f215e70dcd0eeb95bbae5c3728ee5112e2b74b73d04a4e  dtmemory
+6ff182dda61e153f4dd9512107caa9d481aa1d8ef9e2934f1a2acea493d59fc2  include/dtk/dtmmedefs.h
+1bbbc97b760ab6d27b024d9251e418867e57f67478c3f34245120257b44818aa  include/dtk/l_all_ph.h
+499c00436601fe583a8c46ef0ac238458b69783262ae22fdc8db0647bfa86694  include/dtk/l_com_ph.h
+27f65563db10a87a68f645091c873b7991b98de7868e63c12612e014b2c130e7  include/dtk/l_fr_ph.h
+940fcf152461848aba1c08458be6b235e456fe12e584ffed2867cfd540384e2a  include/dtk/l_gr_ph.h
+63eb43c5fe93357efa34ce3e80f989cff272279ba09d3b04a4b2aaf79fb060b2  include/dtk/l_la_ph.h
+099165331fd885119057f0537b50457a985d24d0ea3094dfd14efa3176528854  include/dtk/l_sp_ph.h
+5a0afd137725ee187270f732f922045f22ba73761736f053667b97672e3e9c54  include/dtk/l_uk_ph.h
+5ea7de156d6d701c3213009cf3550b1e4c37a5e114da66ae2a201dba86d2bc23  include/dtk/l_us_ph.h
+250a3a96a781f0d8092659a225615f9dc94871c04272696566f4e59173005899  include/dtk/ttsapi.h
+de8ad7c6e4478055b9afa47da36fe322658c4449d78a18e5a7445b7da407af1e  lib/libtts.so
+0b1fd04a5e0ddbfd1b583a3c4705a1cd7d286aba738865b7eafb94d507b4f7ed  lib/libtts_fr.so
+31080a92c4e15a95a0fc868d23c7189234010507550c153391241639922ac6c8  lib/libtts_gr.so
+3e3325173becfbeaebbbe2f28ef58bfb6d0a1c0a56934b79560e2af2bb5bc1a9  lib/libtts_la.so
+17812d8d702acd208fd23a7f52431df03c695c42a51af4a474c21d5df62d3584  lib/libtts_sp.so
+56781d194b6365c371c1f4eb77d59050579b622e29756f884f38b66585b36a37  lib/libtts_uk.so
+4d69c64f0df908cb270c77d50b7d0bf53dde6e22ed187a1a5e669faf8004acb2  lib/libtts_us.so
+58931662434cfee3f741374bd39c3bd405ab5b4c136567840246176021e77720  say
+15016ddd6e9e8879015725457dbd1eaa7fd1e0f4ee5a27af6bcda7fdec298466  src/DECtalk/dtsamples/aclock.c
+2b93984d9ef81c7afa45326af00d1b449f57359d823635191b8e9ddff63dca79  src/DECtalk/dtsamples/birthday.txt
+49af77d03218ef39cb71ec611739fcdccac1bfb0af64098ea40609efd3c81152  src/DECtalk/dtsamples/demo.txt
+9c09074d1b4071af61847da5024f7398ea81bb51cae78cc6d6ea7248ca834849  src/DECtalk/dtsamples/dtmemory.c
+a609b97aac141fbd925bc857937fad21eed78e59159a8156029d98ddfd923885  src/DECtalk/dtsamples/noglass.txt
+2420e9422b67bea93f7d6ef972cf55bbe5b92cda9074068a070b180c541db3d9  src/DECtalk/dtsamples/say.c
+4dccc4b6a738d39169093f224ba510207257f3ae695e8b1b8d597449c66402b0  src/DECtalk/dtsamples/startup.txt
+0639e0887ff932ae56c2784e6471f232212e283c2153c766b446465c7d39c2d6  src/DECtalk/dtsamples/user.tab
+b285d4d72db712df4494631d227f37844481915020fb38e7f489cd9d70f37c03  src/DECtalk/gspeak/gspeak.c
+a0629c370836f8e7c79e3f782e784610b5a65beff51c5c801019e1458c2cbcdf  tools/dic_fr
+1dee830e6e7e1bb0eba071f0523f31847feeaf4eca90251f14704e441ccd0c48  tools/dic_gr
+f9279416714828e2774b643cda36f0cd046366debf1091cc8bc23ff2ad36de0b  tools/dic_la
+21ef9c10cb693b42308fdc3671f664914b9d38b05060e1056f079517c8606e4c  tools/dic_sp
+26a61fd62428edc65ae01e9f2386f37f44cd96a040a4d34a038871a99ed44e06  tools/dic_uk
+d7e89311ff696a344bbe3ee766c732a021f431b705791a5c9db744e1315070ee  tools/dic_us
+c6ad6dd981ee478bc029c11906f763c5f5b87dd42e682ec037ff8f1614f8109a  tools/dump_vdf
+a6068ad15cd369f042f45b08c184e92ce6c4f8b74b677cd08f96cf20f8de8357  tools/mfg_load
+1259b140515d86fd2c3a6a8cb855a0d46563282f045f8657919b2a2dae6f6ab9  tools/say_demo_fr
+cc45a7482260c2e8a4875ffc392a8835c5ab6a2fc7ec7e50c80ea9eb1194018a  tools/say_demo_gr
+31edc73a5c6ea7701ccb53dc2d546a522a7b8d59cfe20496d1005a55d41d376e  tools/say_demo_la
+baa8d2e91ada221d1da57cccbcfcabc55b84587beaf48706b24ac2c264e39956  tools/say_demo_sp
+cc5263e4f135a28e3284ad877e417690510306339e7a8c97de4007a9920a39dd  tools/say_demo_uk
+ec7d6ff3f76f8c14e20f4a518983344f96e4ffcef31f3178221d75ac36638228  tools/say_demo_us
+eb5219eab15faeb7cca67b67c6ddd687f9f5237a22f6ec3ae7ae54bc99cca807  tools/tunecheck_fr
+bedf4d314ded804e53d8c3b5f28f135ab4af698ad9d158ca71716cc29f6181e6  tools/tunecheck_gr
+44d902d2f42247cfef7e07400696cf1c42c86ae8c30195d312e4511bb4eca74e  tools/tunecheck_la
+f5398a98c4dfd59e97011fd1bb4f6fd6e39a886a9e856ccb4be871c281b9b365  tools/tunecheck_sp
+219cd733990a851bc2c850f850cd257097d84c3ed555e1d1a76cfaa3350b1011  tools/tunecheck_uk
+3835d44429c4ec406881461f3bfba2daf3e5e0c0a645c17a19546b0f7195909e  tools/tunecheck_us
+9e377c3646b1e54282bd76778144d113152032669f063c4e386e7d6fcece7481  tools/udic_fr
+f9846dfc81b3493d4ce5384f40a9414aa89cabd773043c0144fd0a7454697988  tools/udic_gr
+cf6ba1cb49393da1b34760b0b87a963f6c02b14738020d20df01c7da86f7aa6d  tools/udic_la
+62d419345d0efbbd40ca2be402416ce4f3db3d9af2cd89f689c168426b6c8e10  tools/udic_sp
+c8830adccdd5ebdfd3fd93388cf89f971f9c85b1b8c5232fe01f95d0f77bd241  tools/udic_uk
+c37e80f8785cc700cdd5e0f83c8be00d91250e9159be4aadc152a8535bcb198d  tools/udic_us

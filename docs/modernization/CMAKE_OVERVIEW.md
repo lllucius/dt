@@ -43,9 +43,10 @@ tools/baseline/verify_cmake_subset.sh \
 ```
 
 The subset verifier configures and builds the CMake stage, checks
-`compile_commands.json`, compares generated dictionaries and US English WAVs
-against golden outputs, compares `libtts.so` symbols exactly, and compares
-language-library exported symbol name/type sets.
+`compile_commands.json`, compares generated dictionaries, compares the original
+US English WAVs and expanded US audio suites against golden outputs, compares
+`libtts.so` symbols exactly, and compares language-library exported symbol
+name/type sets.
 
 ## Source membership
 

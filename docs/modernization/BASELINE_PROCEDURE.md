@@ -111,6 +111,10 @@ Committed WAV outputs:
 - `tests/golden/audio/us/speaker_6.wav`
 - `tests/golden/audio/us/speaker_7.wav`
 - `tests/golden/audio/us/speaker_8.wav`
+- expanded suites under:
+  - `tests/golden/audio/us/us_abbreviations/`
+  - `tests/golden/audio/us/us_commands_markup/`
+  - `tests/golden/audio/us/us_punctuation_numbers/`
 
 Generation command pattern:
 
@@ -125,6 +129,8 @@ Audio comparisons can also emit a metrics report:
 
 ```sh
 tools/baseline/compare_audio.py --actual baseline-runs/current/audio-us --metrics-out baseline-runs/current/audio-metrics.tsv
+tools/baseline/capture_audio_suites.sh --out baseline-runs/current/audio-us-suites
+tools/baseline/compare_audio_suites.sh --actual baseline-runs/current/audio-us-suites --metrics-out baseline-runs/current/audio-suite-metrics
 ```
 
 The metrics report includes SHA-256 hashes, frame counts, sample rates, peak and
@@ -134,9 +140,8 @@ condition.
 ## Limitations
 
 - Baseline audio covers US English only.
-- Baseline audio covers one fixed input text and speakers 0 through 8.
-- Additional committed input files expand future coverage, but they do not yet
-  have committed WAV baselines.
+- Baseline audio covers the original one-shot input plus three expanded US
+  input suites. Each suite covers speakers 0 through 8.
 - No live audio hardware path was tested.
 - Optional GTK, ALSA, and PulseAudio development packages were not available on
   the host used for Phase 1.

@@ -36,6 +36,22 @@ contract and should not be edited without behavior verification.
 Use the detailed modes when packaging work might affect file permissions,
 symlink targets, generated config contents, or payload bytes.
 
+The accepted detailed Linux Autotools manifest is committed at:
+
+- `tests/golden/dist-manifest-detailed.txt`
+
+Regenerate and compare with:
+
+```sh
+tools/baseline/capture_dist_manifest.sh \
+  --format metadata-hash \
+  --out baseline-runs/current/dist-manifest-detailed.txt
+tools/baseline/compare_manifest.sh \
+  --expected tests/golden/dist-manifest-detailed.txt \
+  --actual baseline-runs/current/dist-manifest-detailed.txt \
+  --out baseline-runs/current/dist-manifest-detailed.diff
+```
+
 ## CMake Status
 
 The side-by-side CMake staged layout is still a verification subset. It does not

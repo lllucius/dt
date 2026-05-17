@@ -274,7 +274,7 @@ Implementation Summary:
 
 ## Phase 3: Deterministic Baseline Expansion
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high before accepting new golden outputs.
 
@@ -302,6 +302,57 @@ Rules:
 - Any golden output delta is a behavior decision and must be explicitly
   approved before commit.
 - Do not use live audio hardware.
+
+Implementation Summary:
+
+- Added expanded US English audio suite tooling:
+  - `tools/baseline/capture_audio_suites.sh`
+  - `tools/baseline/compare_audio_suites.sh`
+- Updated `tools/baseline/verify_current.sh`,
+  `tools/baseline/verify_cmake_subset.sh`, and `.github/workflows/build.yml`
+  so local verification and Ubuntu CI capture and compare the expanded audio
+  suites.
+- Added accepted expanded US English WAV baselines:
+  - `tests/golden/audio/us/us_abbreviations/speaker_0.wav` through
+    `speaker_8.wav`
+  - `tests/golden/audio/us/us_commands_markup/speaker_0.wav` through
+    `speaker_8.wav`
+  - `tests/golden/audio/us/us_punctuation_numbers/speaker_0.wav` through
+    `speaker_8.wav`
+- Added accepted detailed Autotools packaging manifest baseline:
+  - `tests/golden/dist-manifest-detailed.txt`
+- Updated baseline documentation in `tools/baseline/README.md`,
+  `docs/modernization/BASELINE_PROCEDURE.md`,
+  `docs/modernization/PACKAGING_LAYOUT.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/BASELINE_EXPANSION_PLAN.md`, and
+  `tests/golden/audio/us/README.md`.
+- Verification run:
+  `tools/baseline/capture_audio_suites.sh --out baseline-runs/next-phase3-audio-suites`,
+  `tools/baseline/compare_audio_suites.sh --actual baseline-runs/next-phase3-audio-suites --metrics-out baseline-runs/next-phase3-audio-suite-metrics`,
+  `tools/baseline/capture_dist_manifest.sh --format metadata-hash --out baseline-runs/next-phase3-dist-manifest-detailed.txt`,
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual baseline-runs/next-phase3-dist-manifest-detailed.txt --out baseline-runs/next-phase3-dist-manifest-detailed.diff`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase3-verify --expected tests/golden`,
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase3-cmake --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: all 27 expanded US WAV files compared exactly; the
+  detailed Autotools manifest compared exactly and contains 1,126 lines;
+  Autotools accepted baselines reproduced for original US golden audio,
+  exported symbols, main dictionaries, the US user-dictionary fixture, public
+  header allowlists, warning budget, expanded US audio suites, and detailed
+  manifest. CMake subset verification reproduced dictionaries, original US
+  audio, expanded US audio suites, exact `libtts.so` symbols,
+  language-library symbol name/type sets, and `compile_commands.json`.
+- Warning counts did not improve in this phase: the full Autotools run observed
+  1,805 default warning lines and 29,815 strict warning lines. The warning
+  budget remained `ok`.
+- Public exports did not change. Dictionaries did not change. Existing golden
+  audio did not change; new golden audio suites were intentionally accepted
+  under the extra-high checkpoint. Behavior risk is low because runtime code was
+  not changed.
+- Known limitations: expanded WAV baselines remain US English only; non-US
+  language baselines and phoneme/text baselines remain deferred; live audio
+  hardware behavior was not tested.
 
 ## Phase 4: CMake Packaging Parity, Non-Promoting
 

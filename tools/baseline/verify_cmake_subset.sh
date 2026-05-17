@@ -99,6 +99,12 @@ fi
 "$repo_root/tools/baseline/compare_audio.py" \
   --actual "$run_dir/audio-us" \
   --metrics-out "$run_dir/audio-metrics.tsv" > "$run_dir/audio-compare.txt"
+"$repo_root/tools/baseline/capture_audio_suites.sh" \
+  --dist "$dist_dir" \
+  --out "$run_dir/audio-us-suites"
+"$repo_root/tools/baseline/compare_audio_suites.sh" \
+  --actual "$run_dir/audio-us-suites" \
+  --metrics-out "$run_dir/audio-suite-metrics" > "$run_dir/audio-suite-compare.txt"
 
 "$repo_root/tools/baseline/capture_symbols.sh" \
   --dist "$dist_dir" \
@@ -131,6 +137,7 @@ fi
   printf 'compile_commands=%s\n' "$build_dir/compile_commands.json"
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
+  printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
   [ -f "$run_dir/language-symbol-name-compare.txt" ] && printf 'language_symbol_names=%s\n' "$run_dir/language-symbol-name-compare.txt"
   printf 'dist_manifest_detailed=%s\n' "$run_dir/dist-manifest-detailed.txt"
 } > "$run_dir/summary.txt"

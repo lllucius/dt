@@ -17,12 +17,14 @@ When supplied, it may contain:
 
   symbols/
   dist-manifest.txt
+  dist-manifest-detailed.txt
   dictionaries/
   dictionaries/user/expected/
   public-headers/
   warnings/default-cleaned.tsv
 
-Golden audio is always compared against tests/golden/audio/us.
+Golden audio is always compared against tests/golden/audio/us, including
+expanded suite directories when present.
 USAGE
 }
 
@@ -77,6 +79,9 @@ mkdir -p "$run_dir"
   --out-dir "$run_dir/warnings-default"
 "$repo_root/tools/baseline/capture_symbols.sh" --out "$run_dir/symbols"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" --out "$run_dir/dist-manifest.txt"
+"$repo_root/tools/baseline/capture_dist_manifest.sh" \
+  --format metadata-hash \
+  --out "$run_dir/dist-manifest-detailed.txt"
 "$repo_root/tools/baseline/capture_dictionaries.sh" --out "$run_dir/dictionaries"
 "$repo_root/tools/baseline/capture_user_dictionaries.sh" --out "$run_dir/user-dictionaries"
 "$repo_root/tools/baseline/check_public_headers.sh" --out "$run_dir/public-headers"
@@ -84,6 +89,10 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/compare_audio.py" \
   --actual "$run_dir/audio-us" \
   --metrics-out "$run_dir/audio-metrics.tsv" > "$run_dir/audio-compare.txt"
+"$repo_root/tools/baseline/capture_audio_suites.sh" --out "$run_dir/audio-us-suites"
+"$repo_root/tools/baseline/compare_audio_suites.sh" \
+  --actual "$run_dir/audio-us-suites" \
+  --metrics-out "$run_dir/audio-suite-metrics" > "$run_dir/audio-suite-compare.txt"
 
 if [ -n "$expected_dir" ]; then
   if [ -d "$expected_dir/symbols" ]; then
@@ -97,6 +106,12 @@ if [ -n "$expected_dir" ]; then
       --expected "$expected_dir/dist-manifest.txt" \
       --actual "$run_dir/dist-manifest.txt" \
       --out "$run_dir/manifest.diff" > "$run_dir/manifest-compare.txt"
+  fi
+  if [ -f "$expected_dir/dist-manifest-detailed.txt" ]; then
+    "$repo_root/tools/baseline/compare_manifest.sh" \
+      --expected "$expected_dir/dist-manifest-detailed.txt" \
+      --actual "$run_dir/dist-manifest-detailed.txt" \
+      --out "$run_dir/manifest-detailed.diff" > "$run_dir/manifest-detailed-compare.txt"
   fi
   if [ -d "$expected_dir/dictionaries" ]; then
     "$repo_root/tools/baseline/compare_dictionaries.sh" \
@@ -129,8 +144,11 @@ fi
   printf 'strict_warnings=%s\n' "$(cat "$run_dir/build/strict-warning-count.txt")"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
   printf 'audio_metrics=%s\n' "$run_dir/audio-metrics.tsv"
+  printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
+  printf 'audio_suite_metrics=%s\n' "$run_dir/audio-suite-metrics"
   [ -f "$run_dir/symbol-compare.txt" ] && printf 'symbol_compare=%s\n' "$run_dir/symbol-compare.txt"
   [ -f "$run_dir/manifest-compare.txt" ] && printf 'manifest_compare=%s\n' "$run_dir/manifest-compare.txt"
+  [ -f "$run_dir/manifest-detailed-compare.txt" ] && printf 'manifest_detailed_compare=%s\n' "$run_dir/manifest-detailed-compare.txt"
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"
   [ -f "$run_dir/user-dictionary-compare.txt" ] && printf 'user_dictionary_compare=%s\n' "$run_dir/user-dictionary-compare.txt"
   [ -f "$run_dir/public-header-compare.txt" ] && printf 'public_header_compare=%s\n' "$run_dir/public-header-compare.txt"
