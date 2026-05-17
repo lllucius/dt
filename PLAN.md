@@ -254,7 +254,28 @@ Rules:
 
 ## Phase 3: Warning Taxonomy and Ownership
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added `tools/baseline/summarize_warnings.py`, a GCC-style warning inventory
+  parser that normalizes nested `make` warning paths and writes TSV reports by
+  flag, category, file, and risk.
+- Added `docs/modernization/WARNING_INVENTORY.md` with strict/default warning
+  counts, top warning categories, high-risk ownership boundaries, and the
+  intended first cleanup wave.
+- Updated `tools/baseline/README.md` with the warning summarizer workflow.
+- Verification run:
+  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase2-golden-current-2/build/build.log --out-dir baseline-runs/phase3-warning-taxonomy/default`
+  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase2-golden-current-2/build/build-strict-warnings.log --out-dir baseline-runs/phase3-warning-taxonomy/strict`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - parser-visible default warnings: 1,808.
+  - parser-visible strict warnings: 29,828.
+  - strict risk split: 9,523 high, 4,985 medium, 1,850 low, 13,470 unknown.
+  - no warning cleanup was performed.
+- No engine code, public headers, dictionary sources, generated audio,
+  exported symbols, install layout, or runtime behavior were changed.
 
 Goals:
 

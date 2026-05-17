@@ -23,5 +23,17 @@ tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected base
 The expected directory is optional. When supplied, it may contain `symbols/`,
 `dist-manifest.txt`, and `dictionaries/` captures from a previously accepted run.
 
+Warning inventory reports:
+
+```sh
+tools/baseline/summarize_warnings.py \
+  --log baseline-runs/current/build/build-strict-warnings.log \
+  --out-dir baseline-runs/current/warnings-strict
+```
+
+The warning summarizer writes TSV reports grouped by flag, category, file, and
+risk. It is an inventory helper only; it does not decide whether a warning is
+safe to clean.
+
 Generated logs and comparison artifacts should stay under ignored
 `baseline-runs/`.
