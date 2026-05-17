@@ -644,7 +644,40 @@ Rules:
 
 ## Phase 9: Platform Abstraction, Time and Filesystem
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added internal POSIX filesystem wrapper scaffolding:
+  - `src/platform/dt_filesystem.h`
+  - `src/platform/dt_filesystem_posix.c`
+- Expanded the existing internal time wrapper with
+  `dt_monotonic_milliseconds()` in:
+  - `src/platform/dt_time.h`
+  - `src/platform/dt_time_posix.c`
+- Added a CMake-only developer smoke tool,
+  `tools/platform/dt_platform_smoke.c`, to exercise the time and filesystem
+  wrappers without installing the tool or routing DECtalk runtime behavior
+  through the wrappers.
+- Updated `CMakeLists.txt` with a private `dt_platform` static library and
+  `dt_platform_smoke` executable target.
+- Updated `src/platform/README.md` to describe the current wrapper scope and the
+  CMake-only smoke target.
+- Verification run:
+  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase9-platform-cmake -DCMAKE_BUILD_TYPE=Release`
+  - `cmake --build baseline-runs/phase9-platform-cmake --target dt_platform_smoke -- -j1`
+  - `baseline-runs/phase9-platform-cmake/dt_platform_smoke . PLAN.md`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase9-behavior --expected tests/golden`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - CMake smoke target built and ran successfully.
+  - Autotools behavior verification passed with exact golden audio, exported
+    symbols, generated dictionaries, and user dictionaries.
+  - default warning-line count was 1,829 and strict warning-line count was
+    29,839.
+- No engine source, public headers, dictionary sources, threading code, audio
+  backend code, exported symbols, or runtime behavior paths were intentionally
+  changed.
 
 Goals:
 
