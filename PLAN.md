@@ -1064,7 +1064,51 @@ Rules:
 
 ## Phase 15: Packaging and Install Layout Parity
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Extended `tools/baseline/capture_dist_manifest.sh` with opt-in manifest
+  formats while preserving the existing default output:
+  - `basic`: path, type, and symlink target.
+  - `metadata`: path, type, mode, size, and symlink target.
+  - `metadata-hash`: metadata plus SHA-256 hashes for regular files.
+- Added `docs/modernization/PACKAGING_LAYOUT.md` documenting the current
+  Autotools `dist/` layout, generated `DECtalk.conf`, detailed manifest modes,
+  and current CMake staging limitations.
+- Updated `tools/baseline/README.md` with detailed packaging manifest commands.
+- Verification run:
+  - `tools/baseline/capture_dist_manifest.sh --out baseline-runs/phase15-default-dist-manifest.txt`
+  - `tools/baseline/capture_dist_manifest.sh --format metadata-hash --out baseline-runs/phase15-autotools-dist-manifest-detailed.txt`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase14-api/dist-manifest.txt --actual baseline-runs/phase15-default-dist-manifest.txt --out baseline-runs/phase15-default-manifest-compare.diff`
+  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase15-cmake -DCMAKE_BUILD_TYPE=Release`
+  - `cmake --build baseline-runs/phase15-cmake --target dectalk_cmake_stage -- -j1`
+  - `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/phase15-cmake/cmake-dist --out baseline-runs/phase15-cmake-dist-manifest.txt`
+  - `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/phase15-cmake/cmake-dist --format metadata-hash --out baseline-runs/phase15-cmake-dist-manifest-detailed.txt`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase15-autotools-dist-manifest-detailed.txt --actual baseline-runs/phase15-cmake-dist-manifest-detailed.txt --out baseline-runs/phase15-cmake-vs-autotools-detailed.diff`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase15-behavior --expected tests/golden`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase14-api/dist-manifest.txt --actual baseline-runs/phase15-behavior/dist-manifest.txt --out baseline-runs/phase15-behavior/dist-manifest-compare.diff`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - default path/type manifest output remained compatible and matched the Phase
+    14 manifest exactly.
+  - detailed Autotools manifest capture produced 1,126 lines.
+  - detailed CMake staged manifest capture produced 90 lines.
+  - CMake-vs-Autotools detailed manifest comparison intentionally differed,
+    with 1,064 removed lines and 28 added lines in the diff, confirming CMake
+    packaging remains a subset.
+  - documented remaining CMake packaging gaps include docs, bitmaps, source
+    sample trees, `/usr/bin` symlinks, `README`, and helper/sample tools such as
+    `aclock`, `dtmemory`, `gspeak`, `windic`, `tunecheck`, user-dictionary
+    tools, and demo tools.
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - exported symbols, generated dictionaries, user dictionaries, public header
+    audit, and default dist manifest comparisons all passed.
+  - default warning-line count: 1,805.
+  - strict warning-line count: 29,814.
+- Existing install layout was not changed. No libraries, tools, headers,
+  dictionaries, generated `DECtalk.conf` keys, symlinks, runtime code, or speech
+  behavior were intentionally changed.
 
 Goals:
 

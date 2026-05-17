@@ -8,6 +8,9 @@ Typical use:
 ```sh
 tools/baseline/build_unix.sh --strict-warnings --run-dir baseline-runs/current
 tools/baseline/capture_dist_manifest.sh --out baseline-runs/current/dist-manifest.txt
+tools/baseline/capture_dist_manifest.sh \
+  --format metadata-hash \
+  --out baseline-runs/current/dist-manifest-detailed.txt
 tools/baseline/capture_symbols.sh --out baseline-runs/current/symbols
 tools/baseline/capture_dictionaries.sh --out baseline-runs/current/dictionaries
 tools/baseline/capture_user_dictionaries.sh --out baseline-runs/current/user-dictionaries
@@ -52,6 +55,19 @@ tools/baseline/check_public_headers.sh \
 
 The header audit compares the accepted installed-header list and syntax-checks
 the subset of public or ABI-sensitive headers that currently self-compile.
+
+Detailed packaging manifests:
+
+```sh
+tools/baseline/capture_dist_manifest.sh \
+  --format metadata-hash \
+  --out baseline-runs/current/dist-manifest-detailed.txt
+```
+
+The default manifest format remains path/type-oriented for compatibility with
+earlier accepted baselines. Use `--format metadata` or
+`--format metadata-hash` when packaging work may affect file modes, symlinks, or
+payload bytes.
 
 Generated logs and comparison artifacts should stay under ignored
 `baseline-runs/`.
