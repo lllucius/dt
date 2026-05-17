@@ -783,7 +783,7 @@ Implementation Summary:
 
 ## Phase 11: Final Readiness Review For This Plan
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -813,6 +813,50 @@ Success criteria:
 - All accepted baselines are reproducible.
 - Known limitations are explicit.
 - No behavior preservation claim is made beyond checks actually run.
+
+Implementation Summary:
+
+- Updated `docs/modernization/READINESS_REVIEW.md` with a follow-on plan final
+  readiness review dated 2026-05-17.
+- Files changed: `docs/modernization/READINESS_REVIEW.md` and `PLAN.md`.
+- The review documents the final state of Linux build reproducibility, local CI
+  script reliability, warning counts and budgets, public headers, API smoke
+  coverage, exports, dictionary generation, deterministic golden audio, CMake
+  status, platform abstraction status, historical target quarantine status,
+  known limitations, and deferred work.
+- Verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase11-readiness --expected tests/golden`.
+- Verification results: default warning-line count 1,793; strict warning-line
+  count 29,779; parser-visible default warnings 1,772; warning budget status
+  `ok`; public headers matched; public API smoke output matched the committed
+  speaker 0 golden WAV exactly; exported symbols matched; generated
+  dictionaries matched; generated US user-dictionary fixture output matched;
+  one-shot US English golden WAVs matched for speakers 0 through 8; expanded US
+  audio suites matched for speakers 0 through 8; Autotools dist manifest
+  matched the committed detailed manifest baseline and contained 589 basic
+  entries.
+- Additional verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase11-cmake --expected tests/golden`.
+- Additional verification results: CMake configured and built
+  `dectalk_cmake_stage`; `compile_commands.json` had 3,127 lines; generated
+  dictionaries matched; one-shot and expanded US audio matched; `libtts.so`
+  exported symbols matched exactly; language-library exported symbol name/type
+  sets matched.
+- Warning counts changed compared with the follow-on Phase 1 baseline: default
+  warning-line count decreased from 1,804 to 1,793 and strict warning-line
+  count decreased from 29,815 to 29,779. Warning debt remains substantial.
+- Public exports did not change according to the committed symbol comparisons.
+- Dictionaries did not change according to the committed dictionary
+  comparisons.
+- Golden audio did not change according to the committed one-shot and expanded
+  deterministic WAV comparisons.
+- Behavior risk level: low. This phase changed documentation only after both
+  final readiness gates passed.
+- Known limitations: GitHub-hosted CI was not run locally; live audio hardware,
+  callbacks, backend device selection, timing, non-current platform builds, and
+  full API conformance remain untested; CMake packaging parity remains
+  incomplete; behavior preservation is claimed only for the deterministic checks
+  listed above.
 
 ## Definition of Done for Each Phase
 
