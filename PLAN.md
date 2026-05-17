@@ -709,7 +709,41 @@ Rules:
 
 ## Phase 10: Platform Abstraction, Threads and Synchronization
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added internal POSIX thread and synchronization wrapper scaffolding:
+  - `src/platform/dt_thread.h`
+  - `src/platform/dt_thread_posix.c`
+  - `src/platform/dt_mutex.h`
+  - `src/platform/dt_mutex_posix.c`
+  - `src/platform/dt_event.h`
+  - `src/platform/dt_event_posix.c`
+- The new wrappers provide opaque internal handles for thread create/join/exit,
+  mutex create/lock/unlock/destroy, and manual-reset/auto-reset event
+  create/set/reset/wait/destroy.
+- Extended the CMake-only `dt_platform` static library and
+  `tools/platform/dt_platform_smoke.c` so the smoke target compiles and runs the
+  thread, mutex, and event wrappers without installing them or routing existing
+  runtime behavior through them.
+- Updated `src/platform/README.md` to document the added wrapper scope.
+- Verification run:
+  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase10-platform-cmake -DCMAKE_BUILD_TYPE=Release`
+  - `cmake --build baseline-runs/phase10-platform-cmake --target dt_platform_smoke -- -j1`
+  - `baseline-runs/phase10-platform-cmake/dt_platform_smoke . PLAN.md`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase10-behavior --expected tests/golden`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - CMake smoke target built and ran successfully, including thread create/join,
+    mutex lock/unlock, and event wait/set behavior.
+  - Autotools behavior verification passed with exact golden audio, exported
+    symbols, generated dictionaries, and user dictionaries.
+  - default warning-line count was 1,829 and strict warning-line count was
+    29,837.
+- No existing runtime thread lifecycle, `opthread.c`, `linux_audio.c`, callback,
+  queue, pipe, audio, dictionary, public API, or exported-symbol behavior was
+  intentionally changed.
 
 Reasoning checkpoint: extra-high recommended before wiring any thread, mutex, or
 event wrapper into existing runtime code.

@@ -177,11 +177,15 @@ function(dectalk_apply_common_c_settings target_name)
 endfunction()
 
 add_library(dt_platform STATIC
+  src/platform/dt_event_posix.c
   src/platform/dt_filesystem_posix.c
+  src/platform/dt_mutex_posix.c
+  src/platform/dt_thread_posix.c
   src/platform/dt_time_posix.c
 )
 target_include_directories(dt_platform PUBLIC src/platform)
 target_compile_options(dt_platform PRIVATE ${DECTALK_COMMON_COMPILE_OPTIONS})
+target_link_libraries(dt_platform PUBLIC pthread)
 
 add_executable(dt_platform_smoke tools/platform/dt_platform_smoke.c)
 target_compile_options(dt_platform_smoke PRIVATE ${DECTALK_COMMON_COMPILE_OPTIONS})

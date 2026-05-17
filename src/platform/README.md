@@ -12,6 +12,8 @@ Current wrappers:
 - `dt_time.*`: POSIX monotonic time and millisecond sleep helpers.
 - `dt_filesystem.*`: POSIX path classification, path joining, and existence
   checks.
+- `dt_thread.*`, `dt_mutex.*`, and `dt_event.*`: POSIX thread and
+  synchronization wrappers compiled only as scaffolding.
 
 The CMake-only `dt_platform_smoke` target exercises these wrappers as a
 developer check without installing them or routing DECtalk runtime behavior
