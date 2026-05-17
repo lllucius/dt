@@ -325,3 +325,67 @@ Known limitations:
 - Non-current platform builds were not tested.
 - Behavior preservation is claimed only for the deterministic checks listed in
   this section.
+
+## Next Plan Phase 1 Baseline
+
+The next modernization plan started with a post-merge baseline refresh after
+PR #3 was merged to `origin/develop`.
+
+Autotools/Linux refresh:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next2-phase1-post-merge \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,793.
+- strict warning-line count: 29,779.
+- parser-visible default warnings: 1,771.
+- warning budget status was `ok`; `src/dapi/src/dic/dic_comm.c` stayed at zero
+  `-Wformat=` warnings and `src/samplosf/src/dtsamples/mfg_load.c` stayed at
+  zero `-Wold-style-definition` warnings.
+- US English one-shot golden WAV output matched exactly for speakers 0 through
+  8.
+- expanded deterministic US audio suites matched exactly for speakers 0 through
+  8: `us_abbreviations`, `us_commands_markup`, and
+  `us_punctuation_numbers`.
+- exported symbols matched the committed symbol baselines.
+- generated main dictionaries matched the committed dictionary baselines.
+- generated US user-dictionary fixture output matched the committed expected
+  capture.
+- public header audit matched the committed allowlists.
+- public API smoke output matched the committed speaker 0 golden WAV exactly.
+- the detailed Autotools dist manifest matched the committed baseline; the
+  basic manifest contained 589 entries.
+
+CMake subset refresh:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next2-phase1-post-merge-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,127 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched the committed
+  baselines.
+- the detailed CMake staged manifest contained 1,041 lines, so CMake remains a
+  side-by-side path pending the planned parity work.
+
+The headline default and strict warning-line counts matched the follow-on final
+readiness review. The parser-visible default warning count decreased from 1,772
+to 1,771 during the post-merge refresh; no source behavior change was made in
+this phase.

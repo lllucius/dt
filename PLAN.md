@@ -190,7 +190,7 @@ Do not claim behavior preservation unless the relevant checks were run.
 
 ## Phase 1: Post-Merge Baseline Refresh
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -223,6 +223,45 @@ Rules:
 
 - This phase is a synchronization and verification checkpoint only.
 - Do not update golden files in this phase.
+
+Implementation Summary:
+
+- Confirmed local `develop` matches merged `origin/develop` at
+  `39f8e89039b0c804d4a2956b0ca4ed1cc1ca5531`.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the next plan Phase 1
+  post-merge baseline refresh.
+- Files changed: `docs/modernization/READINESS_REVIEW.md` and `PLAN.md`.
+- Verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase1-post-merge --expected tests/golden`.
+- Verification results: default warning-line count 1,793; strict warning-line
+  count 29,779; parser-visible default warnings 1,771; warning budget status
+  `ok`; public headers matched; public API smoke output matched the committed
+  speaker 0 golden WAV exactly; exported symbols matched; generated
+  dictionaries matched; generated US user-dictionary fixture output matched;
+  one-shot US English golden WAVs matched for speakers 0 through 8; expanded US
+  audio suites matched for speakers 0 through 8; detailed Autotools dist
+  manifest matched the committed baseline and the basic manifest contained 589
+  entries.
+- Additional verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next2-phase1-post-merge-cmake --expected tests/golden`.
+- Additional verification results: CMake configured and built
+  `dectalk_cmake_stage`; `compile_commands.json` had 3,127 lines; generated
+  dictionaries matched; one-shot and expanded US audio matched; `libtts.so`
+  exported symbols matched exactly; language-library exported symbol name/type
+  sets matched; detailed CMake staged manifest had 1,041 lines.
+- Warning counts changed only by observation: headline default and strict
+  warning-line counts matched the follow-on final readiness review; the
+  parser-visible default warning count decreased from 1,772 to 1,771.
+- Public exports did not change according to the committed symbol comparisons.
+- Dictionaries did not change according to the committed dictionary
+  comparisons.
+- Golden audio did not change according to the committed one-shot and expanded
+  deterministic WAV comparisons.
+- Behavior risk level: low. This phase changed documentation only after
+  verification passed.
+- Known limitations: CMake remains side-by-side and packaging parity is still
+  pending; live audio hardware, callback timing, backend device selection,
+  non-current platform builds, and full API conformance were not tested.
 
 ## Phase 2: Higher-Risk Work Selection And Gate Map
 
