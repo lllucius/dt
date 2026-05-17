@@ -691,7 +691,7 @@ Implementation Summary:
 
 ## Phase 9: Runtime Wrapper Pilot
 
-Status: not started
+Status: completed (deferred by Phase 8 decision)
 
 Reasoning checkpoint: extra-high.
 
@@ -717,6 +717,18 @@ Rules:
 
 - Do not combine wrapper wiring with warning cleanup.
 - Do not touch live audio backend routing unless explicitly approved.
+
+Implementation Summary:
+
+- No runtime wrapper pilot was implemented.
+- Phase 8 did not approve a runtime wiring candidate and explicitly
+  recommended deferring Phase 9 until OP/platform parity tests exist.
+- Runtime thread lifecycle, queue behavior, pipe behavior, callback timing,
+  sample rate, and audio backend selection were left untouched.
+- `src/platform` remains isolated CMake-only scaffolding.
+- Verification run: `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Follow-up required before reconsidering a pilot: add parity tests for the
+  exact legacy `OP_*` behavior that a wrapper candidate would replace.
 
 ## Phase 10: CMake Promotion Reassessment
 
