@@ -3,6 +3,7 @@
 Phase 8 decision: defer runtime wrapper wiring.
 Phase 9 update: add non-runtime wrapper parity coverage, but continue to defer
 runtime wiring.
+Phase 10 decision: no runtime wrapper pilot is approved.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -75,7 +76,7 @@ timing, or model the `WINE_WAVEOUT` state machine.
 
 ## Smallest Candidate
 
-No runtime wiring candidate is approved after Phase 9.
+No runtime wiring candidate is approved after Phase 10.
 
 The smallest plausible future candidate remains another parity-test step, not a
 runtime redirect:
@@ -115,3 +116,18 @@ grow adapter APIs that preserve those contracts exactly.
 This keeps the current Linux runtime behavior under the established Autotools
 path while preserving `src/platform` as isolated scaffolding for future
 modernization.
+
+## Phase 10 Pilot Decision
+
+Decision: defer all runtime wrapper pilots.
+
+The Phase 9 evidence is useful but not strong enough to route any existing
+runtime path through `src/platform`. The expanded `dt_platform_smoke` harness
+covers standalone wrapper behavior, not drop-in parity for legacy runtime
+contracts. A safe pilot still needs legacy `OP_*` evidence for stack size,
+priority, timeout handling, handle ownership, scheduler yield, and lightweight
+lock behavior. Audio routing remains higher risk because no live-audio,
+callback-timing, queue, pipe, or buffer-ownership parity harness exists.
+
+No exact file, wrapper, behavior gate, or rollback plan is proposed for
+implementation in this phase because the prerequisite evidence is incomplete.

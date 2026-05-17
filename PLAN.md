@@ -832,7 +832,7 @@ Implementation Summary:
 
 ## Phase 10: Runtime Wrapper Pilot Decision
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -862,6 +862,32 @@ Rules:
 - Do not implement a runtime wrapper pilot without explicit approval inside this
   phase.
 - Do not use live-audio behavior as an unverified assumption.
+
+Implementation Summary:
+
+- Reviewed the Phase 9 platform-smoke evidence and documented the Phase 10
+  runtime-wrapper decision in
+  `docs/modernization/PLATFORM_WRAPPER_DECISION.md`.
+- Decision: defer all runtime wrapper pilots. No exact runtime file, wrapper,
+  behavior gate, or rollback plan is proposed for implementation in this phase.
+- Reasoning: the expanded `dt_platform_smoke` harness covers standalone wrapper
+  behavior, but it does not prove drop-in parity for legacy `OP_*` stack size,
+  priority, timeout handling, handle ownership, scheduler yield, lightweight
+  lock behavior, or any live-audio callback, queue, pipe, buffer ownership, and
+  backend-routing behavior.
+- No runtime files were changed. `src/dapi/src/nt/opthread.c`,
+  `src/dapi/src/nt/linux_audio.c`, public headers, exported symbols,
+  dictionaries, audio output, threading behavior, and CMake/Autotools runtime
+  source membership were left unchanged.
+- Verification for the decision itself was documentation review plus
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+  The relevant implementation gates remain the Phase 9 CMake and Autotools
+  runs:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next2-phase9-platform-smoke-cmake --expected tests/golden`
+  and
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase9-platform-smoke-autotools --expected tests/golden`.
+- Behavior risk level: low. This phase was decision/documentation only and
+  explicitly avoided runtime wrapper wiring.
 
 ## Phase 11: Macro And Historical Target Quarantine Audit
 
