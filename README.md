@@ -18,6 +18,25 @@ We're currently living out in [Discord](https://discordapp.com/invite/wHgdmf4) -
 
 ## Building
 
+### Current modernization target
+
+The current modernization and cleanup target is Linux. Historical Windows,
+macOS, iOS, OSF/Tru64, VxWorks, Solaris/SPARC, MS-DOS, Windows CE, ARM7, MIPS,
+PowerPC Mac, iPAQ Linux, and Emscripten paths are preserved in the tree, but
+they are not the current cleanup target unless a phase plan explicitly says so.
+
+Modern build, verification, warning, packaging, CMake, and historical-target
+notes are indexed in [`docs/modernization/README.md`](./docs/modernization/README.md).
+
+The main Linux verification gate is:
+
+```sh
+tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected tests/golden
+```
+
+Generated verification logs should stay under the ignored `baseline-runs/`
+directory.
+
 ### Linux
 
 <details>

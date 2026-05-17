@@ -1137,7 +1137,28 @@ Rules:
 
 ## Phase 16: Documentation Consolidation
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added `docs/modernization/README.md` as the modern maintenance index linking
+  build overview, baseline procedure, risk areas, warning and macro inventory,
+  public API audit, packaging layout, dictionary baseline, CMake status,
+  historical targets, audio backend notes, and API-boundary warning notes.
+- Updated `README.md` with a concise current-modernization section that:
+  - states Linux is the current modernization and cleanup target.
+  - clarifies historical platforms are preserved but not current cleanup
+    targets unless a phase explicitly says so.
+  - links to `docs/modernization/README.md`.
+  - shows the main Linux verification gate:
+    `tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected tests/golden`.
+- Verification run:
+  - checked that every documentation file linked from the modernization index
+    exists.
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- No legacy documentation was deleted or rewritten wholesale. No build scripts,
+  source files, public headers, runtime behavior, symbols, dictionaries, or
+  packaging layout were changed.
 
 Goals:
 

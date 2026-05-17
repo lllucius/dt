@@ -1,0 +1,43 @@
+# DECtalk Modernization Notes
+
+This directory is the modern maintenance entry point for DECtalk. The current
+modernization target is Linux. Historical build paths and platform branches are
+preserved, but they are not the current cleanup target unless explicitly called
+out by a phase plan.
+
+## Start Here
+
+- `BUILD_OVERVIEW.md`: current build systems, supported modernization target,
+  and build-path inventory.
+- `BASELINE_PROCEDURE.md`: behavior baseline workflow for builds, symbols,
+  dictionaries, user dictionaries, audio, and manifests.
+- `RISK_AREAS.md`: files and behaviors that should not be changed casually.
+- `WARNING_INVENTORY.md`: warning categories, ownership, and cleanup order.
+- `MACRO_INVENTORY.md`: platform, language, product, and historical macro
+  classification.
+
+## Verification
+
+- `tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected tests/golden`
+  runs the current Linux verification gate.
+- `PUBLIC_API_AUDIT.md` documents installed headers, header isolation checks,
+  and exported-symbol policy.
+- `PACKAGING_LAYOUT.md` documents the Autotools `dist/` layout and detailed
+  manifest modes.
+- `DICTIONARY_BASELINE.md` documents dictionary and user-dictionary checks.
+
+## Build System Status
+
+- `CMAKE_OVERVIEW.md`: side-by-side CMake scope, parity status, and promotion
+  limitations.
+- `HISTORICAL_TARGETS.md`: preserved non-current targets and explicit opt-in
+  rules.
+- `AUDIO_BACKEND.md`: current live audio backend behavior and containment
+  scaffolding.
+
+## Cleanup Boundaries
+
+- `API_BOUNDARY_WARNINGS.md`: API-adjacent warning cleanup notes.
+
+Do not claim behavior preservation from documentation alone. Use the baseline
+scripts and record the exact checks that were run.
