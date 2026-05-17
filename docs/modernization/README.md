@@ -32,6 +32,8 @@ out by a phase plan.
   add before higher-risk warning and API cleanup.
 - `NEXT_PLAN_GATE_MAP.md` maps the next plan's higher-risk targets to required
   behavior gates before source changes begin.
+- `PHONEME_BASELINE_FEASIBILITY.md` records why no new phoneme or text-mode
+  golden baseline was accepted before public API smoke coverage is expanded.
 
 ## Build System Status
 

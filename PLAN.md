@@ -331,7 +331,7 @@ Implementation Summary:
 
 ## Phase 3: Deterministic Phoneme And Text-Mode Baseline Feasibility
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high for feasibility; extra-high before accepting any new
 golden baseline.
@@ -364,6 +364,38 @@ Rules:
 
 - Do not accept new golden files without extra-high approval.
 - Do not change parser, phoneme, LTS, or synthesis code in this phase.
+
+Implementation Summary:
+
+- Added `docs/modernization/PHONEME_BASELINE_FEASIBILITY.md` to inventory
+  deterministic public-facing phoneme and text-mode capture paths.
+- Updated `docs/modernization/README.md` to include the new feasibility note.
+- Files changed: `docs/modernization/PHONEME_BASELINE_FEASIBILITY.md`,
+  `docs/modernization/README.md`, and `PLAN.md`.
+- Inventoried `TextToSpeechConvertToPhonemes`,
+  `TextToSpeechOpenLogFile(..., LOG_PHONEMES)`, Linux `dist/say`,
+  `[:phoneme on]` command text, and in-memory API phoneme arrays.
+- Temporary probes under ignored `baseline-runs/next2-phase3-feasibility/`
+  showed that `TextToSpeechConvertToPhonemes` compiles against the staged
+  public API but crashes at runtime, while `LOG_PHONEMES` log-file mode
+  compiles but returns `MMSYSERR_ERROR` in the no-audio staged Linux setup.
+- `dist/say -h` did not expose the Windows-style `-lp` phoneme logging option;
+  inline `[:log phonemes on]` with `dist/say -fo` completed but did not create
+  a separate phoneme log artifact.
+- No new golden files were accepted. Phoneme/text-mode baseline acceptance is
+  deferred until an extra-high checkpoint proves a reliable public capture path
+  or explicitly approves API/runtime repair work.
+- Verification run: `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change; no warning-producing source was modified.
+- Public exports did not change; no compiled source or public header was
+  modified.
+- Dictionaries did not change.
+- Golden audio did not change.
+- Behavior risk level: low. This phase changed documentation only and recorded
+  exploratory ignored artifacts outside the tracked tree.
+- Known limitations: no phoneme baseline now exists; future phoneme or
+  text-mode baseline work remains extra-high because current public capture
+  candidates are unstable or unavailable in the Linux no-audio baseline setup.
 
 ## Phase 4: Public API Smoke Matrix Expansion
 
