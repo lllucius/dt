@@ -355,7 +355,7 @@ int main(int argc, char ** argv)
 	
 /*   if ((tfp = tmpfile()) == NULL) mfg_debug*/
 #if defined (__osf__) || defined (__linux__) || defined VXWORKS || defined _SPARC_SOLARIS_ || defined (__APPLE__)
-   snprintf(tmpf, sizeof(tmpf), "%s.%lu", TMPFILE, getpid());
+   snprintf(tmpf, sizeof(tmpf), "%s.%ld", TMPFILE, (long)getpid());
 #else
    sprintf(tmpf, "%s", TMPFILE);
 #endif
@@ -492,7 +492,7 @@ int main(int argc, char ** argv)
          default :
             printf("DIC_COMM; main; ");    
             printf ("In grapheme:%s\n", grapheme); 
-            printf("line %d; Received bad homograph field received %c %d\n",linenumber,tmp,tmp);
+            printf("line %ld; Received bad homograph field received %c %d\n",linenumber,tmp,tmp);
             exit (1);
       }
 					
@@ -507,7 +507,7 @@ int main(int argc, char ** argv)
          {
             printf("DIC_COMM; main; ");
             printf ("In grapheme:%s\n", grapheme);
-            printf("line %d; entry number %d \n",linenumber,header.no_of_entries);
+            printf("line %ld; entry number %lu \n",linenumber,header.no_of_entries);
             exit(1);
          }
 #ifdef DEBUG

@@ -16,7 +16,7 @@
 #define FNX_TIMESTRUCT int 
 #define FNX_TIME time
 
-char *strupr(char *in)
+static char *strupr(char *in)
 {
 	int i;
 	while (in[i])
@@ -988,4 +988,3 @@ int		 snIGetFuncState ( int funcID )
 	}
 	return ( FuncBits[funcID] );
 }
-

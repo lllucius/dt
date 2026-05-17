@@ -23,7 +23,7 @@ jobs:
         run: sudo apt-get update
 
       - name: Install dependencies
-        run: sudo apt-get -y install build-essential libpulse-dev libgtk2.0-dev unzip autoconf automake
+        run: sudo apt-get -y install build-essential libpulse-dev libgtk2.0-dev unzip autoconf automake cmake
 
       - name: Create configure files
         working-directory: src
@@ -44,6 +44,48 @@ jobs:
           set -o pipefail
           make 2>&1 | tee ../baseline-runs/ci/build.log
 
+      - name: Verify baseline outputs
+        run: |
+          mkdir -p baseline-runs/ci/symbols baseline-runs/ci/dictionaries baseline-runs/ci/audio-us
+          tools/baseline/capture_symbols.sh --out baseline-runs/ci/symbols
+          tools/baseline/compare_symbols.sh \
+            --expected tests/golden/symbols \
+            --actual baseline-runs/ci/symbols \
+            --out baseline-runs/ci/symbol-compare \
+            > baseline-runs/ci/symbol-compare.txt
+          tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries
+          tools/baseline/compare_dictionaries.sh \
+            --expected tests/golden/dictionaries \
+            --actual baseline-runs/ci/dictionaries \
+            --out baseline-runs/ci/dictionary-compare \
+            > baseline-runs/ci/dictionary-compare.txt
+          tools/baseline/capture_user_dictionaries.sh --out baseline-runs/ci/user-dictionaries
+          tools/baseline/compare_dictionaries.sh \
+            --expected tests/golden/dictionaries/user/expected \
+            --actual baseline-runs/ci/user-dictionaries \
+            --out baseline-runs/ci/user-dictionary-compare \
+            > baseline-runs/ci/user-dictionary-compare.txt
+          tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us
+          tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
+            --metrics-out baseline-runs/ci/audio-metrics.tsv \
+            > baseline-runs/ci/audio-compare.log
+          tools/baseline/check_public_headers.sh \
+            --out baseline-runs/ci/public-headers \
+            --expected tests/golden/public-headers
+          tools/baseline/summarize_warnings.py \
+            --log baseline-runs/ci/build.log \
+            --out-dir baseline-runs/ci/warnings-default
+          tools/baseline/check_warning_budgets.py \
+            --warnings baseline-runs/ci/warnings-default/warnings.tsv \
+            --budget tests/golden/warnings/default-cleaned.tsv \
+            --out baseline-runs/ci/warning-budget.tsv
+
+      - name: Verify CMake subset
+        run: |
+          tools/baseline/verify_cmake_subset.sh \
+            --run-dir baseline-runs/ci/cmake-subset \
+            --expected tests/golden
+
       - name: Capture baseline visibility
         if: always()
         run: |
@@ -58,9 +100,36 @@ jobs:
           if [ -d dist/lib ]; then
             tools/baseline/capture_symbols.sh --out baseline-runs/ci/symbols || true
           fi
+          if [ -d dist/dic ]; then
+            tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries || true
+          fi
+          if [ -x dist/tools/udic_us ]; then
+            tools/baseline/capture_user_dictionaries.sh --out baseline-runs/ci/user-dictionaries || true
+          fi
           if [ -x dist/say ]; then
             tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us || true
-            tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us > baseline-runs/ci/audio-compare.log 2>&1 || true
+            tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
+              --metrics-out baseline-runs/ci/audio-metrics.tsv \
+              > baseline-runs/ci/audio-compare.log 2>&1 || true
+          fi
+          tools/baseline/check_public_headers.sh \
+            --out baseline-runs/ci/public-headers \
+            --expected tests/golden/public-headers || true
+          if [ -f baseline-runs/ci/build.log ]; then
+            tools/baseline/summarize_warnings.py \
+              --log baseline-runs/ci/build.log \
+              --out-dir baseline-runs/ci/warnings-default || true
+            if [ -f baseline-runs/ci/warnings-default/warnings.tsv ]; then
+              tools/baseline/check_warning_budgets.py \
+                --warnings baseline-runs/ci/warnings-default/warnings.tsv \
+                --budget tests/golden/warnings/default-cleaned.tsv \
+                --out baseline-runs/ci/warning-budget.tsv || true
+            fi
+          fi
+          if [ ! -f baseline-runs/ci/cmake-subset/summary.txt ]; then
+            tools/baseline/verify_cmake_subset.sh \
+              --run-dir baseline-runs/ci/cmake-subset \
+              --expected tests/golden || true
           fi
 
       - name: Upload baseline visibility

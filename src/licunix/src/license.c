@@ -23,6 +23,9 @@ int main(int argc, char *argv[])
 	FILE *ldconf;
 	int has_local_lib=0;
 
+	(void)argc;
+	(void)argv;
+
 	while(success)
 	{
 		printf("Please enter your serial number\n");
@@ -87,4 +90,3 @@ int main(int argc, char *argv[])
 }
 			
 		
-

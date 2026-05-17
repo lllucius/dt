@@ -1,0 +1,7 @@
+; Purpose: deterministic US English user dictionary compiler fixture.
+; Scope: baseline verification for the Linux udic_us tool.
+; Behavior preservation: changes to the compiled .dic hash should be reviewed
+; before dictionary modernization proceeds.
+; Limitations: this fixture is intentionally small and does not cover the full
+; dictionary grammar.
+coffee  [t'iy]

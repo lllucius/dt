@@ -39,6 +39,12 @@ find dist -maxdepth 4 -printf '%y %p -> %l\n' | sort > baseline-runs/phase1/dist
 
 The manifest records path and file type only.
 
+Manifest comparisons can be run with:
+
+```sh
+tools/baseline/compare_manifest.sh --expected baseline-runs/accepted/dist-manifest.txt --actual baseline-runs/current/dist-manifest.txt
+```
+
 ## Exported symbols
 
 ```sh
@@ -58,11 +64,41 @@ Phase 1 captured symbols for all shared libraries installed into `dist/lib/`:
 - `libtts_uk.so`
 - `libtts_us.so`
 
+Symbol comparisons can be run with:
+
+```sh
+tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual baseline-runs/current/symbols
+```
+
+## Generated dictionaries
+
+Dictionary hashes can be captured and compared with:
+
+```sh
+tools/baseline/capture_dictionaries.sh --out baseline-runs/current/dictionaries
+tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/current/dictionaries
+```
+
+Generated dictionary changes are behavior-relevant until explicitly reviewed.
+
+User dictionary fixture output can be captured and compared with:
+
+```sh
+tools/baseline/capture_user_dictionaries.sh --out baseline-runs/current/user-dictionaries
+tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries/user/expected --actual baseline-runs/current/user-dictionaries
+```
+
+User dictionary `.dtu` hash changes are also behavior-relevant until explicitly
+reviewed.
+
 ## Golden audio
 
 Committed input:
 
 - `tests/golden/input/us_one_shot.txt`
+- `tests/golden/input/us_abbreviations.txt`
+- `tests/golden/input/us_commands_markup.txt`
+- `tests/golden/input/us_punctuation_numbers.txt`
 
 Committed WAV outputs:
 
@@ -85,12 +121,37 @@ Generation command pattern:
 Repeat with speaker IDs `0` through `8`. The Phase 1 WAV files are RIFF/WAVE,
 PCM, 16-bit, mono, 11025 Hz.
 
+Audio comparisons can also emit a metrics report:
+
+```sh
+tools/baseline/compare_audio.py --actual baseline-runs/current/audio-us --metrics-out baseline-runs/current/audio-metrics.tsv
+```
+
+The metrics report includes SHA-256 hashes, frame counts, sample rates, peak and
+RMS levels, and max sample deltas. Exact WAV equality remains the pass/fail
+condition.
+
 ## Limitations
 
 - Baseline audio covers US English only.
 - Baseline audio covers one fixed input text and speakers 0 through 8.
+- Additional committed input files expand future coverage, but they do not yet
+  have committed WAV baselines.
 - No live audio hardware path was tested.
 - Optional GTK, ALSA, and PulseAudio development packages were not available on
   the host used for Phase 1.
 - Captured outputs are a baseline for comparison; they are not by themselves a
   proof that future behavior is preserved.
+
+## Single-command verification
+
+`tools/baseline/verify_current.sh` runs the current build, capture, and available
+comparison steps into one run directory:
+
+```sh
+tools/baseline/verify_current.sh --run-dir baseline-runs/current --expected baseline-runs/accepted
+```
+
+The expected directory is optional. When supplied, it may contain `symbols/`,
+`dist-manifest.txt`, `dictionaries/`, and `dictionaries/user/expected/`
+captures from a previously accepted run.

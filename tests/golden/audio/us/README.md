@@ -10,3 +10,7 @@ default Autotools build.
 
 They are committed so future cleanup can compare fixed synthesis output against
 the initial baseline.
+
+`tools/baseline/compare_audio.py` can also write a TSV metrics report with
+SHA-256, frame counts, peak/RMS, and max sample deltas. Exact SHA-256 equality
+remains the pass/fail condition.

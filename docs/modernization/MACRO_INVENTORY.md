@@ -137,6 +137,8 @@ behavior, or debug/product integration paths.
 - `NO_MINUS_C_MINUS_O`
 - `AUDIO_DEFINES`
 - `AUDIO_LIBS`
+- `DECTALK_ENABLE_LEGACY_TARGET_SOURCE`
+- `DECTALK_CMAKE_ENABLE_LEGACY_TARGETS`
 - `WARN_FLAGS`
 - `DEBUG_FLAGS`
 - `OPTO_FLAGS`
@@ -174,6 +176,10 @@ for cleanup planning.
 
 `__APPLE__` and `__EMSCRIPTEN__` remain present and may still build in some
 contexts, but they are non-current targets for this modernization plan.
+
+`DECTALK_ENABLE_LEGACY_TARGET_SOURCE` is an explicit opt-in macro for
+source-level historical target scaffolding. It does not make historical targets
+current or supported.
 
 ### Unknown or needs owner review
 

@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Purpose: generate deterministic US English DECtalk WAV baseline outputs.
+# Scope: Linux baseline verification using dist/say and committed input text.
+# Behavior preservation: generated WAV files are compared byte-for-byte against
+# committed golden audio.
+# Limitations: this script does not exercise live audio hardware paths.
 set -euo pipefail
 
 usage() {

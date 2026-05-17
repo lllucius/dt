@@ -56,6 +56,33 @@ dnl      the individual parts of the canonical names (for convenience).
 AC_CANONICAL_TARGET
 dnl AC_CANONICAL_TARGET requires config.guess and config.sub shell scripts
 
+AC_ARG_ENABLE(
+	[legacy-targets],
+	[AS_HELP_STRING([--enable-legacy-targets],
+		[allow configuring historical/non-current DECtalk targets])],
+	[enable_legacy_targets="${enableval}"],
+	[enable_legacy_targets="no"])
+
+case "$target" in
+	arm-ipaq-linux-*)
+		if test "x${enable_legacy_targets}" != "xyes"; then
+			AC_MSG_ERROR([arm-ipaq-linux is a historical DECtalk target; rerun with --enable-legacy-targets to configure it])
+		fi
+		;;
+	*-*-linux-*|*-*-linux*)
+		;;
+	*)
+		if test "x${enable_legacy_targets}" != "xyes"; then
+			AC_MSG_ERROR([${target} is a historical/non-current DECtalk target; rerun with --enable-legacy-targets to configure it])
+		fi
+		;;
+esac
+
+if test "x${enable_legacy_targets}" = "xyes"; then
+	AC_DEFINE([DECTALK_ENABLE_LEGACY_TARGET_SOURCE], [1],
+		[Define to 1 to allow historical DECtalk target source scaffolding.])
+fi
+
 dnl Determine a C compiler to use. If CC is not already set in the environment,
 dnl check for gcc, and use cc if that's not found. Set output variable CC 
 dnl to the name of the compiler found.  

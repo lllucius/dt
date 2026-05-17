@@ -1,0 +1,1 @@
+[:rate 180] This sentence uses a DECtalk command prefix. [:rate 200] This sentence changes rate again.
