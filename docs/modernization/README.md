@@ -30,6 +30,8 @@ out by a phase plan.
   the current modernization plan.
 - `BASELINE_EXPANSION_PLAN.md` recommends the next deterministic baselines to
   add before higher-risk warning and API cleanup.
+- `NEXT_PLAN_GATE_MAP.md` maps the next plan's higher-risk targets to required
+  behavior gates before source changes begin.
 
 ## Build System Status
 

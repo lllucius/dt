@@ -265,7 +265,7 @@ Implementation Summary:
 
 ## Phase 2: Higher-Risk Work Selection And Gate Map
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -300,6 +300,34 @@ Rules:
 - If the selected work would require changing speech output, public APIs,
   exported symbols, dictionary behavior, live-audio behavior, or threading
   semantics, stop and ask for explicit approval before adding it to the plan.
+
+Implementation Summary:
+
+- Added `docs/modernization/NEXT_PLAN_GATE_MAP.md` to map the plan's
+  higher-risk targets to required behavior gates before source changes begin.
+- Updated `docs/modernization/README.md` to include the new gate-map document.
+- Files changed: `docs/modernization/NEXT_PLAN_GATE_MAP.md`,
+  `docs/modernization/README.md`, and `PLAN.md`.
+- The target map covers deterministic phoneme/text-mode feasibility, public API
+  smoke expansion, CMake staged packaging parity, CMake parity decision,
+  low-risk warning budget expansion, API-boundary warning cleanup, platform
+  wrapper parity, runtime wrapper pilot decision, macro/historical-target
+  quarantine audit, and final readiness review.
+- Deferred areas remain explicit: speech, phoneme, parser, LTS, VTM, HLSYN,
+  timing logic, public headers, ABI, exported symbols, dictionary behavior,
+  live-audio routing, callback timing, queue/pipe behavior, `opthread.c`,
+  `linux_audio.c`, runtime wrapper wiring, CMake promotion, and historical
+  target deletion.
+- Verification run: `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change; no warning-producing source was modified.
+- Public exports did not change; no compiled source or public header was
+  modified.
+- Dictionaries did not change.
+- Golden audio did not change.
+- Behavior risk level: low. This phase changed planning documentation only.
+- Known limitations: this phase selected and mapped gates but did not run
+  source-changing target work; future phases must still run their specific
+  verification gates before claiming behavior preservation.
 
 ## Phase 3: Deterministic Phoneme And Text-Mode Baseline Feasibility
 
