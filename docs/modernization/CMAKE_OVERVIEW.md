@@ -11,7 +11,7 @@ so historical target macros are explicit rather than accidental.
 
 ## Current scope
 
-The Phase 8 CMake build creates:
+The current CMake build creates:
 
 - `tts_us`, `tts_uk`, `tts_sp`, `tts_gr`, `tts_la`, and `tts_fr`, with output
   names `libtts_<lang>.so`.
@@ -21,6 +21,14 @@ The Phase 8 CMake build creates:
   `dic/` directory.
 - `say_cmake`, with output name `say`, linked through `libtts.so` like the
   Autotools sample.
+- `aclock_cmake` and `dtmemory_cmake`, with output names `aclock` and
+  `dtmemory`.
+- language-specific sample binaries `say_demo_us`, `say_demo_uk`,
+  `say_demo_sp`, `say_demo_gr`, `say_demo_la`, and `say_demo_fr`.
+- language-specific `tunecheck_*` binaries and `udic_*` user-dictionary tools.
+- helper binaries `dump_vdf` and `mfg_load`.
+- generated sample text files installed under `src/DECtalk/dtsamples/`.
+- staged `/usr/bin` symlinks matching the Autotools path/type layout.
 - `dectalk_cmake_stage`, which installs the CMake-built subset into
   `baseline-runs/.../cmake-dist` by default.
 - `compile_commands.json` for analysis tooling.
@@ -82,25 +90,24 @@ so absolute output paths are not accepted by its current command-line parser.
 
 ## Remaining Gaps
 
-The CMake staged tree is still a build-verification subset. Phase 4 of the
-follow-on plan stages low-risk static assets whose Autotools source paths are
-explicit: README, bitmap assets, documentation, and selected sample source
-files. It does not yet stage the full Autotools dist layout, including
-`usr/bin` symlinks, generated sample text files, or additional sample/helper
-tools such as `aclock`, `dtmemory`, `gspeak`, `windic`, `tunecheck_*`, and
-user-dictionary tools.
+The CMake staged tree has exact basic path/type parity with the Autotools staged
+tree after the Phase 5 packaging update. The basic manifest comparison now has
+589 Autotools entries, 589 CMake entries, no missing paths, and no extra paths.
 
-Do not declare CMake packaging parity until this staged-layout gap is closed and
-the manifest comparison is exact or every remaining difference is explicitly
-approved.
+Do not declare full CMake packaging parity yet. The detailed metadata-hash
+manifest still differs, although both detailed manifests have 1,126 lines. The
+remaining detailed differences are metadata, size, and hash differences for
+CMake-built binaries, plus the `doc/DECtalk/html` directory size. These are not
+path/type omissions, but they still need an explicit promotion decision before
+CMake can become authoritative.
 
-Phase 4 verification reduced the detailed staged manifest gap from 541 missing
-paths to 59 missing paths, with no extra CMake-only paths. Remaining gaps are
-the unbuilt `aclock` and `dtmemory` top-level tools, generated sample text
-files under `src/DECtalk/dtsamples/`, additional helper/user-dictionary tools
-under `tools/`, and staged `/usr/bin` symlinks.
+CMake also still does not expose the live audio backend options used by the
+Autotools runtime build. Autotools remains authoritative.
 
 ## Phase 18 Promotion Recommendation
+
+This historical recommendation predates the later Phase 5 packaging closure. See
+the current `Remaining Gaps` section for the latest staged-layout status.
 
 Recommendation: do not promote CMake to the primary Linux build path yet.
 Autotools should remain authoritative.
@@ -129,6 +136,9 @@ after the symbol-address/order differences for language libraries are either
 eliminated or explicitly accepted as non-ABI-relevant.
 
 ## Phase 10 Reassessment
+
+This historical reassessment predates the later Phase 5 packaging closure. See
+the current `Remaining Gaps` section for the latest staged-layout status.
 
 Recommendation: do not promote CMake to the primary Linux build path yet.
 Autotools remains authoritative.

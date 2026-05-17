@@ -483,7 +483,7 @@ Implementation Summary:
 
 ## Phase 5: CMake Packaging Gap Closure
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -519,6 +519,47 @@ Rules:
 - Do not remove or weaken Autotools.
 - Do not change generated dictionary flow unless explicitly required and
   verified.
+
+Implementation Summary:
+
+- Changed `CMakeLists.txt` only for side-by-side CMake packaging:
+  - added CMake targets for `aclock`, `dtmemory`, `dump_vdf`, `mfg_load`,
+    `say_demo_*`, `tunecheck_*`, and `udic_*`;
+  - added generated sample text staging for `birthday.txt`, `demo.txt`,
+    `startup.txt`, and `noglass.txt`;
+  - added staged `/usr/bin` symlinks to match the Autotools basic path/type
+    layout.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` and
+  `docs/modernization/PACKAGING_LAYOUT.md` to record the new CMake staged
+  layout status.
+- Reconfirmed the pre-change gap: Autotools basic manifest had 589 entries and
+  CMake had 530 entries, with 59 missing CMake paths and no CMake-only paths.
+- Verified the updated CMake stage with
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next2-phase5-cmake-after --expected tests/golden`.
+  CMake dictionaries matched, one-shot US audio matched for speakers 0 through
+  8, expanded US audio suites matched for speakers 0 through 8, `libtts.so`
+  symbols matched, language-library symbol name/type sets matched, and
+  `compile_commands.json` was present.
+- Compared the updated CMake basic staged manifest against the latest accepted
+  Autotools basic staged manifest: 589 Autotools entries, 589 CMake entries,
+  no missing paths, and no extra paths.
+- Compared detailed metadata-hash manifests and documented the remaining
+  non-path differences: both detailed manifests have 1,126 lines, but
+  CMake-built binaries have different sizes and hashes, and the
+  `doc/DECtalk/html` directory metadata differs.
+- Re-ran the authoritative Autotools verifier with
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase5-autotools --expected tests/golden`.
+  Default warning-line count was 1,793, strict warning-line count was 29,779,
+  parser-visible default warnings were 1,772, and the warning budget passed.
+  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
+  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
+  suites all matched their accepted baselines.
+- Ran `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+  successfully.
+- Behavior risk level: medium. This phase added build-system packaging targets
+  and staging rules only; it did not change DECtalk C sources, public headers,
+  generated dictionary inputs, runtime selection, audio backend behavior, or the
+  authoritative Autotools build path.
 
 ## Phase 6: CMake Parity Decision Checkpoint
 

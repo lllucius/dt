@@ -54,16 +54,16 @@ tools/baseline/compare_manifest.sh \
 
 ## CMake Status
 
-The side-by-side CMake staged layout is still a verification subset. It does not
-yet claim packaging parity with Autotools. Phase 4 of the follow-on plan stages
-low-risk static README, bitmap, documentation, and selected sample-source
-assets. Current known gaps still include generated sample text files,
-`/usr/bin` symlinks, and additional sample or helper tools.
+The side-by-side CMake staged layout now has exact basic path/type parity with
+the Autotools staged layout. After the Phase 5 packaging update, the basic
+manifest comparison shows 589 Autotools entries, 589 CMake entries, no missing
+paths, and no extra paths.
 
 Do not promote CMake packaging until detailed manifest comparisons are either
 exact or each difference is explicitly reviewed and accepted.
 
-After the Phase 4 CMake staging update, detailed manifest comparison shows 59
-Autotools paths still missing from the CMake staged subset and no extra CMake
-paths. Remaining gaps require additional build targets or generated-file/symlink
-decisions and are intentionally deferred.
+The detailed metadata-hash manifest is still intentionally not accepted as
+equivalent. The CMake and Autotools detailed manifests both contain 1,126 lines,
+but CMake-built binaries have different sizes and hashes, and the
+`doc/DECtalk/html` directory metadata differs. These are not path/type omissions,
+but they remain promotion blockers until explicitly reviewed.
