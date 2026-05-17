@@ -214,7 +214,7 @@ Implementation Summary:
 
 ## Phase 2: Baseline Coverage Expansion Plan
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high for inventory; extra-high before accepting new
 golden outputs.
@@ -251,6 +251,26 @@ Rules:
 
 - Do not broaden CI runtime substantially without documenting cost.
 - Do not add flaky live-audio or hardware-dependent checks.
+
+Implementation Summary:
+
+- Added `docs/modernization/BASELINE_EXPANSION_PLAN.md` with the Phase 2
+  inventory findings and recommendations for deterministic baseline expansion.
+- Updated `docs/modernization/README.md` to link the baseline expansion plan.
+- Inventory commands reviewed `dist/say -h`, existing audio capture/comparison
+  scripts, committed input files, public header audit tooling, and temporary
+  WAV probes under `baseline-runs/next-phase2-inventory/`.
+- Verification run: `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: docs-only phase; no source, build, dictionary, symbol,
+  public-header, or golden audio files changed. Temporary probes showed the
+  additional committed US inputs and installed non-US language paths can produce
+  RIFF/WAVE PCM, 16-bit, mono, 11025 Hz files.
+- Warning counts were not rerun in this docs-only phase; Phase 1 counts remain
+  the current baseline. Public exports did not change. Dictionaries did not
+  change. Golden audio did not change. Behavior risk is low.
+- Known limitations: no new golden outputs were accepted; non-US baselines need
+  language-specific input selection; phoneme/text output baselines need a
+  stable textual capture path before they are recommended for CI.
 
 ## Phase 3: Deterministic Baseline Expansion
 

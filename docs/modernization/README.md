@@ -28,6 +28,8 @@ out by a phase plan.
 - `READINESS_REVIEW.md` records the final readiness state, verification
   evidence, limitations, and recommended higher-risk follow-on objectives for
   the current modernization plan.
+- `BASELINE_EXPANSION_PLAN.md` recommends the next deterministic baselines to
+  add before higher-risk warning and API cleanup.
 
 ## Build System Status
 
