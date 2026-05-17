@@ -39,6 +39,8 @@ out by a phase plan.
   rules.
 - `AUDIO_BACKEND.md`: current live audio backend behavior and containment
   scaffolding.
+- `PLATFORM_WRAPPER_DECISION.md`: Phase 8 decision on whether `src/platform`
+  wrappers are ready for runtime wiring.
 
 ## Cleanup Boundaries
 

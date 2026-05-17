@@ -629,7 +629,7 @@ Implementation Summary:
 
 ## Phase 8: Platform Wrapper Wiring Decision
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -658,6 +658,36 @@ Rules:
 
 - Do not change thread lifecycle, queue behavior, pipe behavior, callback
   timing, sample rate, or audio backend selection in this decision phase.
+
+Implementation Summary:
+
+- Added `docs/modernization/PLATFORM_WRAPPER_DECISION.md`.
+- Updated `docs/modernization/README.md` to link the Phase 8 decision.
+- Compared `src/platform` scaffolding with current runtime ownership in
+  `src/dapi/src/nt/opthread.c`, `src/dapi/src/nt/opthread.h`,
+  `src/dapi/src/nt/linux_audio.c`, and `src/dapi/src/nt/linux_audio.h`.
+- Decision: defer runtime wrapper wiring. No Phase 9 runtime pilot is approved.
+- Smallest future candidate: add OP/platform parity tests first, covering
+  manual-reset and auto-reset events, finite event timeouts, thread create/join,
+  mutex lock/unlock, and sleep/yield behavior. Only after that evidence should
+  an adapter-style wrapper pilot be reconsidered.
+- Rationale: current `dt_thread`, `dt_mutex`, `dt_event`, and `dt_time`
+  wrappers are not drop-in equivalents for legacy `OP_*` stack-size, priority,
+  timeout, handle ownership, scheduler-yield, and lightweight-lock behavior.
+  `dt_audio_backend` is metadata-only and does not model `linux_audio.c`
+  backend routing, state machine, message queue, callback, buffer, or timing
+  behavior.
+- Verification run:
+  `CC=/usr/bin/gcc cmake -S . -B baseline-runs/next-phase8-platform-decision/build -DCMAKE_BUILD_TYPE=Release`,
+  `cmake --build baseline-runs/next-phase8-platform-decision/build --target dt_platform_smoke -- -j1`,
+  `baseline-runs/next-phase8-platform-decision/build/dt_platform_smoke . PLAN.md`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: `dt_platform_smoke` built and ran successfully, reported
+  `thread_value=42`, detected `PLAN.md`, and reported the current Linux
+  metadata-only audio backend inventory as OSS enabled with `/dev/dsp`.
+- Runtime behavior was not changed. Thread lifecycle, queue behavior, pipe
+  behavior, callback timing, sample rate, and audio backend selection were left
+  untouched.
 
 ## Phase 9: Runtime Wrapper Pilot
 
