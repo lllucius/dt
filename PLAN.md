@@ -821,7 +821,8 @@ Implementation Summary:
 - Files changed: `.github/workflows/build.yml`,
   `docs/modernization/READINESS_REVIEW.md`, `PLAN.md`,
   `tools/baseline/README.md`, `tools/baseline/compare_manifest.sh`, and
-  `tools/baseline/compare_symbols.sh`.
+  `tools/baseline/compare_symbols.sh`,
+  `tools/baseline/verify_cmake_subset.sh`.
 - The review documents the final state of Linux build reproducibility, local CI
   script reliability, warning counts and budgets, public headers, API smoke
   coverage, exports, dictionary generation, deterministic golden audio, CMake
@@ -868,6 +869,12 @@ Implementation Summary:
   `baseline-runs/cm` so expanded-suite WAV paths stay below the legacy runtime
   path-length limit. Local exact symbol and manifest comparisons remain the
   default.
+- CMake CI symbol portability checkpoint: the hosted Ubuntu CMake subset step
+  then reached CMake symbol verification and failed on exact `libtts.so` symbol
+  addresses. Added `tools/baseline/verify_cmake_subset.sh --symbol-mode
+  name-type` for hosted CI only; the default local CMake verifier still compares
+  CMake-staged `libtts.so` exactly and continues to compare language-library
+  symbol name/type sets.
 - CI portability verification: the downloaded failed CI artifact passed
   `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual /tmp/ci-artifact-phase11/symbols --mode name-type --out /tmp/ci-artifact-phase11-symbol-name-type`
   and
@@ -876,6 +883,10 @@ Implementation Summary:
   `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase11-ci-portability --expected tests/golden`
   and
   `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm --expected tests/golden`.
+  After adding `--symbol-mode`, reran
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm-default --expected tests/golden`
+  and
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/cm-name-type --symbol-mode name-type --expected tests/golden`.
 
 ## Definition of Done for Each Phase
 

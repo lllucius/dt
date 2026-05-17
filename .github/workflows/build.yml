@@ -101,6 +101,7 @@ jobs:
         run: |
           tools/baseline/verify_cmake_subset.sh \
             --run-dir baseline-runs/cm \
+            --symbol-mode name-type \
             --expected tests/golden
 
       - name: Capture baseline visibility
@@ -164,6 +165,7 @@ jobs:
           if [ ! -f baseline-runs/cm/summary.txt ]; then
             tools/baseline/verify_cmake_subset.sh \
               --run-dir baseline-runs/cm \
+              --symbol-mode name-type \
               --expected tests/golden || true
           fi
 

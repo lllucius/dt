@@ -98,6 +98,9 @@ tools/baseline/verify_cmake_subset.sh \
 
 This verifies the current side-by-side CMake subset without promoting it to the
 primary build path. Packaging-layout differences remain documented separately.
+Use `--symbol-mode name-type` only for hosted CI where CMake-staged
+`libtts.so` symbol addresses vary; the default local mode remains exact for
+`libtts.so`.
 
 Detailed packaging manifests:
 
