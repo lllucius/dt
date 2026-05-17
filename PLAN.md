@@ -919,7 +919,40 @@ Rules:
 
 ## Phase 13: Medium-Risk Warning Cleanup
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Addressed one focused warning category: dictionary compiler diagnostic
+  format-string type mismatches in `src/dapi/src/dic/dic_comm.c`.
+- Changed diagnostic-only formats so they match the values being printed:
+  - `pid_t` from `getpid()` is printed through an explicit `long` cast with
+    `%ld`.
+  - `linenumber` uses `%ld`.
+  - `header.no_of_entries` uses `%lu`.
+- Focused verification strategy:
+  - treat `dic_comm.c` as dictionary-generation sensitive.
+  - require exact generated dictionary and user dictionary comparisons.
+  - require exact golden audio and exported symbol comparisons after rebuild.
+  - compare the captured dist manifest against the previous accepted Phase 12
+    manifest.
+- Verification run:
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase13-format --expected tests/golden`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase12-behavior/dist-manifest.txt --actual baseline-runs/phase13-format/dist-manifest.txt --out baseline-runs/phase13-format/dist-manifest-compare.diff`
+  - `rg -n "dic_comm.c:.*warning: format" baseline-runs/phase13-format/build/build.log baseline-runs/phase13-format/build/build-strict-warnings.log`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - targeted `dic_comm.c` format warnings were eliminated.
+  - default warning-line count decreased from 1,829 to 1,805.
+  - strict warning-line count decreased from 29,839 to 29,815.
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated dictionary and user dictionary captures matched committed
+    baselines.
+  - dist manifest matched the Phase 12 manifest exactly.
+- No dictionary write logic, dictionary binary structures, engine code, public
+  headers, runtime audio/threading paths, exported symbols, or speech behavior
+  were intentionally changed.
 
 Reasoning checkpoint: extra-high recommended before changing conversions,
 callback signatures, thread function signatures, `volatile`, or
