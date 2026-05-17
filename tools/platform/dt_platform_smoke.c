@@ -8,6 +8,7 @@
  * sanity checks only.
  */
 
+#include "dt_audio_backend.h"
 #include "dt_filesystem.h"
 #include "dt_event.h"
 #include "dt_mutex.h"
@@ -52,6 +53,7 @@ int main(int argc, char **argv)
     dt_thread_t *thread;
     void *thread_status = NULL;
     struct smoke_context smoke;
+    dt_audio_backend_config_t audio_config;
 
     if (dt_path_join(joined_path, sizeof(joined_path), base, leaf) != 0) {
         perror("dt_path_join");
@@ -129,6 +131,14 @@ int main(int argc, char **argv)
     printf("exists=%d\n", dt_path_exists(joined_path));
     printf("elapsed_ms=%" PRIu64 "\n", after_ms - before_ms);
     printf("thread_value=%d\n", smoke.value);
+    dt_audio_backend_get_compile_config(&audio_config);
+    printf("audio_disabled=%d\n", audio_config.disable_audio);
+    printf("audio_oss=%d\n", audio_config.use_oss);
+    printf("audio_alsa=%d\n", audio_config.use_alsa);
+    printf("audio_pulseaudio=%d\n", audio_config.use_pulseaudio);
+    printf("audio_audioqueue=%d\n", audio_config.use_audioqueue);
+    printf("audio_legacy_oss_device=%s\n", audio_config.legacy_oss_device);
+    printf("audio_selection_order=%s\n", audio_config.selection_order);
 
     dt_event_destroy(smoke.event);
     dt_mutex_destroy(smoke.mutex);

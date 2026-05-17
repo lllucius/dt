@@ -776,7 +776,43 @@ Rules:
 
 ## Phase 11: Audio Backend Containment
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added `docs/modernization/AUDIO_BACKEND.md` documenting the current
+  Autotools audio options, backend selection order, `/dev/dsp` and `/dev/audio`
+  legacy device behavior, ALSA `ALSA_DEFAULT` behavior, CMake audio-option gap,
+  and deterministic no-hardware WAV verification policy.
+- Added passive CMake-only audio metadata scaffolding:
+  - `src/platform/dt_audio_backend.h`
+  - `src/platform/dt_audio_backend.c`
+- Updated `CMakeLists.txt` so `dt_platform` compiles the new metadata
+  scaffolding.
+- Updated `tools/platform/dt_platform_smoke.c` to print compiled audio backend
+  metadata without opening audio devices or linking audio libraries.
+- Updated `src/platform/README.md` and
+  `docs/modernization/CMAKE_OVERVIEW.md` to describe the containment scope and
+  current CMake audio limitations.
+- Verification run:
+  - `CC=/usr/bin/gcc cmake -S . -B baseline-runs/phase11-audio-cmake -DCMAKE_BUILD_TYPE=Release`
+  - `cmake --build baseline-runs/phase11-audio-cmake --target dt_platform_smoke -- -j1`
+  - `baseline-runs/phase11-audio-cmake/dt_platform_smoke . PLAN.md`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase11-behavior --expected tests/golden`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - CMake smoke reported current Linux metadata with audio enabled, OSS
+    available, no CMake ALSA/PulseAudio defines, and `/dev/dsp` as the legacy
+    OSS device.
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated dictionary and user dictionary captures matched committed
+    baselines.
+  - default warning-line count: 1,829.
+  - strict warning-line count: 29,839.
+- `src/dapi/src/nt/linux_audio.c`, sample rate, callback timing, live backend
+  selection, public headers, exported symbols, dictionaries, and runtime audio
+  behavior were not changed.
 
 Reasoning checkpoint: extra-high recommended before routing any existing audio
 behavior through a new backend abstraction.

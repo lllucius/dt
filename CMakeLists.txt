@@ -177,6 +177,7 @@ function(dectalk_apply_common_c_settings target_name)
 endfunction()
 
 add_library(dt_platform STATIC
+  src/platform/dt_audio_backend.c
   src/platform/dt_event_posix.c
   src/platform/dt_filesystem_posix.c
   src/platform/dt_mutex_posix.c

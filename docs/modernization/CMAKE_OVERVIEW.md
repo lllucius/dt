@@ -49,6 +49,14 @@ The CMake `libtts.so` target uses the Autotools multi-language sources from
 binary links to this `libtts.so` target, so `-l us` and the multi-language
 loader path are available during CMake runtime checks.
 
+## Audio options
+
+The CMake build does not currently expose live audio backend options. It does
+not pass `USE_ALSA`, `USE_PULSEAUDIO`, or `DISABLE_AUDIO` into DECtalk runtime
+targets, and it does not replace Autotools audio probing. See
+`docs/modernization/AUDIO_BACKEND.md` for the current backend inventory and the
+Phase 11 containment scaffolding.
+
 The dictionary custom commands intentionally pass build-relative output paths to
 `dic_<lang>`. The dictionary compiler treats leading `/` arguments as options,
 so absolute output paths are not accepted by its current command-line parser.
