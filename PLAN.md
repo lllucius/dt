@@ -757,7 +757,7 @@ Implementation Summary:
 
 ## Phase 9: Platform Wrapper Parity Harness
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -788,6 +788,47 @@ Rules:
 - Do not change `src/dapi/src/nt/linux_audio.c`.
 - Do not route runtime audio, threading, mutex, event, filesystem, or time code
   through `src/platform` in this phase.
+
+Implementation Summary:
+
+- Expanded the CMake-only `tools/platform/dt_platform_smoke.c` harness. It now
+  verifies:
+  - auto-reset event consumption after one waiter;
+  - finite timeout after auto-reset consumption;
+  - manual-reset repeated waits while signaled;
+  - timeout after manual reset;
+  - the existing thread create/join, mutex lock/unlock, path, time, audio
+    metadata, and historical target inventory smoke paths.
+- Updated `tools/baseline/verify_cmake_subset.sh` to build and run
+  `dt_platform_smoke`, recording output in
+  `baseline-runs/<phase>/dt-platform-smoke.log`.
+- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md` and
+  `src/platform/README.md` to record the new non-runtime parity coverage and
+  the remaining blockers: legacy `OP_*` stack-size handling, timeout and handle
+  ownership semantics, priority calls, scheduler-yield equivalence,
+  lightweight-lock timeout polling, and all live-audio callback, queue, buffer,
+  reset, pause, restart, and backend-routing behavior.
+- Did not change `src/dapi/src/nt/opthread.c`,
+  `src/dapi/src/nt/linux_audio.c`, runtime threading, runtime audio, public
+  headers, exported symbols, dictionaries, or speech behavior.
+- Verified CMake with
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next2-phase9-platform-smoke-cmake --expected tests/golden`.
+  The expanded platform smoke passed with `event_semantics=ok`; CMake
+  dictionaries, one-shot US audio, expanded US audio suites, `libtts.so`
+  symbols, language-library symbol name/type sets, and `compile_commands.json`
+  also passed.
+- Re-ran the Autotools regression gate with
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase9-platform-smoke-autotools --expected tests/golden`.
+  Default warning-line count was 1,778, strict warning-line count was 29,763,
+  parser-visible default warnings were 1,757, and the warning budget passed.
+  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
+  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
+  suites all matched accepted baselines.
+- Ran `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+  successfully.
+- Behavior risk level: low. This phase improved isolated CMake scaffolding
+  verification only and did not route any runtime behavior through
+  `src/platform`.
 
 ## Phase 10: Runtime Wrapper Pilot Decision
 

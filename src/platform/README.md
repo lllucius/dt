@@ -22,4 +22,8 @@ Current wrappers:
 
 The CMake-only `dt_platform_smoke` target exercises these wrappers as a
 developer check without installing them or routing DECtalk runtime behavior
-through them.
+through them. It covers simple thread join, mutex lock/unlock, auto-reset and
+manual-reset event waits, finite event timeouts, path helpers, compile-time
+audio metadata, and historical target inventory. It does not prove parity for
+legacy `OP_*` stack size, priority, handle ownership, scheduler-yield,
+lightweight-lock, live-audio, callback, queue, or buffer behavior.

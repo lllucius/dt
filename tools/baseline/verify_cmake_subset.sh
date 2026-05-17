@@ -97,6 +97,10 @@ CC="$cc" cmake -S "$repo_root" -B "$build_dir" -DCMAKE_BUILD_TYPE=Release \
   > "$run_dir/cmake-configure.log" 2>&1
 cmake --build "$build_dir" --target dectalk_cmake_stage -- -j1 \
   > "$run_dir/cmake-build.log" 2>&1
+cmake --build "$build_dir" --target dt_platform_smoke -- -j1 \
+  > "$run_dir/cmake-platform-smoke-build.log" 2>&1
+"$build_dir/dt_platform_smoke" "$repo_root" PLAN.md \
+  > "$run_dir/dt-platform-smoke.log" 2>&1
 
 if [ ! -s "$build_dir/compile_commands.json" ]; then
   echo "error: missing compile_commands.json" >&2
@@ -174,6 +178,7 @@ fi
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
   printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
+  printf 'platform_smoke=%s\n' "$run_dir/dt-platform-smoke.log"
   [ -f "$run_dir/language-symbol-name-compare.txt" ] && printf 'language_symbol_names=%s\n' "$run_dir/language-symbol-name-compare.txt"
   printf 'dist_manifest_detailed=%s\n' "$run_dir/dist-manifest-detailed.txt"
 } > "$run_dir/summary.txt"
