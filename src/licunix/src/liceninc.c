@@ -25,7 +25,7 @@ int main(void)
 	FILE *config_file = NULL;
 	FILE *temp_file;
 
-	char line[1000];
+	char line[1010];
 	char decrypt[1000];
 	char encrypt[1000];
 	int gotit=0;

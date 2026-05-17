@@ -615,7 +615,7 @@ Implementation Summary:
 
 ## Phase 7: Low-Risk Warning Budget Expansion
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high for low-risk auxiliary files; extra-high if cleanup
 touches API, synthesis, phoneme, LTS, VTM, HLSYN, audio, threading, or pointer
@@ -651,6 +651,35 @@ Rules:
 - Do not touch public headers or exported symbols.
 - Do not perform pointer signedness, qualifier, callback, volatile,
   concurrency, structure layout, or size-truncation cleanup in this phase.
+
+Implementation Summary:
+
+- Changed `src/licunix/src/liceninc.c` only in low-risk auxiliary licensing
+  tool code by increasing the local `line` buffer from 1,000 to 1,010 bytes.
+  This keeps the existing `sprintf(line, "licenses:%s\n", encrypt)` flow while
+  allowing room for the 9-byte prefix, the existing 1,000-byte encrypted-value
+  buffer, newline, and terminator.
+- Added a zero-count warning-budget ratchet for
+  `src/licunix/src/liceninc.c` `-Wformat-overflow=` in
+  `tests/golden/warnings/default-cleaned.tsv`.
+- Verified with
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase7-warning --expected tests/golden`.
+  Default warning-line count was 1,790, strict warning-line count was 29,776,
+  and parser-visible default warnings were 1,769.
+- Confirmed `-Wformat-overflow=` is absent from
+  `baseline-runs/next2-phase7-warning/warnings-default/by-flag.tsv`, removing
+  the three previous `src/licunix/src/liceninc.c` warnings.
+- Warning budget passed with the new row:
+  `src/licunix/src/liceninc.c`, `-Wformat-overflow=`, actual count 0.
+- Public headers, exported symbols, detailed Autotools manifest, dictionaries,
+  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
+  suites all matched their accepted baselines.
+- Ran `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+  successfully.
+- Behavior risk level: low. This phase touched only an auxiliary license
+  maintenance tool and a warning-budget file; it did not change public headers,
+  exported symbols, runtime synthesis, dictionaries, audio backend behavior, or
+  the threading model.
 
 ## Phase 8: API-Boundary Warning Cleanup
 
