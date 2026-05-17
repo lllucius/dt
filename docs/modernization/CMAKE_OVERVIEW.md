@@ -82,15 +82,23 @@ so absolute output paths are not accepted by its current command-line parser.
 
 ## Remaining Gaps
 
-The CMake staged tree is still a build-verification subset. It does not yet
-stage the full Autotools dist layout, including the documentation tree, bitmap
-assets, source sample tree, `usr/bin` symlinks, and additional sample or helper
-tools such as `aclock`, `dtmemory`, `gspeak`, `windic`, and user-dictionary
-tools.
+The CMake staged tree is still a build-verification subset. Phase 4 of the
+follow-on plan stages low-risk static assets whose Autotools source paths are
+explicit: README, bitmap assets, documentation, and selected sample source
+files. It does not yet stage the full Autotools dist layout, including
+`usr/bin` symlinks, generated sample text files, or additional sample/helper
+tools such as `aclock`, `dtmemory`, `gspeak`, `windic`, `tunecheck_*`, and
+user-dictionary tools.
 
 Do not declare CMake packaging parity until this staged-layout gap is closed and
 the manifest comparison is exact or every remaining difference is explicitly
 approved.
+
+Phase 4 verification reduced the detailed staged manifest gap from 541 missing
+paths to 59 missing paths, with no extra CMake-only paths. Remaining gaps are
+the unbuilt `aclock` and `dtmemory` top-level tools, generated sample text
+files under `src/DECtalk/dtsamples/`, additional helper/user-dictionary tools
+under `tools/`, and staged `/usr/bin` symlinks.
 
 ## Phase 18 Promotion Recommendation
 

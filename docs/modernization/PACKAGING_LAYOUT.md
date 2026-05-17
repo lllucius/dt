@@ -55,9 +55,15 @@ tools/baseline/compare_manifest.sh \
 ## CMake Status
 
 The side-by-side CMake staged layout is still a verification subset. It does not
-yet claim packaging parity with Autotools. Current known gaps include
-documentation assets, bitmap assets, source sample trees, `/usr/bin` symlinks,
-and additional sample or helper tools.
+yet claim packaging parity with Autotools. Phase 4 of the follow-on plan stages
+low-risk static README, bitmap, documentation, and selected sample-source
+assets. Current known gaps still include generated sample text files,
+`/usr/bin` symlinks, and additional sample or helper tools.
 
 Do not promote CMake packaging until detailed manifest comparisons are either
 exact or each difference is explicitly reviewed and accepted.
+
+After the Phase 4 CMake staging update, detailed manifest comparison shows 59
+Autotools paths still missing from the CMake staged subset and no extra CMake
+paths. Remaining gaps require additional build targets or generated-file/symlink
+decisions and are intentionally deferred.

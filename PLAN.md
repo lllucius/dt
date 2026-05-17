@@ -356,7 +356,7 @@ Implementation Summary:
 
 ## Phase 4: CMake Packaging Parity, Non-Promoting
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high before changing staged layout or install
 semantics.
@@ -388,6 +388,41 @@ Rules:
 - Do not remove Autotools, Visual Studio files, legacy project files, or
   existing packaging paths.
 - Do not change runtime install layout unless explicitly approved.
+
+Implementation Summary:
+
+- Updated `CMakeLists.txt` so `dectalk_cmake_stage` installs low-risk static
+  packaging assets whose Autotools sources are explicit:
+  - `README`
+  - bitmap assets from `src/samplosf/src/speak/bitmaps/`
+  - selected sample source files under `src/DECtalk/`
+  - documentation under `doc/DECtalk/ps`, `doc/DECtalk/pdf`,
+    `doc/DECtalk/man`, and `doc/DECtalk/html`
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` and
+  `docs/modernization/PACKAGING_LAYOUT.md` with the new CMake staged-layout
+  status and remaining packaging gaps.
+- Verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next-phase4-cmake --expected tests/golden`,
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase4-autotools --expected tests/golden`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: CMake subset verification passed for dictionaries,
+  original US audio, expanded US audio suites, exact `libtts.so` symbols,
+  language-library symbol name/type sets, and `compile_commands.json`.
+  Autotools accepted baselines also reproduced for audio, expanded audio
+  suites, symbols, detailed manifest, dictionaries, user dictionaries, public
+  headers, and warning budget.
+- Detailed CMake staged manifest moved from 90 lines and 541 missing Autotools
+  paths to 1,041 lines and 59 missing Autotools paths. There were no extra
+  CMake-only paths.
+- Warning counts did not improve in this phase: the full Autotools run observed
+  1,805 default warning lines and 29,815 strict warning lines. The warning
+  budget remained `ok`.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change. Behavior risk is low to medium because CMake staging changed, but
+  runtime code and Autotools packaging were not changed.
+- Known limitations: CMake packaging parity is still incomplete; remaining gaps
+  include unbuilt top-level tools, generated sample text files, additional
+  helper/user-dictionary tools, and `/usr/bin` symlinks. CMake is not promoted.
 
 ## Phase 5: Warning Budget Expansion, Low-Risk Files
 
