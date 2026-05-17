@@ -1252,7 +1252,7 @@ Rules:
 
 ## Phase 18: CMake Promotion Decision
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high recommended before making the promotion
 recommendation.
@@ -1280,6 +1280,30 @@ Success criteria:
 Rules:
 
 - Promotion is a decision point, not automatic removal of Autotools.
+
+Implementation Summary:
+
+- Added `tools/baseline/verify_cmake_subset.sh` to configure, build, stage,
+  and verify the side-by-side CMake Linux subset without promoting it.
+- Updated `.github/workflows/build.yml` so Ubuntu CI installs CMake and runs the
+  CMake subset verifier; the always-run visibility step also captures the CMake
+  subset evidence if the verifier did not complete earlier.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` with the Phase 18 promotion
+  recommendation: do not promote CMake to the primary Linux build path yet;
+  keep Autotools authoritative until staged packaging parity is closed or the
+  remaining differences are explicitly approved.
+- Updated `tools/baseline/README.md` with the CMake subset verification
+  command.
+- Verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/phase18-cmake-subset --expected tests/golden`
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: CMake built `dectalk_cmake_stage`;
+  `compile_commands.json` was present; generated dictionaries matched the
+  accepted golden dictionaries; US English WAV output matched speakers 0
+  through 8 exactly; `libtts.so` exported symbols matched exactly; language
+  library exported symbol name/type sets matched. The detailed CMake staged
+  manifest remains a subset of Autotools packaging, so no build system was
+  removed or promoted.
 
 ---
 

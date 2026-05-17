@@ -71,6 +71,17 @@ tools/baseline/check_public_headers.sh \
 The header audit compares the accepted installed-header list and syntax-checks
 the subset of public or ABI-sensitive headers that currently self-compile.
 
+CMake subset verification:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/current-cmake \
+  --expected tests/golden
+```
+
+This verifies the current side-by-side CMake subset without promoting it to the
+primary build path. Packaging-layout differences remain documented separately.
+
 Detailed packaging manifests:
 
 ```sh

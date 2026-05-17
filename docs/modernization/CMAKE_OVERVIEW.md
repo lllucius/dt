@@ -34,6 +34,19 @@ cmake --build baseline-runs/cmake-build --target dectalk_cmake_stage -- -j1
 
 `CC=/usr/bin/gcc` avoids the host `ccache` wrapper in sandboxed environments.
 
+Subset verification:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/current-cmake \
+  --expected tests/golden
+```
+
+The subset verifier configures and builds the CMake stage, checks
+`compile_commands.json`, compares generated dictionaries and US English WAVs
+against golden outputs, compares `libtts.so` symbols exactly, and compares
+language-library exported symbol name/type sets.
+
 ## Source membership
 
 The CMake language libraries use the main Linux DAPI source groups that the
@@ -77,6 +90,34 @@ tools.
 Do not declare CMake packaging parity until this staged-layout gap is closed and
 the manifest comparison is exact or every remaining difference is explicitly
 approved.
+
+## Phase 18 Promotion Recommendation
+
+Recommendation: do not promote CMake to the primary Linux build path yet.
+Autotools should remain authoritative.
+
+Evidence supporting continued side-by-side status:
+
+- CMake configures successfully and emits `compile_commands.json`.
+- `dectalk_cmake_stage` builds the current CMake subset.
+- generated CMake dictionaries match `tests/golden/dictionaries` exactly.
+- CMake-staged `say` produces exact US English golden WAVs for speakers 0
+  through 8.
+- CMake-staged `libtts.so` matches the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets match the committed
+  baselines, while full address-sorted symbol files still differ from
+  Autotools output.
+- Ubuntu CI now runs `tools/baseline/verify_cmake_subset.sh`.
+- detailed manifest evidence from Phase 15 shows CMake staging is still a
+  subset: 90 detailed CMake staged lines versus 1,126 detailed Autotools lines,
+  with missing documentation, bitmap assets, sample source trees, `/usr/bin`
+  symlinks, `README`, and additional helper/sample/user-dictionary tools.
+
+CMake should become a primary Linux build path only after the staged layout gap
+is closed or each remaining packaging difference is explicitly accepted, and
+after the symbol-address/order differences for language libraries are either
+eliminated or explicitly accepted as non-ABI-relevant.
 
 ## Phase 8 Verification
 
