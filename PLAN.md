@@ -368,7 +368,31 @@ Rules:
 
 ## Phase 5: Low-Risk Warning Cleanup, API Boundaries
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Reviewed API-boundary warnings from the Phase 4 strict warning inventory.
+- Added `docs/modernization/API_BOUNDARY_WARNINGS.md` with the API warning
+  paths and warning types found under the API build context.
+- Deferred API implementation cleanup because the remaining tracked API
+  warnings are concentrated in high-risk or medium-risk areas:
+  - `src/dapi/src/api/ttsapi.c`
+  - `src/dapi/src/api/init.c`
+  - `src/dapi/src/api/coop.h`
+  - API-build-context objects for `services.c` and `usa_init.c`
+- Verification run:
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+  - Phase 4 verification remains the current accepted behavior check:
+    `tools/baseline/verify_current.sh --run-dir baseline-runs/phase4-tools-samples --expected tests/golden`
+- Verification results:
+  - no API source or public header files were changed.
+  - no exported-symbol, public-header, audio, dictionary, or install-layout
+    behavior changes were introduced by this documentation-only phase.
+  - warning counts remain at the Phase 4 accepted baseline: default 1,828,
+    strict 29,838.
+- `src/dapi/src/api/ttsapi.h` and `src/dapi/src/api/tts.h` were intentionally
+  left unchanged.
 
 Goals:
 
