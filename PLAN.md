@@ -36,7 +36,7 @@ Known baseline facts:
 - Strict warning build succeeds.
 - Post-cleanup warning-line counts were last observed as:
   - default build: 1,829
-  - strict build: 29,854
+  - strict build: 29,853
 - US English golden WAVs for speakers 0 through 8 compare exactly after rebuild.
 - Exported symbols matched the Phase 1 symbol baseline after the first cleanup.
 - CMake currently builds only initial Linux US `libtts_us.so` and `say_cmake`.
@@ -184,7 +184,42 @@ Rules:
 
 ## Phase 2: CI Verification Gates
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added committed exact baselines for CI verification:
+  - `tests/golden/symbols/`
+  - `tests/golden/dictionaries/`
+- Added README files documenting how to regenerate and compare those baselines.
+- Updated Ubuntu CI in `.github/workflows/build.yml` with a `Verify baseline
+  outputs` step that fails on:
+  - exported symbol drift against `tests/golden/symbols`
+  - generated dictionary file/hash/size drift against `tests/golden/dictionaries`
+  - US English golden audio drift against `tests/golden/audio/us`
+- Kept warning logs non-fatal and kept the dist manifest as an artifact/report
+  capture rather than a failing gate.
+- Updated baseline procedure docs to point comparisons at the committed golden
+  symbol and dictionary baselines.
+- Verification run:
+  - `tools/baseline/capture_symbols.sh --out baseline-runs/phase2-ci-gates/symbols`
+  - `tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual baseline-runs/phase2-ci-gates/symbols --out baseline-runs/phase2-ci-gates/symbol-compare`
+  - `tools/baseline/capture_dictionaries.sh --out baseline-runs/phase2-ci-gates/dictionaries`
+  - `tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/phase2-ci-gates/dictionaries --out baseline-runs/phase2-ci-gates/dictionary-compare`
+  - `tools/baseline/capture_audio.sh --out baseline-runs/phase2-ci-gates/audio-us`
+  - `tools/baseline/compare_audio.py --actual baseline-runs/phase2-ci-gates/audio-us`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase2-golden-current-2 --expected tests/golden`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - all captured shared-library symbol lists matched committed baselines.
+  - generated dictionary file list, sizes, and SHA-256 hashes matched committed
+    baselines.
+  - default warning-line count: 1,828.
+  - strict warning-line count: 29,853.
+- Full GitHub Actions execution was not run locally.
+- No engine code, public headers, dictionary sources, generated audio, exported
+  symbols, or install layout were intentionally changed.
 
 Goals:
 

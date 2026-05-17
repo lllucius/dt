@@ -44,6 +44,25 @@ jobs:
           set -o pipefail
           make 2>&1 | tee ../baseline-runs/ci/build.log
 
+      - name: Verify baseline outputs
+        run: |
+          mkdir -p baseline-runs/ci/symbols baseline-runs/ci/dictionaries baseline-runs/ci/audio-us
+          tools/baseline/capture_symbols.sh --out baseline-runs/ci/symbols
+          tools/baseline/compare_symbols.sh \
+            --expected tests/golden/symbols \
+            --actual baseline-runs/ci/symbols \
+            --out baseline-runs/ci/symbol-compare \
+            > baseline-runs/ci/symbol-compare.txt
+          tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries
+          tools/baseline/compare_dictionaries.sh \
+            --expected tests/golden/dictionaries \
+            --actual baseline-runs/ci/dictionaries \
+            --out baseline-runs/ci/dictionary-compare \
+            > baseline-runs/ci/dictionary-compare.txt
+          tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us
+          tools/baseline/compare_audio.py --actual baseline-runs/ci/audio-us \
+            > baseline-runs/ci/audio-compare.log
+
       - name: Capture baseline visibility
         if: always()
         run: |
@@ -57,6 +76,9 @@ jobs:
           fi
           if [ -d dist/lib ]; then
             tools/baseline/capture_symbols.sh --out baseline-runs/ci/symbols || true
+          fi
+          if [ -d dist/dic ]; then
+            tools/baseline/capture_dictionaries.sh --out baseline-runs/ci/dictionaries || true
           fi
           if [ -x dist/say ]; then
             tools/baseline/capture_audio.sh --out baseline-runs/ci/audio-us || true

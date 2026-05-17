@@ -67,7 +67,7 @@ Phase 1 captured symbols for all shared libraries installed into `dist/lib/`:
 Symbol comparisons can be run with:
 
 ```sh
-tools/baseline/compare_symbols.sh --expected baseline-runs/accepted/symbols --actual baseline-runs/current/symbols
+tools/baseline/compare_symbols.sh --expected tests/golden/symbols --actual baseline-runs/current/symbols
 ```
 
 ## Generated dictionaries
@@ -76,7 +76,7 @@ Dictionary hashes can be captured and compared with:
 
 ```sh
 tools/baseline/capture_dictionaries.sh --out baseline-runs/current/dictionaries
-tools/baseline/compare_dictionaries.sh --expected baseline-runs/accepted/dictionaries --actual baseline-runs/current/dictionaries
+tools/baseline/compare_dictionaries.sh --expected tests/golden/dictionaries --actual baseline-runs/current/dictionaries
 ```
 
 Generated dictionary changes are behavior-relevant until explicitly reviewed.
