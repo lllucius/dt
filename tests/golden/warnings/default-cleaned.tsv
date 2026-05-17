@@ -1,0 +1,2 @@
+file	flag	max_count	note
+src/dapi/src/dic/dic_comm.c	-Wformat=	0	Phase 13 cleaned dictionary compiler diagnostic format warnings.

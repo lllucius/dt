@@ -72,6 +72,13 @@ jobs:
           tools/baseline/check_public_headers.sh \
             --out baseline-runs/ci/public-headers \
             --expected tests/golden/public-headers
+          tools/baseline/summarize_warnings.py \
+            --log baseline-runs/ci/build.log \
+            --out-dir baseline-runs/ci/warnings-default
+          tools/baseline/check_warning_budgets.py \
+            --warnings baseline-runs/ci/warnings-default/warnings.tsv \
+            --budget tests/golden/warnings/default-cleaned.tsv \
+            --out baseline-runs/ci/warning-budget.tsv
 
       - name: Capture baseline visibility
         if: always()
@@ -102,6 +109,17 @@ jobs:
           tools/baseline/check_public_headers.sh \
             --out baseline-runs/ci/public-headers \
             --expected tests/golden/public-headers || true
+          if [ -f baseline-runs/ci/build.log ]; then
+            tools/baseline/summarize_warnings.py \
+              --log baseline-runs/ci/build.log \
+              --out-dir baseline-runs/ci/warnings-default || true
+            if [ -f baseline-runs/ci/warnings-default/warnings.tsv ]; then
+              tools/baseline/check_warning_budgets.py \
+                --warnings baseline-runs/ci/warnings-default/warnings.tsv \
+                --budget tests/golden/warnings/default-cleaned.tsv \
+                --out baseline-runs/ci/warning-budget.tsv || true
+            fi
+          fi
 
       - name: Upload baseline visibility
         if: always()

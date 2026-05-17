@@ -1187,7 +1187,44 @@ Rules:
 
 ## Phase 17: Warning Policy Ratchet
 
-Status: not started
+Status: completed
+
+Implementation Summary:
+
+- Added narrow warning budget tooling:
+  - `tools/baseline/check_warning_budgets.py`
+- Added committed warning budget documentation and baseline:
+  - `tests/golden/warnings/README.md`
+  - `tests/golden/warnings/default-cleaned.tsv`
+- Established the first cleaned-category budget:
+  - `src/dapi/src/dic/dic_comm.c`
+  - `-Wformat=`
+  - maximum count `0`
+- Updated `.github/workflows/build.yml` so Ubuntu CI summarizes default build
+  warnings and fails only if committed cleaned-category budgets regress.
+- Updated `tools/baseline/verify_current.sh` so local verification summarizes
+  default warnings and checks accepted warning budgets when present under the
+  expected directory.
+- Updated `tools/baseline/README.md` and
+  `docs/modernization/WARNING_INVENTORY.md` with the warning-budget ratchet
+  workflow and policy.
+- Verification run:
+  - `tools/baseline/summarize_warnings.py --log baseline-runs/phase15-behavior/build/build.log --out-dir baseline-runs/phase17-warnings-default`
+  - `tools/baseline/check_warning_budgets.py --warnings baseline-runs/phase17-warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/phase17-warning-budget.tsv`
+  - `tools/baseline/verify_current.sh --run-dir baseline-runs/phase17-policy --expected tests/golden`
+  - `tools/baseline/compare_manifest.sh --expected baseline-runs/phase15-behavior/dist-manifest.txt --actual baseline-runs/phase17-policy/dist-manifest.txt --out baseline-runs/phase17-policy/dist-manifest-compare.diff`
+  - `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+- Verification results:
+  - warning budget status was `ok`.
+  - `dic_comm.c` `-Wformat=` actual count was `0` against budget `0`.
+  - default warning-line count: 1,805.
+  - strict warning-line count: 29,815.
+  - US English golden audio matched exactly for speakers 0 through 8.
+  - exported symbols, generated dictionaries, user dictionaries, public header
+    audit, and dist manifest comparisons all passed.
+- No compiler-wide warning fatal policy was added. No broad suppressions were
+  introduced. Existing legacy warning debt remains tracked but non-blocking
+  unless it is covered by an explicit cleaned-category budget.
 
 Goals:
 

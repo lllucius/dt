@@ -123,3 +123,14 @@ should not be mixed into low-risk cleanup commits.
 High-risk warnings in phoneme, LTS, VTM, HLSYN, API, audio, and threading paths
 require the expanded verification gates from later phases before any cleanup is
 attempted.
+
+## Warning Budget Ratchet
+
+Phase 17 adds a narrow warning-budget check for categories that have already
+been cleaned. The first budget is:
+
+- `src/dapi/src/dic/dic_comm.c`, `-Wformat=`, maximum count `0`.
+
+This prevents regression of the Phase 13 dictionary compiler format cleanup
+without making unrelated legacy warning debt fatal. New budgets should be added
+only after a focused cleanup has passed the relevant behavior checks.

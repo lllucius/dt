@@ -20,6 +20,7 @@ When supplied, it may contain:
   dictionaries/
   dictionaries/user/expected/
   public-headers/
+  warnings/default-cleaned.tsv
 
 Golden audio is always compared against tests/golden/audio/us.
 USAGE
@@ -71,6 +72,9 @@ fi
 mkdir -p "$run_dir"
 
 "$repo_root/tools/baseline/build_unix.sh" --strict-warnings --run-dir "$run_dir/build"
+"$repo_root/tools/baseline/summarize_warnings.py" \
+  --log "$run_dir/build/build.log" \
+  --out-dir "$run_dir/warnings-default"
 "$repo_root/tools/baseline/capture_symbols.sh" --out "$run_dir/symbols"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" --out "$run_dir/dist-manifest.txt"
 "$repo_root/tools/baseline/capture_dictionaries.sh" --out "$run_dir/dictionaries"
@@ -111,6 +115,12 @@ if [ -n "$expected_dir" ]; then
       --out "$run_dir/public-headers" \
       --expected "$expected_dir/public-headers" > "$run_dir/public-header-compare.txt"
   fi
+  if [ -f "$expected_dir/warnings/default-cleaned.tsv" ]; then
+    "$repo_root/tools/baseline/check_warning_budgets.py" \
+      --warnings "$run_dir/warnings-default/warnings.tsv" \
+      --budget "$expected_dir/warnings/default-cleaned.tsv" \
+      --out "$run_dir/warning-budget.tsv" > "$run_dir/warning-budget.txt"
+  fi
 fi
 
 {
@@ -124,6 +134,7 @@ fi
   [ -f "$run_dir/dictionary-compare.txt" ] && printf 'dictionary_compare=%s\n' "$run_dir/dictionary-compare.txt"
   [ -f "$run_dir/user-dictionary-compare.txt" ] && printf 'user_dictionary_compare=%s\n' "$run_dir/user-dictionary-compare.txt"
   [ -f "$run_dir/public-header-compare.txt" ] && printf 'public_header_compare=%s\n' "$run_dir/public-header-compare.txt"
+  [ -f "$run_dir/warning-budget.txt" ] && printf 'warning_budget=%s\n' "$run_dir/warning-budget.txt"
 } > "$run_dir/summary.txt"
 
 cat "$run_dir/summary.txt"

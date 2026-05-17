@@ -45,6 +45,21 @@ The warning summarizer writes TSV reports grouped by flag, category, file, and
 risk. It is an inventory helper only; it does not decide whether a warning is
 safe to clean.
 
+Warning budget ratchet:
+
+```sh
+tools/baseline/summarize_warnings.py \
+  --log baseline-runs/current/build/build.log \
+  --out-dir baseline-runs/current/warnings-default
+tools/baseline/check_warning_budgets.py \
+  --warnings baseline-runs/current/warnings-default/warnings.tsv \
+  --budget tests/golden/warnings/default-cleaned.tsv \
+  --out baseline-runs/current/warning-budget.tsv
+```
+
+Warning budgets are narrow checks for already-cleaned files/categories. They do
+not make all legacy warnings fatal.
+
 Public header audit:
 
 ```sh
