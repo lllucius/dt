@@ -104,6 +104,43 @@ CMake can become authoritative.
 CMake also still does not expose the live audio backend options used by the
 Autotools runtime build. Autotools remains authoritative.
 
+## Phase 6 Parity Decision
+
+Recommendation: continue side-by-side and defer CMake promotion. CMake is now a
+stronger verification build, but it is not ready to become the authoritative
+Linux build path.
+
+Current parity evidence:
+
+- Basic staged path/type parity is exact: 589 Autotools entries, 589 CMake
+  entries, no missing CMake paths, and no CMake-only paths.
+- The updated CMake subset verifier passes: generated dictionaries match, US
+  one-shot audio matches for speakers 0 through 8, expanded US audio suites
+  match for speakers 0 through 8, `libtts.so` symbols match, language-library
+  symbol name/type sets match, and `compile_commands.json` is present.
+- The authoritative Autotools verifier still passes after the CMake packaging
+  changes.
+
+Remaining differences and risk:
+
+- Detailed metadata-hash manifest: medium risk for promotion. Both detailed
+  manifests have 1,126 lines, but CMake-built binaries have different sizes and
+  hashes, and `doc/DECtalk/html` directory metadata differs. This is not a
+  path/type gap, but release packaging has not reached byte-level artifact
+  equivalence.
+- Language-library full symbol captures: low to medium risk for promotion.
+  Exported symbol name/type sets match for all language libraries, but the full
+  address/order symbol captures differ for `libtts_us.so`, `libtts_uk.so`,
+  `libtts_sp.so`, `libtts_la.so`, `libtts_gr.so`, and `libtts_fr.so`.
+  `libtts.so` matches the committed symbol capture exactly.
+- Live audio backend options: medium risk for promotion. CMake still does not
+  expose the Autotools `USE_ALSA`, `USE_PULSEAUDIO`, or `DISABLE_AUDIO`
+  configuration surface.
+
+Future promotion work should either eliminate these differences or define and
+approve an explicit acceptance policy for them. Until then, Autotools remains
+the authoritative Linux build and CMake should remain side-by-side.
+
 ## Phase 18 Promotion Recommendation
 
 This historical recommendation predates the later Phase 5 packaging closure. See

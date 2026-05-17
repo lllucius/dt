@@ -563,7 +563,7 @@ Implementation Summary:
 
 ## Phase 6: CMake Parity Decision Checkpoint
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -588,6 +588,30 @@ Success criteria:
 Rules:
 
 - Promotion is a separate future decision, not automatic in this phase.
+
+Implementation Summary:
+
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` with an explicit Phase 6
+  recommendation: continue side-by-side and defer CMake promotion.
+- Rechecked the Phase 5 basic staged manifest comparison with
+  `tools/baseline/compare_manifest.sh --expected baseline-runs/next2-phase4-api-smoke/dist-manifest.txt --actual baseline-runs/next2-phase5-cmake-after/dist-manifest-basic.txt --out baseline-runs/next2-phase5-cmake-after/dist-manifest-basic-phase6.diff`.
+  Result: exact path/type parity, 589 Autotools entries, 589 CMake entries, no
+  missing CMake paths, and no CMake-only paths.
+- Rechecked the detailed metadata-hash manifest comparison with
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual baseline-runs/next2-phase5-cmake-after/dist-manifest-detailed.txt --out baseline-runs/next2-phase5-cmake-after/dist-manifest-detailed-phase6.diff`.
+  Result: manifests still differ. Both detailed manifests have 1,126 lines, but
+  CMake-built binaries have different sizes and hashes, and
+  `doc/DECtalk/html` directory metadata differs.
+- Recorded symbol parity status: `libtts.so` matches the committed full symbol
+  baseline exactly; language-library exported symbol name/type sets match for
+  all six language libraries; full language-library symbol captures still differ
+  for `libtts_us.so`, `libtts_uk.so`, `libtts_sp.so`, `libtts_la.so`,
+  `libtts_gr.so`, and `libtts_fr.so`, with matching line counts.
+- Risk classification: low for path/type layout, medium for detailed
+  metadata/hash release equivalence, low to medium for language-library full
+  symbol address/order differences, and medium for unimplemented CMake live
+  audio backend option parity.
+- No build system was removed or promoted.
 
 ## Phase 7: Low-Risk Warning Budget Expansion
 
