@@ -25,6 +25,9 @@ out by a phase plan.
 - `PACKAGING_LAYOUT.md` documents the Autotools `dist/` layout and detailed
   manifest modes.
 - `DICTIONARY_BASELINE.md` documents dictionary and user-dictionary checks.
+- `READINESS_REVIEW.md` records the final readiness state, verification
+  evidence, limitations, and recommended higher-risk follow-on objectives for
+  the current modernization plan.
 
 ## Build System Status
 
