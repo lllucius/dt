@@ -1,4 +1,6 @@
 dist/
+baseline-runs/
 
 # Nintendo DS
 .DS_Store
+.aider*
