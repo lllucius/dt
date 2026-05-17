@@ -560,7 +560,7 @@ Implementation Summary:
 
 ## Phase 7: API-Boundary Warning Cleanup
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -595,6 +595,37 @@ Rules:
 - Do not change public signatures, structure layout, calling conventions, or
   callback contracts.
 - Do not clean pointer/integer or callback warnings casually.
+
+Implementation Summary:
+
+- Selected one strict warning category and one API-adjacent ownership area:
+  `-Wmissing-prototypes` in `src/dapi/src/api/init.c`.
+- Added file-local prototypes for the platform-selected shared-memory init/fini
+  entry points: existing Solaris demo `__init_shared_mem`/`__fini_shared_mem`,
+  Solaris `_init`/`_fini`, and the default
+  `__init_shared_mem`/`__fini_shared_mem` path.
+- Did not change public headers, function signatures, structure layout,
+  calling conventions, callbacks, threading behavior, or audio behavior.
+- Updated `tests/golden/dist-manifest-detailed.txt` for the expected rebuilt
+  language-library hash changes caused by recompiling `init.c`; path, type,
+  mode, and size coverage remained unchanged.
+- Verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next-phase7-api-prototypes-2 --expected tests/golden`,
+  `tools/baseline/summarize_warnings.py --log baseline-runs/next-phase7-api-prototypes-2/build/build-strict-warnings.log --out-dir baseline-runs/next-phase7-api-prototypes-2/warnings-strict`,
+  and `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Verification results: strict warning-line count decreased from 29,803 to
+  29,779; parser-visible strict warnings in `src/dapi/src/api/init.c`
+  decreased from 55 to 36; `src/dapi/src/api/init.c` no longer reports
+  `-Wmissing-prototypes`.
+- API smoke WAV comparison was exact; public header audit matched accepted
+  lists; all exported symbol baselines matched; detailed manifest,
+  dictionaries, user dictionary fixture, original US audio, expanded US audio
+  suites, and warning budgets matched accepted baselines.
+- Golden audio did not change. Dictionaries did not change. Public exports did
+  not change. Behavior risk is low because the code change adds prototypes only.
+- Known limitations: the remaining `init.c` strict warnings are
+  `-Wunused-variable` for legacy local declarations; those were left alone to
+  keep this phase to one warning category.
 
 ## Phase 8: Platform Wrapper Wiring Decision
 

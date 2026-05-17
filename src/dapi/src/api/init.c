@@ -50,6 +50,12 @@ void __init_shared_mem(void);
 void __fini_shared_mem(void);
 #pragma init (__init_shared_mem)
 #pragma fini (__fini_shared_mem)
+#elif defined _SPARC_SOLARIS_
+void _init(void);
+void _fini(void);
+#else
+void __init_shared_mem(void);
+void __fini_shared_mem(void);
 #endif
 
 
