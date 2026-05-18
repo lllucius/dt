@@ -317,6 +317,32 @@ parity project, and could invalidate the current exact CMake symbol baseline
 without proving a runtime behavior improvement. That work should be planned as a
 dedicated CMake promotion objective.
 
+## Next High-Risk Plan Phase 9 Audio Option Matrix
+
+Phase 9 added `tools/baseline/check_audio_option_matrix.sh` for repeatable
+metadata-only audio option checks. The CMake rows configure separate build trees,
+build only `dt_platform_smoke`, and do not open live audio devices.
+
+Fresh CMake option evidence:
+
+- default: `audio_disabled=0`, `audio_oss=1`, `audio_alsa=0`,
+  `audio_pulseaudio=0`, `audio_audioqueue=0`.
+- `-DDECTALK_CMAKE_DISABLE_AUDIO=ON`: `audio_disabled=1`, `audio_oss=0`,
+  `audio_alsa=0`, `audio_pulseaudio=0`, `audio_audioqueue=0`.
+- `-DDECTALK_CMAKE_USE_ALSA=ON`: `audio_disabled=0`, `audio_oss=1`,
+  `audio_alsa=1`, `audio_pulseaudio=0`, `audio_audioqueue=0`.
+- `-DDECTALK_CMAKE_USE_PULSEAUDIO=ON`: `audio_disabled=0`, `audio_oss=1`,
+  `audio_alsa=0`, `audio_pulseaudio=1`, `audio_audioqueue=0`.
+
+Each row generated `compile_commands.json` with 3,307 lines. The ALSA and
+PulseAudio rows remain metadata-only on this host because `alsa` and
+`libpulse-simple` development packages were not available, and the side-by-side
+CMake options still do not link or certify live backend behavior.
+
+Default CMake behavior remains the verified side-by-side state: OSS metadata is
+visible on Linux, ALSA and PulseAudio are off, audio is not disabled, and live
+audio hardware is not opened by the verification path.
+
 ## Phase 18 Promotion Recommendation
 
 This historical recommendation predates the later Phase 5 packaging closure. See

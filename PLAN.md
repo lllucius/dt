@@ -766,7 +766,7 @@ Implementation Summary:
 
 ## Phase 9: CMake And Autotools Audio Option Build Matrix
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -800,6 +800,45 @@ Rules:
 - Do not change `src/dapi/src/nt/linux_audio.c` runtime behavior.
 - Do not change callback timing, queues, device selection, or audio thread
   lifecycle.
+
+Implementation Summary:
+
+- Added `tools/baseline/check_audio_option_matrix.sh`, a documented
+  metadata-only helper that captures CMake audio option states with
+  `dt_platform_smoke` and Autotools audio option states with `configure`
+  metadata. The helper does not open live audio devices and does not update
+  accepted baselines.
+- Ran:
+  `tools/baseline/check_audio_option_matrix.sh --run-dir
+  baseline-runs/next4-phase9-audio-option-matrix`.
+- Local dependency evidence: `alsa: not found`; `libpulse-simple: not found`.
+- CMake metadata rows generated `compile_commands.json` with 3,307 lines each:
+  default reported `audio_disabled=0`, `audio_oss=1`, `audio_alsa=0`,
+  `audio_pulseaudio=0`, `audio_audioqueue=0`; disabled audio reported
+  `audio_disabled=1`, `audio_oss=0`; ALSA opt-in reported `audio_alsa=1`;
+  PulseAudio opt-in reported `audio_pulseaudio=1`.
+- Autotools configure-metadata rows: default and `--disable-pulseaudio` kept
+  `LINUX_AUDIO=$(OUTPUT_DIR)/linux_audio.o` with no `AUDIO_DEFINES` or
+  `AUDIO_LIBS` on this host; `--disable-audio` reported
+  `AUDIO_DEFINES=-DDISABLE_AUDIO`.
+- Classified CMake ALSA/PulseAudio rows as metadata-only because local backend
+  development packages were unavailable and CMake still does not replace
+  Autotools probing or link/certify those live backends.
+- Updated `docs/modernization/AUDIO_BACKEND.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`, and
+  `docs/modernization/MACRO_INVENTORY.md` with the Phase 9 matrix evidence and
+  classification.
+- Verified default behavior with:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase9-default-verify --expected tests/golden`.
+  Public headers, exported symbols, detailed manifest, dictionaries, user
+  dictionaries, API smoke, callback smoke, US audio, expanded US audio suites,
+  non-US audio, default warning budget, and strict warning budget all matched
+  accepted baselines.
+- No `src/dapi/src/nt/linux_audio.c` runtime behavior, callback timing, queue
+  behavior, device selection, audio thread lifecycle, source code, public API,
+  exported symbol, dictionary, deterministic audio, or default build behavior
+  was intentionally changed.
 
 ## Phase 10: Platform Adapter Scaffold
 
