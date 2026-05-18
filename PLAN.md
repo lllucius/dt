@@ -558,7 +558,7 @@ Implementation Summary:
 
 ## Phase 6: CMake Detailed Parity Policy
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -592,6 +592,35 @@ Rules:
 - Documentation and comparison phase only.
 - Do not change `CMakeLists.txt`.
 - Do not promote CMake.
+
+Implementation Summary:
+
+- Compared the accelerated Phase 1 Autotools detailed manifest with the
+  accelerated Phase 1 CMake detailed manifest:
+  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase1-post-merge/dist-manifest-detailed.txt --actual baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt --out baseline-runs/next3-phase6-cmake-detailed-vs-autotools.diff`.
+- Rechecked the CMake detailed manifest against the committed Autotools golden:
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt --out baseline-runs/next3-phase6-cmake-detailed-vs-golden.diff`.
+- Both comparisons reported `manifest: different`; the difference remains
+  detailed metadata, size, and hash output for CMake-built binaries plus
+  `doc/DECtalk/html` directory metadata.
+- Reviewed CMake language-library exported symbol name/type evidence from the
+  Phase 1 CMake gate; all language-library name/type comparisons passed.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` and
+  `docs/modernization/PACKAGING_LAYOUT.md` with the accelerated Phase 6
+  detailed parity policy.
+- Files changed: `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/PACKAGING_LAYOUT.md`, and `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because no source cleanup was performed in this
+  phase.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. This phase changed documentation only and did not
+  modify CMake source membership, install layout, build scripts, runtime code,
+  golden artifacts, or CMake promotion state.
+- Known limitations: CMake remains side-by-side; detailed binary metadata/hash
+  parity and live-audio option parity remain unresolved promotion blockers.
 
 ## Phase 7: Public API Smoke Matrix Expansion
 

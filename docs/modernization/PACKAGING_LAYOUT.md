@@ -67,3 +67,26 @@ equivalent. The CMake and Autotools detailed manifests both contain 1,126 lines,
 but CMake-built binaries have different sizes and hashes, and the
 `doc/DECtalk/html` directory metadata differs. These are not path/type omissions,
 but they remain promotion blockers until explicitly reviewed.
+
+## Accelerated Plan Phase 6 Policy
+
+The accelerated Phase 6 detailed comparison still reports
+`manifest: different` for CMake versus Autotools:
+
+- Autotools detailed manifest:
+  `baseline-runs/next3-phase1-post-merge/dist-manifest-detailed.txt`
+- CMake detailed manifest:
+  `baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt`
+- comparison diff:
+  `baseline-runs/next3-phase6-cmake-detailed-vs-autotools.diff`
+
+Acceptance policy:
+
+- path/type parity is accepted for the current side-by-side CMake stage.
+- detailed binary size/hash differences are not accepted as full packaging
+  parity.
+- the `doc/DECtalk/html` directory metadata difference is not accepted as full
+  metadata parity.
+- future CMake promotion must either eliminate these differences or explicitly
+  approve each remaining difference class with matching release and behavior
+  verification.

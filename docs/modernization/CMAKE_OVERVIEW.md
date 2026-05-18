@@ -141,6 +141,52 @@ Future promotion work should either eliminate these differences or define and
 approve an explicit acceptance policy for them. Until then, Autotools remains
 the authoritative Linux build and CMake should remain side-by-side.
 
+## Accelerated Plan Phase 6 Detailed Parity Policy
+
+Phase 6 rechecked detailed CMake packaging evidence from the accelerated
+post-merge baseline:
+
+```sh
+tools/baseline/compare_manifest.sh \
+  --expected baseline-runs/next3-phase1-post-merge/dist-manifest-detailed.txt \
+  --actual baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt \
+  --out baseline-runs/next3-phase6-cmake-detailed-vs-autotools.diff
+```
+
+Result: `manifest: different`.
+
+Accepted evidence:
+
+- basic staged path/type parity remains achieved.
+- both detailed manifests contain 1,126 lines.
+- CMake-generated dictionaries match accepted dictionary baselines.
+- CMake deterministic US audio checks match accepted one-shot and expanded WAV
+  baselines.
+- CMake-staged `libtts.so` matches the committed exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets match committed
+  baselines.
+
+Unaccepted differences:
+
+- detailed metadata, size, and SHA-256 hashes still differ for CMake-built
+  binaries.
+- `doc/DECtalk/html` directory metadata still differs.
+- CMake still does not model the Autotools live-audio option surface for
+  `DISABLE_AUDIO`, `USE_ALSA`, and `USE_PULSEAUDIO`.
+
+Promotion policy:
+
+- exact basic path/type parity is necessary but not sufficient for promotion.
+- detailed metadata/hash differences may be accepted only by a future explicit
+  CMake promotion plan after reviewing each difference class.
+- binary size/hash differences are not automatically behavior regressions while
+  deterministic dictionaries, symbols, API smoke, and audio checks pass, but
+  they are release-packaging differences and remain promotion blockers.
+- live-audio option parity must be modeled or explicitly waived before CMake
+  can become authoritative for Linux.
+- this phase does not promote CMake and does not remove Autotools.
+
 ## Phase 18 Promotion Recommendation
 
 This historical recommendation predates the later Phase 5 packaging closure. See
