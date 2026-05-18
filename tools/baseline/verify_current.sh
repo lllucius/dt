@@ -86,6 +86,7 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/capture_user_dictionaries.sh" --out "$run_dir/user-dictionaries"
 "$repo_root/tools/baseline/check_public_headers.sh" --out "$run_dir/public-headers"
 "$repo_root/tools/baseline/check_api_smoke.sh" --out "$run_dir/api-smoke"
+"$repo_root/tools/baseline/check_api_callback_smoke.sh" --out "$run_dir/api-callback-smoke"
 "$repo_root/tools/baseline/capture_audio.sh" --out "$run_dir/audio-us"
 "$repo_root/tools/baseline/compare_audio.py" \
   --actual "$run_dir/audio-us" \
@@ -154,6 +155,7 @@ fi
   [ -f "$run_dir/user-dictionary-compare.txt" ] && printf 'user_dictionary_compare=%s\n' "$run_dir/user-dictionary-compare.txt"
   [ -f "$run_dir/public-header-compare.txt" ] && printf 'public_header_compare=%s\n' "$run_dir/public-header-compare.txt"
   [ -f "$run_dir/api-smoke/summary.txt" ] && printf 'api_smoke=%s\n' "$run_dir/api-smoke/summary.txt"
+  [ -f "$run_dir/api-callback-smoke/summary.txt" ] && printf 'api_callback_smoke=%s\n' "$run_dir/api-callback-smoke/summary.txt"
   [ -f "$run_dir/warning-budget.txt" ] && printf 'warning_budget=%s\n' "$run_dir/warning-budget.txt"
 } > "$run_dir/summary.txt"
 

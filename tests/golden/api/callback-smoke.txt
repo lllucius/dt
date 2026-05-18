@@ -1,0 +1,17 @@
+api_callback_smoke: TextToSpeechStartLang(us)=0
+api_callback_smoke: TextToSpeechSelectLang(default)=true
+api_callback_smoke: TextToSpeechStartup=ok
+api_callback_smoke: TextToSpeechSetSpeaker(PAUL)=ok
+api_callback_smoke: TextToSpeechOpenWaveOutFile=ok
+api_callback_smoke: TextToSpeechSpeak(input)=ok
+api_callback_smoke: TextToSpeechSync(input)=ok
+api_callback_smoke: TextToSpeechSpeak(flush)=ok
+api_callback_smoke: TextToSpeechSync(flush)=ok
+api_callback_smoke: TextToSpeechCloseWaveOutFile=ok
+api_callback_smoke: TextToSpeechShutdown=ok
+api_callback_smoke: callback.count=1
+api_callback_smoke: callback.dropped=0
+api_callback_smoke: callback[0].message=1
+api_callback_smoke: callback[0].param1=0
+api_callback_smoke: callback[0].param2_kind=42
+api_callback_smoke: callback[0].instance=1234

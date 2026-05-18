@@ -75,11 +75,14 @@ Current deterministic coverage:
   `TextToSpeechSpeak()`, `TextToSpeechSync()`,
   `TextToSpeechCloseWaveOutFile()`, and `TextToSpeechShutdown()`
 - byte-for-byte comparison against the accepted US English speaker 0 WAV
+- deterministic callback smoke through installed headers using no-live-audio
+  WAV-file output, a fixed index mark, sanitized scalar callback fields, and an
+  exact transcript comparison
 
 Explicitly unsupported in the smoke matrix:
 
 - live audio hardware
-- callback ordering or timing
+- live-audio callback ordering or timing
 - in-memory output buffers and phoneme arrays
 - phoneme/text log capture
 - non-US speech output
@@ -129,3 +132,46 @@ Results:
 - public headers, exported symbols, dictionaries, user dictionaries, detailed
   Autotools manifest, one-shot US audio, expanded US audio suites, and warning
   budgets matched accepted baselines.
+
+## Next High-Risk Plan Phase 4 Callback Update
+
+Phase 4 added `tools/baseline/api_callback_smoke.c` and
+`tools/baseline/check_api_callback_smoke.sh`. The harness builds against staged
+installed headers and libraries, runs from `dist/`, avoids live audio devices,
+and writes temporary WAV files through `TextToSpeechOpenWaveOutFile()`.
+
+Accepted callback coverage:
+
+- startup with a public callback routine and `DO_NOT_USE_AUDIO_DEVICE`;
+- US English speaker 0 selection;
+- fixed input text containing `[:index mark 42]`;
+- `TextToSpeechSpeak()`, `TextToSpeechSync()`, wave-file close, and shutdown;
+- sanitized callback fields only: message id, first scalar parameter, index
+  value, and caller instance value;
+- exact comparison against `tests/golden/api/callback-smoke.txt`;
+- repeated-run comparison for both callback transcript and generated WAV output.
+
+The accepted transcript records one callback event:
+
+- message: `TTS_MSG_INDEX_MARK` (`1`);
+- first parameter: `0`;
+- index value: `42`;
+- instance value: `1234`.
+
+Still unsupported:
+
+- live-audio callbacks;
+- callback scheduler timing and wall-clock ordering;
+- queue, pipe, pause, reset, restart, or audio thread behavior;
+- callback pointer payloads such as in-memory buffer pointers;
+- in-memory phoneme arrays.
+
+Verification:
+
+```sh
+tools/baseline/check_api_callback_smoke.sh \
+  --out baseline-runs/next4-phase4-api-callback-smoke
+```
+
+Result: repeated callback transcript, expected transcript, and repeated WAV
+output all matched exactly.

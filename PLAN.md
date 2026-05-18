@@ -399,7 +399,7 @@ Implementation Summary:
 
 ## Phase 4: Public API Callback And Queue-Adjacent Smoke Pilot
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -433,6 +433,41 @@ Rules:
   lifecycle, public headers, or exported symbols.
 - If callback output is timing-sensitive or unstable, document the blocker and
   defer instead of loosening checks.
+
+Implementation Summary:
+
+- Added `tools/baseline/api_callback_smoke.c`, a public installed-header
+  callback smoke harness with standard top-of-file documentation.
+- Added `tools/baseline/check_api_callback_smoke.sh` and the accepted exact
+  transcript `tests/golden/api/callback-smoke.txt`.
+- Wired `tools/baseline/verify_current.sh` to run the callback smoke gate and
+  include it in the standard summary.
+- The callback smoke runs from `dist/`, avoids live audio devices, writes
+  temporary relative WAV files that are moved into the run directory, and cleans
+  temporary dist files on exit.
+- Accepted callback coverage is limited to stable scalar data from a fixed US
+  English file-output scenario with `[:index mark 42]`: one
+  `TTS_MSG_INDEX_MARK` event, first parameter `0`, index value `42`, and
+  instance value `1234`.
+- The callback smoke compares the transcript against the committed fixture,
+  compares repeated transcripts exactly, and compares repeated generated WAV
+  files exactly. It does not assert scheduler timing, wall-clock ordering,
+  queue timing, pipe behavior, live-audio behavior, or callback pointer payloads.
+- Updated `docs/modernization/PUBLIC_API_AUDIT.md` with the accepted coverage
+  and remaining unsupported callback areas.
+- Verification passed:
+  `tools/baseline/check_api_callback_smoke.sh --out
+  baseline-runs/next4-phase4-api-callback-smoke`,
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase4-api-callback --expected tests/golden`, and
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public headers, exported symbols, dictionaries, user dictionaries, detailed
+  manifest, API smoke WAV, callback smoke transcript and repeated WAV, one-shot
+  US audio, expanded US audio suites, and warning budgets all matched accepted
+  baselines.
+- No callback implementation, queue timing, pipe behavior, thread lifecycle,
+  public header, exported symbol, live-audio, dictionary, synthesis, or parser
+  behavior was intentionally changed.
 
 ## Phase 5: Non-US Deterministic Audio Baseline Expansion
 
