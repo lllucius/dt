@@ -629,7 +629,7 @@ Implementation Summary:
 
 ## Phase 7: API Implementation Warning Pilot
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -663,6 +663,29 @@ Rules:
 
 - Stop on any API, symbol, header, dictionary, audio, callback, queue, or
   manifest delta that is not explicitly explained and accepted.
+
+Implementation Summary:
+
+- Reviewed the refreshed strict warning inventory for `src/dapi/src/api/ttsapi.c`
+  and `src/dapi/src/api/init.c` after the expanded API callback and non-US audio
+  gates were in place.
+- Deferred all candidate source cleanups because none satisfied this phase's
+  narrow-candidate rule:
+  `init.c` unused locals are inside shared-memory init/fini lifecycle code;
+  `ttsapi.c` `PutIndexMarkInBuffer`, `PutPhonemeInBuffer`, and
+  `WriteAudioToFile` are exported symbols used by callback, phoneme-buffer, and
+  WAV-output paths; reserved/public API warnings are exported public,
+  sample-facing, SAPI-facing, or multi-language dispatch surfaces; and the
+  remaining pipe, callback, thread, pointer-sign, cast, ownership, and
+  type-limit warnings are behavior-sensitive.
+- Updated `docs/modernization/API_BOUNDARY_WARNINGS.md` with the Phase 7
+  candidate review and deferral rationale.
+- No source files, public headers, build files, dictionaries, golden audio,
+  manifests, warning budgets, exported symbols, API signatures, callback paths,
+  queue behavior, threading behavior, audio behavior, language selection
+  behavior, or voice selection behavior were changed.
+- No warning-budget row was added because Phase 7 intentionally cleaned no
+  warning category to zero.
 
 ## Phase 8: CMake Detailed Parity Closure Attempt
 

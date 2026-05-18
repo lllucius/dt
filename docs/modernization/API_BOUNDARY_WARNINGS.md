@@ -136,3 +136,46 @@ Remaining API-boundary warning work stays deferred:
 - `init.c` unused locals remain in a high-risk API initialization path.
 - Pointer-sign and unused-parameter warnings in `services.c` were not mixed
   into this qualifier cleanup.
+
+## Next High-Risk Plan Phase 7 API Implementation Pilot
+
+Phase 7 re-reviewed the refreshed strict warning inventory for
+`src/dapi/src/api/ttsapi.c`, `src/dapi/src/api/init.c`, and adjacent exported API
+implementation helpers after the expanded API callback and non-US audio gates
+were in place.
+
+No API implementation warning cleanup was performed in Phase 7.
+
+Reviewed candidate groups:
+
+- `init.c` `-Wunused-variable` rows are in `__init_shared_mem()` and
+  `__fini_shared_mem()`. The locals themselves are unused, but the functions are
+  loader/init/fini lifecycle code with historical shared-memory and mutex
+  branches, so this phase deferred them rather than mixing lifecycle cleanup
+  into the API pilot.
+- `ttsapi.c` private-looking `-Wmissing-prototypes` rows for
+  `PutIndexMarkInBuffer`, `PutPhonemeInBuffer`, and `WriteAudioToFile` were
+  rejected for this phase because the symbols are exported from the language
+  shared libraries and are called from VTM output paths. They are directly
+  adjacent to index-mark callbacks, phoneme buffering, and deterministic WAV
+  output.
+- `ttsapi.c` reserved and public API functions such as
+  `TextToSpeechControlPanel`, `TextToSpeechGetLastError`,
+  `TextToSpeechReserved1`, `TextToSpeechReserved2`, `TextToSpeechReserved3`,
+  `TextToSpeechTuning`, `TextToSpeechVisualMarks`, and
+  `TextToSpeechReserved5` remain deferred because they are exported, reserved,
+  public-header, sample, SAPI, or multi-language dispatch surfaces.
+- `ttsapi.c` thread startup, pipe, callback, pointer-sign, discarded-qualifier,
+  cast-function-type, use-after-free, and type-limit warnings remain deferred
+  because they touch threading, callbacks, memory ownership, loader dispatch, or
+  ABI-sensitive conversion behavior.
+
+Decision:
+
+- Treat the remaining `ttsapi.c` and `init.c` warnings as dedicated future work,
+  not as a mixed pilot cleanup.
+- Do not add a warning-budget row for Phase 7 because no warning category was
+  cleaned to zero.
+- Preserve public headers, exported symbols, dictionaries, deterministic audio,
+  callback behavior, queue behavior, threading behavior, and language selection
+  behavior by leaving source unchanged.
