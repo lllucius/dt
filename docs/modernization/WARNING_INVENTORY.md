@@ -259,6 +259,63 @@ tools/baseline/verify_current.sh \
   --expected tests/golden
 ```
 
+## Next Warning Cleanup Plan Refresh
+
+The warning-focused follow-on plan refreshed warning evidence with:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase1-post-pr6 \
+  --expected tests/golden
+```
+
+Current warning counts:
+
+| Source | Count |
+| --- | ---: |
+| default warning lines | 1,778 |
+| parser-visible default warnings | 1,757 |
+| strict warning lines | 29,593 |
+| parser-visible strict warnings | 29,572 |
+
+Selected cleanup sequence:
+
+1. `src/udicunix/src/alphabet.c`, strict `-Wunused-variable`.
+   The target rows are local unused variables in the user-dictionary
+   alphabetizer. The cleanup must not touch pointer signedness, text parsing,
+   codepage conversion, sort order, file I/O, dictionary format, or generated
+   user-dictionary output.
+2. `src/samplosf/src/dtsamples/tunecheck.c`, strict
+   `-Wmissing-prototypes`.
+   The target row is private helper `MakeTunerParams`. The cleanup may make
+   the helper file-local only if source review confirms there is no external
+   reference.
+3. `src/samplosf/src/dtsamples/tunecheck.c`, strict
+   `-Wunused-variable`.
+   The target rows are unused locals in the sample tool. The cleanup must not
+   touch callback behavior, buffer processing, tuner-string generation,
+   command-line parsing, format-y2k output, qualifier cleanup, or pointer
+   signedness.
+
+Rejected candidates for this pass:
+
+- `src/udicunix/src/alphabet.c` pointer-sign warnings: these are dictionary
+  text-buffer boundary warnings and should not be mixed with unused-variable
+  removal.
+- `src/samplosf/src/dtsamples/tunecheck.c` `-Wdiscarded-qualifiers` and
+  `-Wformat-y2k`: these can affect string typing or displayed output and need
+  a separate review.
+- parser-adjacent command files under `src/dapi/src/cmd/`: parser behavior is
+  higher risk than the selected shipped tool cleanup.
+- `src/dapi/src/osf/` stubs: many rows are low-risk-looking unused parameters,
+  but those files model compatibility APIs and should be grouped separately.
+
+Budget policy for this plan:
+
+- Add strict warning-budget rows only after a selected file/category reaches
+  zero and the full default gate passes.
+- Do not broaden budgets to unrelated warning debt.
+
 Result: the final gate passed with public headers, exported symbols, detailed
 manifest, dictionaries, user dictionaries, API smoke, callback smoke, US
 one-shot audio, expanded US audio suites, non-US one-shot audio, default warning

@@ -258,7 +258,7 @@ Implementation Summary:
 
 ## Phase 2: Warning Candidate Gate Map
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -287,6 +287,26 @@ Rules:
 
 - Documentation-only phase.
 - Do not widen later phases beyond what can be verified deterministically.
+
+Implementation Summary:
+
+- Replaced `docs/modernization/NEXT_PLAN_GATE_MAP.md` with the active
+  post-PR #6 warning-cleanup gate map.
+- Updated `docs/modernization/WARNING_INVENTORY.md` with refreshed Phase 1
+  counts, selected cleanup targets, rejected adjacent warning classes, and
+  warning-budget policy for this plan.
+- Selected three bounded cleanup phases:
+  `src/udicunix/src/alphabet.c` strict `-Wunused-variable`,
+  `src/samplosf/src/dtsamples/tunecheck.c` strict `-Wmissing-prototypes`, and
+  `src/samplosf/src/dtsamples/tunecheck.c` strict `-Wunused-variable`.
+- Explicitly deferred pointer-sign, qualifier, format-y2k, parser-adjacent,
+  compatibility-stub, runtime audio, runtime threading, public API, dictionary
+  format, and synthesis cleanup.
+- Verification was documentation-only:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'` passed.
+- No source, runtime behavior, build behavior, public API, exported symbol,
+  dictionary output, deterministic audio, golden artifact, or accepted baseline
+  was changed.
 
 ## Phase 3: UDICT Alphabetizer Unused-Variable Cleanup
 

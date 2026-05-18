@@ -1,8 +1,9 @@
-# Next High-Risk Plan Gate Map
+# Next Warning Cleanup Plan Gate Map
 
-This note maps the current post-PR #5 modernization plan to concrete work
-targets, required evidence, and rollback rules. It is planning documentation
-only; it does not approve behavior changes.
+This note maps the current post-PR #6 warning-focused modernization plan to
+concrete work targets, required evidence, and rollback rules. It is planning
+documentation only; it does not approve behavior changes outside the named
+phases.
 
 ## Scope Rules
 
@@ -24,112 +25,92 @@ only; it does not approve behavior changes.
 
 | Phase | Candidate scope | Required gates | Rollback rule |
 | --- | --- | --- | --- |
-| 1 | Post-PR #5 baseline refresh | `verify_current.sh`, `verify_cmake_subset.sh`, warning counts, symbols, manifests, dictionaries, public headers, API smoke, one-shot and expanded US audio | Stop on unexplained baseline delta; only refresh a golden manifest after repeated stable captures and passing behavior gates |
-| 2 | Compress the knowledge base into this gate map | `git diff --check`; no source, build, runtime, or golden changes | Revert to documentation-only if any implementation decision needs new evidence |
-| 3 | Phoneme/text baseline pilot | Public-facing phoneme/text probes, repeated captures, existing Autotools gate if tooling or fixtures change | Do not accept a baseline if `TextToSpeechConvertToPhonemes` crashes, `LOG_PHONEMES` returns an error, no text artifact is produced, or repeated output differs |
-| 4 | Callback and queue-adjacent API smoke pilot | Installed-header harness, repeated deterministic callback output, public headers, exact symbols, dictionaries, API WAV, one-shot and expanded US audio, warning budget | Drop any assertion that depends on scheduler timing, wall-clock delay, queue timing, live devices, or callback ordering that is not byte-stable |
-| 5 | Non-US deterministic audio expansion | Repeated one-shot WAV captures by language and speaker, existing US audio gates, dictionaries, symbols, headers, API smoke, manifests | Defer a language if output is unstable, if fixed input text is not accepted, or if language selection/voice ROM behavior would need code changes |
-| 6 | Medium-risk warning cleanup wave | One file, one warning category, strict warning before/after, Autotools gate, any accepted Phase 3-5 gates, warning budget | Revert the cleanup if it touches public signatures, struct layout, parser/synthesis arithmetic, dictionary format, threading, audio, or produces any behavior delta |
-| 7 | API implementation warning pilot | Expanded API/callback gates, exact public headers and exports, dictionaries, deterministic audio, manifests, warning budget | Defer instead of editing if the candidate touches callback signatures, memory ownership, loader dispatch, structure layout, pointer/integer conversions, or thread lifecycle |
-| 8 | CMake detailed parity closure attempt | CMake subset gate, Autotools gate for build changes, path/type and detailed manifests, symbols, dictionaries, audio, platform and OP smokes | Revert CMake changes that alter Autotools, default runtime behavior, install path/type parity, or deterministic output |
-| 9 | CMake and Autotools audio option build matrix | Default gates plus compile-only or metadata-only option probes; no device opens | Roll back option changes that affect default audio metadata, link unexpected live-audio dependencies, or change device selection/callback/thread behavior |
-| 10 | Platform adapter scaffold | Adapter smoke coverage, CMake subset gate, Autotools gate if shared source membership changes, standard docs in new source/header files | Remove the adapter if it is wired into runtime, installed public APIs, `opthread.c`, `linux_audio.c`, or any default DECtalk library |
-| 11 | Experimental runtime wrapper opt-in decision | Default Autotools and CMake gates; optional disabled-by-default compile or smoke evidence only | Do not add opt-in wiring if default artifacts change or if queue, pipe, callback, timing, thread, or audio behavior lacks deterministic evidence |
-| 12 | CMake promotion readiness decision | Review detailed parity, path/type parity, symbols, compile commands, audio-option matrix, deterministic gates, packaging docs | Keep CMake side-by-side if any promotion blocker remains; do not remove any existing build path |
-| 13 | Final readiness, PR, and merge | Final Autotools gate, final CMake subset gate, all accepted new gates, warning budgets, PR checks, merge policy | Stop before merge on any unexplained behavior, symbol, header, dictionary, manifest, API, callback, phoneme, timing, or audio delta |
+| 1 | Post-PR #6 baseline refresh | `verify_current.sh`, `verify_cmake_subset.sh`, warning counts, symbols, manifests, dictionaries, public headers, API smoke, callback smoke, US and non-US deterministic audio | Stop on unexplained baseline delta; do not update goldens |
+| 2 | Compress warning candidates into this gate map | `git diff --check`; no source, build, runtime, or golden changes | Revert to documentation-only if any implementation decision needs new evidence |
+| 3 | `src/udicunix/src/alphabet.c` `-Wunused-variable` cleanup | Default Autotools gate, strict warning summary, user dictionaries, generated dictionaries, public headers, symbols, API/callback smoke, deterministic audio, warning budgets | Revert if user-dictionary output, dictionary output, warnings outside the target category, or behavior gates change unexpectedly |
+| 4 | `src/samplosf/src/dtsamples/tunecheck.c` `-Wmissing-prototypes` cleanup for private `MakeTunerParams` | Default Autotools gate, strict warning summary, deterministic audio, symbols, headers, warning budgets | Revert if generated tuner string logic, command-line behavior, symbols, headers, dictionaries, or audio output changes unexpectedly |
+| 5 | `src/samplosf/src/dtsamples/tunecheck.c` `-Wunused-variable` cleanup | Default Autotools gate, strict warning summary, deterministic audio, symbols, headers, warning budgets | Revert if callback logic, buffer processing, command-line behavior, symbols, headers, dictionaries, or audio output changes unexpectedly |
+| 6 | Final readiness, PR, and merge | Final `verify_current.sh`, final `verify_cmake_subset.sh`, audio-option matrix, warning budgets, PR checks, merge policy | Stop before merge on any unexplained behavior, symbol, header, dictionary, manifest, API, callback, phoneme, timing, or audio delta |
 
-## Candidate Details
+## Selected Candidates
 
-Phase 3 starts from the existing phoneme feasibility evidence. The only
-acceptable paths are public-facing and deterministic: a stable
-`TextToSpeechConvertToPhonemes` probe, a reliable public log-file mode, or a
-command-line artifact that is separate from WAV output. If those paths still
-crash, return errors, or fail to produce byte-stable artifacts, the phase should
-document the blocker and defer without adding golden files.
+### Phase 3: UDICT Alphabetizer Unused Variables
 
-Phase 4 may extend `tools/baseline/api_smoke.c` or add a separate
-installed-header harness under `tools/baseline/`. Candidate callback coverage is
-limited to stable message counts, message type presence, scalar status values,
-and file-output/no-audio paths. In-memory phoneme arrays, queue timing, pipe
-behavior, live-audio callbacks, and wall-clock ordering remain unsupported until
-the harness proves repeatable output.
+Selected file and category:
 
-Phase 5 should start with one-shot WAV baselines for the staged non-US language
-libraries: `uk`, `sp`, `gr`, `la`, and `fr`, speakers 0 through 8. Each language
-needs a fixed input text, repeated byte-exact captures, recorded hashes, and an
-exact comparison path before any fixture is accepted. Existing US English
-baselines remain blocking gates.
+- `src/udicunix/src/alphabet.c`
+- strict `-Wunused-variable`
 
-Phase 6 primary candidate is the `src/dapi/src/api/coop.h`
-`-Wdiscarded-qualifiers` cluster only if inspection proves a const-preserving
-change with no installed-header or ABI effect. If that is too broad, defer it
-and use the strict warning inventory to pick a smaller single-file category.
-The `src/dapi/src/kernel/services.c` unused-parameter rows are a lower-risk
-fallback, but they should not be mixed with qualifier cleanup.
+Current refreshed evidence from
+`baseline-runs/next5-phase1-post-pr6/warnings-strict/warnings.tsv` shows
+repeated unused-variable rows for local variables `Guard1`, `Guard2`, `i`, and
+`termstrg`. The cleanup is limited to removing variables that are not read.
 
-Phase 7 primary candidates are private local-prototype or local-initialization
-warnings in `src/dapi/src/api/ttsapi.c` or `src/dapi/src/api/init.c` only after
-Phase 4 coverage is available. Candidate functions such as
-`PutIndexMarkInBuffer`, `PutPhonemeInBuffer`, and `WriteAudioToFile` need local
-review before editing because they are near callback, phoneme, or file-output
-paths. Exported, reserved, callback-facing, loader-adjacent, and memory-owner
-warnings stay deferred unless a dedicated gate is added.
+Rejected adjacent work:
 
-Phase 8 focuses on classifying CMake detailed manifest differences that remain
-after path/type parity: built-binary size/hash differences, `doc/DECtalk/html`
-directory metadata, symbol address/order differences, build flags, source
-membership, generated content, and packaging metadata. Low-risk CMake-only
-changes are allowed only if default deterministic outputs and Autotools remain
-unchanged.
+- pointer-sign warnings in `alphabet.c`;
+- text parsing changes;
+- sort-order changes;
+- codepage conversion changes;
+- file I/O changes;
+- dictionary format or output changes.
 
-Phase 9 should label every audio-option probe as one of: default behavior
-tested, compile-only, metadata-only, unavailable due to local dependencies, or
-deferred because it would open live devices. CMake options currently model
-`DISABLE_AUDIO`, `USE_ALSA`, and `USE_PULSEAUDIO`; Autotools remains the
-authoritative probe and link path.
+### Phase 4: Tunecheck Missing Prototype
 
-Phase 10 can add adapter scaffolding only after comparing the existing
-`opthread_smoke` evidence with `src/platform` wrapper behavior. Any adapter must
-model legacy handle ownership, wait return values, event constants and reset
-semantics, priority calls, sleep behavior, timeout/poll behavior, and
-lightweight locks without becoming part of default runtime libraries.
+Selected file and category:
 
-Phase 11 is expected to be a decision phase unless Phase 10 creates strong
-adapter evidence. Any experimental wrapper path must be disabled by default,
-clearly named as experimental, excluded from installed public APIs, and backed
-by default-build exact comparisons.
+- `src/samplosf/src/dtsamples/tunecheck.c`
+- strict `-Wmissing-prototypes`
 
-## Tooling Needs
+Current refreshed evidence shows `MakeTunerParams` has no previous prototype.
+The planned cleanup is to make the helper file-local only if source review
+confirms it is not externally referenced.
 
-- Phase 3 may need a small capture script only after manual probes show stable
-  public output.
-- Phase 4 likely needs a new installed-header callback harness or a strictly
-  bounded extension to `api_smoke.c`.
-- Phase 5 needs language-aware audio capture and comparison support only if
-  existing scripts cannot already parameterize language libraries.
-- Phase 8 may need a manifest-difference classifier, but manual classification
-  is acceptable if the difference set remains small and reproducible.
-- Phase 9 may need a build-matrix helper for repeated CMake and Autotools
-  option probes.
-- Phase 10 needs CMake smoke target wiring for any new adapter source; new
-  source and header files must carry standard documentation.
+Rejected adjacent work:
+
+- generated tuner string changes;
+- command-line behavior changes;
+- public API changes;
+- callback or audio buffer logic changes;
+- qualifier, pointer-sign, format, or timing cleanup.
+
+### Phase 5: Tunecheck Unused Variables
+
+Selected file and category:
+
+- `src/samplosf/src/dtsamples/tunecheck.c`
+- strict `-Wunused-variable`
+
+Current refreshed evidence shows unused local variables in `main`,
+`TTSCallbackRoutine`, and `DoFullAutoTune`. The cleanup is limited to removing
+locals that are not read and not part of observable output.
+
+Rejected adjacent work:
+
+- callback message semantics;
+- buffer processing arithmetic;
+- audio file generation;
+- tuner-string generation;
+- command-line parsing;
+- format-y2k output changes;
+- const/qualifier cleanup.
 
 ## Deferred Areas
 
 These remain deferred unless a later phase explicitly narrows and verifies
 them:
 
-- speech, parser, phoneme, LTS, VTM, HLSYN, and timing logic cleanup
-- public header or ABI changes
-- exported symbol changes
-- dictionary format or lookup behavior changes
+- speech, parser, phoneme, LTS, VTM, HLSYN, and timing logic cleanup;
+- public header or ABI changes;
+- exported symbol changes;
+- dictionary format or lookup behavior changes;
 - live-audio routing, callback timing, queue, pipe, buffer, or backend behavior
-  changes
-- `src/dapi/src/nt/opthread.c` runtime behavior changes
-- `src/dapi/src/nt/linux_audio.c` runtime behavior changes
-- default runtime wiring of `src/platform` wrappers
-- CMake promotion to the primary Linux build path
-- historical target source deletion
+  changes;
+- `src/dapi/src/nt/opthread.c` runtime behavior changes;
+- `src/dapi/src/nt/linux_audio.c` runtime behavior changes;
+- default runtime wiring of `src/platform` wrappers;
+- CMake promotion to the primary Linux build path;
+- historical target source deletion.
 
 ## Gate Policy
 
