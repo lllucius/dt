@@ -350,7 +350,7 @@ Implementation Summary:
 
 ## Phase 3: Warning Inventory Refresh And Candidate Selection
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -381,6 +381,33 @@ Rules:
 - Use the stricter warning inventory when choosing the candidate.
 - If no clearly low-risk candidate exists, document the blocker and skip Phase
   4 implementation rather than widening scope.
+
+Implementation Summary:
+
+- Generated a refreshed strict parser warning summary from the Phase 1 strict
+  warning log with
+  `tools/baseline/summarize_warnings.py --log baseline-runs/next3-phase1-post-merge/build/build-strict-warnings.log --out-dir baseline-runs/next3-phase3-warning-strict`.
+- Updated `docs/modernization/WARNING_INVENTORY.md` with the accelerated plan
+  Phase 3 counts, refreshed strict risk classification, selected Phase 4
+  candidate, and rejected candidates.
+- Selected Phase 4 candidate: `src/licunix/src/liceninc.c`
+  `-Wmissing-prototypes`, limited to the private helper `all_digits` if source
+  review confirms it can be made internal to the translation unit.
+- Explicitly rejected the same file's `-Wpointer-sign` warnings for this pass
+  because pointer signedness is outside the low-risk warning-cleanup scope.
+- Files changed: `docs/modernization/WARNING_INVENTORY.md` and `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because no source cleanup was performed in this
+  phase.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. This phase updated warning planning documentation
+  only and did not modify source, build scripts, golden artifacts, or runtime
+  behavior.
+- Known limitations: the refreshed strict inventory still contains substantial
+  high, medium, and unknown warning debt; Phase 4 is intentionally limited to
+  one private tool file and one warning category.
 
 ## Phase 4: Low-Risk Auxiliary Warning Cleanup
 

@@ -137,3 +137,60 @@ This prevents regression of the Phase 13 dictionary compiler format cleanup
 and the Phase 5 sample loader prototype-definition cleanup without making
 unrelated legacy warning debt fatal. New budgets should be added only after a
 focused cleanup has passed the relevant behavior checks.
+
+## Accelerated Plan Phase 3 Refresh
+
+The accelerated plan refreshed warning evidence from the Phase 1 post-merge
+baseline:
+
+- default warning summary:
+  `baseline-runs/next3-phase1-post-merge/warnings-default/`
+- strict warning log:
+  `baseline-runs/next3-phase1-post-merge/build/build-strict-warnings.log`
+- refreshed strict parser summary:
+  `baseline-runs/next3-phase3-warning-strict/`
+
+Current warning counts:
+
+| Source | Count |
+| --- | ---: |
+| default warning lines | 1,778 |
+| parser-visible default warnings | 1,757 |
+| strict warning lines | 29,762 |
+| parser-visible strict warnings | 29,743 |
+
+Refreshed strict risk classification:
+
+| Risk | Count | Ownership |
+| --- | ---: | --- |
+| high | 9,333 | behavior-critical synthesis, phoneme, LTS, API, and audio/threading areas |
+| medium | 5,147 | pointer qualifier, conversion, callback, and related boundary warnings |
+| low | 1,670 | unused parameters, missing prototypes, old-style definitions, and local tool cleanup |
+| unknown | 13,593 | unclassified warnings requiring local review before cleanup |
+
+Selected Phase 4 candidate:
+
+- file: `src/licunix/src/liceninc.c`
+- category: `-Wmissing-prototypes`
+- current strict parser evidence: three repeated warnings for private helper
+  `all_digits`
+- planned approach: make the helper internal to the translation unit if review
+  confirms it is not externally referenced
+- expected budget: add a zero-count `-Wmissing-prototypes` row for
+  `src/licunix/src/liceninc.c` only if the category reaches zero after
+  verification
+
+Rejected candidates for this pass:
+
+- `src/licunix/src/liceninc.c` `-Wpointer-sign`: pointer signedness is outside
+  this low-risk phase and should not be mixed with a prototype cleanup.
+- `src/samplosf/src/dtsamples/tunecheck.c` `-Wunused-variable`: larger sample
+  tool surface and more warnings; suitable only after a focused review.
+- `src/samplosf/src/dtsamples/mfg_load.c` `-Wmissing-prototypes`: already has a
+  warning-budget history, but the remaining functions need more local review
+  than the single-helper `liceninc.c` target.
+- private command/parser files under `src/dapi/src/cmd/`: parser-adjacent and
+  deferred until stronger behavior coverage is needed.
+
+Do not expand Phase 4 beyond the selected file and warning category unless the
+candidate proves invalid during source review.
