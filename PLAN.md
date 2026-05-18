@@ -506,7 +506,7 @@ Implementation Summary:
 
 ## Phase 6: Final Readiness Review, PR, And Merge
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -547,6 +547,40 @@ Rules:
   actually adds and runs those checks.
 - Do not merge if required checks fail.
 
+Implementation Summary:
+
+- Ran the final Autotools/current gate:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next5-phase6-final-default --expected tests/golden`.
+  Result: passed. Counts were 1,778 default warning lines, 29,521 strict
+  warning lines, 1,757 parser-visible default warnings, and 29,498
+  parser-visible strict warnings.
+- Confirmed default and strict warning budgets passed.
+- Confirmed public headers, exported symbols, detailed manifest, generated
+  dictionaries, user dictionaries, public API smoke, callback smoke, US
+  one-shot audio, expanded US audio suites, and non-US one-shot audio matched
+  accepted baselines.
+- Ran the final CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next5-phase6-final-cmake --expected tests/golden`. Result:
+  passed. `compile_commands.json` had 3,325 lines; generated dictionaries,
+  US one-shot audio, expanded US audio suites, exact `libtts.so` symbols,
+  language-library exported symbol name/type sets, `dt_platform_smoke`,
+  `opthread_smoke`, and `dt_opthread_adapter_smoke` passed.
+- Ran the final audio-option matrix:
+  `tools/baseline/check_audio_option_matrix.sh --run-dir
+  baseline-runs/next5-phase6-audio-option-matrix`. Result: passed as
+  metadata-only probes for CMake default, disabled-audio, ALSA, and
+  PulseAudio rows, and configure-metadata-only probes for Autotools default,
+  `--disable-audio`, and `--disable-pulseaudio` rows.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the final readiness
+  state for this plan.
+- Did not change public APIs, exported symbols, generated dictionaries, user
+  dictionaries, deterministic audio output, live-audio behavior, queue timing,
+  threading behavior, CMake authority, historical target support, phoneme/text
+  output, parser behavior, default voice, sample rate, or install layout in
+  this final phase.
+
 ## Definition Of Done For Each Phase
 
 Each completed phase summary must state:
@@ -562,5 +596,5 @@ Each completed phase summary must state:
 
 ## Current Immediate Next Step
 
-Run Phase 1 against the merged PR #6 baseline. Extra-high reasoning is assumed
-for all phases, so no reasoning-level prompt is required.
+Create and merge the pull request for the completed warning-focused plan once
+required checks and repository policy allow it.
