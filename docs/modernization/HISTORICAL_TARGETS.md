@@ -74,3 +74,51 @@ historical source branches are deleted, dead, validated, or safe to remove.
 4. Prefer new build-system options and documentation before source movement.
 5. Avoid changing speech, dictionary, threading, audio, or public API behavior as
    part of historical-target cleanup.
+
+## Phase 11 quarantine audit
+
+Phase 11 did not move, delete, or rewrite historical target code. It reviewed
+which historical target groups still affect modernization planning.
+
+### Current quarantine controls
+
+- Autotools blocks historical/non-current target configuration unless
+  `--enable-legacy-targets` is supplied.
+- CMake blocks non-Linux configuration unless
+  `-DDECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON` is supplied.
+- `src/platform/dt_legacy_targets.*` reports historical target macro state and
+  requires `DECTALK_ENABLE_LEGACY_TARGET_SOURCE` when those macros are active
+  inside the platform scaffolding.
+
+These controls are sufficient for current Linux modernization work. They are
+not evidence that historical target branches build or behave correctly.
+
+### Blockers by modernization area
+
+- CMake promotion: Apple, Emscripten, Solaris/SPARC, Windows, OSF/Tru64,
+  VxWorks, iPAQ, ARM7, and PowerPC branches still require explicit opt-in. CMake
+  should not be promoted beyond Linux until each target is either separately
+  supported, quarantined as unsupported, or excluded by policy.
+- Warning cleanup: platform-specific warning edits under shared files must be
+  treated as historical-target work when they involve `WIN32`, `UNDER_CE`,
+  `__APPLE__`, `_APPLE_MAC_`, `__osf__`, `_SPARC_SOLARIS_`, `VXWORKS`,
+  `MSDOS`, `ARM7`, `EPSON_ARM7`, `__ipaq__`, `__EMSCRIPTEN__`, `ALPHA`, or
+  endian branches.
+- Platform wrappers: no runtime wrapper should claim parity for historical
+  targets. Current wrapper evidence is Linux/POSIX scaffolding only and does not
+  validate legacy audio, callback, queue, thread-priority, stack-size, or event
+  behavior.
+
+### Future quarantine options
+
+- Add per-target documentation pages only after a target-specific inventory is
+  needed. Start with source ownership, build entry points, macro list, and the
+  reason the target remains non-current.
+- Keep build-system opt-ins additive. Do not make historical target macros
+  active in default Linux builds.
+- If a future plan proposes deleting or moving a historical branch, require an
+  explicit approval item, a list of affected files, and a statement that Linux
+  behavior gates still pass.
+- If a future plan proposes reviving a historical target, treat it as new target
+  support rather than cleanup and define separate build, packaging, audio,
+  dictionary, and API gates for that target.

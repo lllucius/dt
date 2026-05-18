@@ -891,7 +891,7 @@ Implementation Summary:
 
 ## Phase 11: Macro And Historical Target Quarantine Audit
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: high for audit; extra-high before changing any macro or
 historical-target branch.
@@ -923,6 +923,31 @@ Rules:
 - Do not simplify sound-critical or language-selection macros.
 - Do not remove historical target source branches.
 - Build-system opt-in quarantine requires extra-high approval.
+
+Implementation Summary:
+
+- Updated `docs/modernization/MACRO_INVENTORY.md` with a Phase 11 blocker
+  audit for CMake parity, warning cleanup, and platform-wrapper work.
+- Updated `docs/modernization/HISTORICAL_TARGETS.md` with a Phase 11 quarantine
+  audit covering current opt-in controls, blocker groups by modernization area,
+  and future quarantine options.
+- No source macros, build defaults, source branches, public headers, exported
+  symbols, dictionaries, audio paths, or runtime files were changed.
+- Clarified that `USE_ALSA`, `USE_PULSEAUDIO`, and `DISABLE_AUDIO` are CMake
+  parity blockers until modeled as explicit options and verified; language and
+  sound feature macros remain high-risk warning-cleanup blockers; historical
+  target macros remain behind explicit opt-ins.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because no build was required for this
+  documentation-only phase.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. The phase was documentation-only and did not modify
+  build or runtime behavior.
+- Known limitations: this audit does not prove historical targets build, does
+  not add language or phoneme baselines, and does not approve macro deletion or
+  source-level quarantine.
 
 ## Phase 12: Final Readiness Review For This Plan
 
