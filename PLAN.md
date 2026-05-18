@@ -1124,7 +1124,7 @@ Implementation Summary:
 
 ## Phase 13: Final Readiness Review, PR, And Merge
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -1163,6 +1163,52 @@ Rules:
   backend device selection, non-current targets, non-US audio, or phoneme/text
   output unless this plan actually adds and runs those checks.
 - Do not merge if required checks fail.
+
+Implementation Summary:
+
+- Ran the final authoritative Autotools/Linux verification gate:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase13-final --expected tests/golden`.
+- Final Autotools results: default warning-line count `1,778`, strict
+  warning-line count `29,665`, parser-visible default warnings `1,756`,
+  parser-visible strict warnings `29,643`, and warning budget status `ok`.
+  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
+  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
+  suites all matched accepted baselines.
+- Ran the final CMake subset verification gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase13-final-cmake --expected tests/golden`.
+- Final CMake results: generated dictionaries matched; one-shot US audio
+  matched for speakers 0 through 8; expanded US audio suites matched for
+  speakers 0 through 8; CMake-staged `libtts.so` matched the committed exact
+  exported-symbol baseline; language-library exported symbol name/type sets
+  matched; `dt_platform_smoke` passed; `opthread_smoke` passed;
+  `compile_commands.json` had `3,307` lines; and the detailed CMake staged
+  manifest had `1,126` lines.
+- Captured and compared final CMake path/type and detailed manifests against
+  the final Autotools manifests. Path/type staging matched with `589` entries
+  on each side. Detailed metadata-hash comparison still differed with `1,126`
+  entries on each side because CMake-built binary sizes/hashes and
+  `doc/DECtalk/html` directory metadata still differ.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the final readiness
+  review, final gate results, CMake status, behavior-risk boundaries, and
+  remaining limitations.
+- Files changed: `docs/modernization/READINESS_REVIEW.md` and `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public exports did not change according to the committed symbol comparisons.
+  Dictionaries did not change according to the committed dictionary
+  comparisons. Golden audio did not change according to the committed one-shot
+  and expanded deterministic WAV comparisons.
+- Behavior risk level: low for this final documentation checkpoint. The full
+  plan's highest-risk accepted change was the Phase 11 API-boundary local
+  prototype cleanup plus refreshed detailed Autotools manifest baseline, which
+  passed final symbol, dictionary, header, API-smoke, audio, and warning-budget
+  gates.
+- Known limitations: live audio hardware, callbacks, queue timing, backend
+  device selection, non-current targets, non-US audio, phoneme/text output,
+  CMake promotion, runtime platform-wrapper wiring, and remaining high-risk
+  warning cleanup are still deferred.
+- PR publication and merge are performed after this committed plan update so
+  the PR contains the completed readiness record.
 
 ## Definition Of Done For Each Phase
 

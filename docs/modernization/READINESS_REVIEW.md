@@ -605,3 +605,98 @@ Manifest decision:
 Decision: CMake is not promoted by this plan. Autotools remains authoritative.
 CMake is suitable as a side-by-side verification build, but detailed packaging
 differences and unverified live-audio behavior remain promotion blockers.
+
+## Accelerated Plan Final Readiness Review
+
+The accelerated modernization plan completed Phases 1 through 13 locally before
+PR publication.
+
+Autotools/Linux final gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next3-phase13-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,665.
+- parser-visible default warnings: 1,756.
+- parser-visible strict warnings: 29,643.
+- warning budget status was `ok`.
+- public header audit matched the committed allowlists.
+- exported symbols matched the committed symbol baselines.
+- detailed Autotools manifest matched the committed detailed manifest.
+- generated main dictionaries and the US user-dictionary fixture matched the
+  committed dictionary baselines.
+- public API smoke built against installed headers and libraries and matched
+  the committed speaker 0 WAV exactly.
+- US English one-shot golden WAV output matched exactly for speakers 0 through
+  8.
+- expanded deterministic US audio suites matched exactly for speakers 0 through
+  8: `us_abbreviations`, `us_commands_markup`, and
+  `us_punctuation_numbers`.
+
+CMake subset final gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next3-phase13-final-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,307 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata.
+- `opthread_smoke` passed.
+- CMake path/type staged manifest matched current Autotools path/type staging:
+  589 entries on each side.
+- CMake detailed metadata-hash manifest still differs from Autotools detailed
+  output: 1,126 entries on each side, with built-binary size/hash differences
+  and `doc/DECtalk/html` directory metadata differences.
+
+Review areas:
+
+- warnings: Phase 11 removed the selected API-boundary
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes` cluster and added a
+  warning-budget row. Substantial warning debt remains in high-risk areas.
+- public API and exports: public headers, exported symbols, and expanded API
+  smoke checks passed. Public API signatures and exported names were not
+  intentionally changed.
+- dictionaries: generated dictionaries and the US user-dictionary fixture
+  remained byte-exact against accepted baselines.
+- golden audio: deterministic US English WAV baselines passed for all 9
+  speakers across the one-shot input and expanded suites.
+- CMake: side-by-side status remains. CMake has exact path/type staging parity
+  and deterministic output parity for covered checks, but detailed
+  metadata/hash differences and unverified live-audio behavior block promotion.
+- platform wrappers: `src/platform/` remains isolated scaffolding; runtime
+  wrapper wiring is still deferred.
+
+Known limitations:
+
+- Not all warnings are addressed.
+- High-risk warning cleanup in synthesis, phoneme, LTS, VTM, HLSYN, public API,
+  threading, and audio code remains deferred.
+- CMake is not promoted to the primary Linux build path.
+- Live audio hardware behavior, callback timing, queue behavior, backend device
+  selection, and non-default CMake audio backend combinations were not tested.
+- Golden audio coverage remains US English only.
+- Non-current platform builds were not tested.
+- Phoneme/text golden baselines were not added.
+- Historical target branches are preserved and documented, not proven working.
+- Behavior preservation is claimed only for the deterministic checks listed in
+  this section.
