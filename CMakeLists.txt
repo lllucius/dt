@@ -237,6 +237,15 @@ add_executable(opthread_smoke
 dectalk_apply_common_c_settings(opthread_smoke)
 target_link_libraries(opthread_smoke PRIVATE pthread)
 
+add_executable(dt_opthread_adapter_smoke
+  tools/platform/dt_opthread_adapter_smoke.c
+  src/platform/dt_opthread_adapter.c
+  src/dapi/src/nt/opthread.c
+)
+dectalk_apply_common_c_settings(dt_opthread_adapter_smoke)
+target_include_directories(dt_opthread_adapter_smoke PRIVATE src/platform)
+target_link_libraries(dt_opthread_adapter_smoke PRIVATE pthread)
+
 set(DECTALK_TTS_TARGETS)
 
 function(dectalk_add_tts_language lang_code)

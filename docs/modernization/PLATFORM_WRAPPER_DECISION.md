@@ -6,6 +6,8 @@ runtime wiring.
 Phase 10 decision: no runtime wrapper pilot is approved.
 Accelerated Phase 8 update: add isolated legacy `OP_*` parity evidence, but
 continue to defer runtime wiring.
+Next plan Phase 10 update: add a private `OP_*` adapter scaffold for CMake-only
+evidence, but keep runtime wiring deferred.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -215,3 +217,56 @@ Required before reconsidering adapter scaffolding:
 - decide how non-current platform `OP_*` branches remain quarantined.
 
 No new adapter source or header is approved by this phase.
+
+## Next Plan Phase 10 Adapter Scaffold
+
+Decision: add a private CMake-only adapter scaffold while continuing to defer
+runtime wrapper wiring.
+
+The adapter files `src/platform/dt_opthread_adapter.h` and
+`src/platform/dt_opthread_adapter.c` wrap the current legacy `OP_*` primitives
+without translating their visible contracts. The scaffold models the evidence
+captured by `opthread_smoke`:
+
+- thread handles remain legacy `HTHREAD_T` values owned by
+  `OP_WaitForThreadTermination`;
+- wait return values are preserved, including the current Linux smoke-observed
+  successful join result;
+- priority get/set calls delegate to `OP_GetThreadPriority` and
+  `OP_SetThreadPriority`;
+- auto-reset and manual-reset event behavior delegates to `OP_CreateEvent`,
+  `OP_WaitForEvent`, `OP_SetEvent`, and `OP_ResetEvent`;
+- `OP_Sleep(0)` and `ThreadLock`/`ThreadUnlock` remain delegated legacy
+  behavior.
+
+The adapter is exercised by the CMake-only `dt_opthread_adapter_smoke` target.
+That smoke target links directly with `src/dapi/src/nt/opthread.c`, is not
+installed, and is not linked into DECtalk runtime libraries. Its purpose is to
+keep a private compatibility shape available for future migration experiments
+without changing the active Linux runtime.
+
+Observed adapter smoke output:
+
+```text
+adapter_thread_stack_size=65536
+adapter_thread_wait_status=1
+adapter_thread_return=91
+adapter_thread_priority=0
+adapter_mutex=ok
+adapter_event_semantics=ok
+adapter_lightweight_lock=ok
+adapter_sleep_zero=ok
+dt_opthread_adapter_smoke=ok
+```
+
+Still not covered:
+
+- live audio routing, device opening, callback timing, queue behavior, pipe
+  behavior, buffer ownership, reset/pause/restart transitions, and backend
+  state;
+- exact scheduler fairness or timing guarantees;
+- non-current platform `OP_*` behavior;
+- replacement of any active DECtalk runtime call path with `src/platform`.
+
+Decision remains unchanged for runtime code: no existing DECtalk runtime source
+is routed through this adapter by default.

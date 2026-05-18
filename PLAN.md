@@ -842,7 +842,7 @@ Implementation Summary:
 
 ## Phase 10: Platform Adapter Scaffold
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -876,6 +876,47 @@ Rules:
 - Do not change `src/dapi/src/nt/linux_audio.c`.
 - Do not change live audio behavior, callback behavior, queue behavior, thread
   lifecycle behavior, or public API behavior.
+
+Implementation Summary:
+
+- Added `src/platform/dt_opthread_adapter.h` and
+  `src/platform/dt_opthread_adapter.c`, a private compatibility scaffold that
+  delegates to legacy `OP_*` thread, mutex, event, priority, sleep, and
+  lightweight-lock primitives without routing DECtalk runtime code through
+  `src/platform`.
+- Added `tools/platform/dt_opthread_adapter_smoke.c`, a CMake-only smoke test
+  that verifies adapter-visible legacy handle ownership, wait return behavior,
+  priority behavior, event semantics, `OP_Sleep(0)`, and `ThreadLock`
+  timeout-poll behavior. The observed adapter output is recorded in
+  `docs/modernization/PLATFORM_WRAPPER_DECISION.md`.
+- Updated `CMakeLists.txt` to build `dt_opthread_adapter_smoke` as a developer
+  target linked only with `src/platform/dt_opthread_adapter.c` and
+  `src/dapi/src/nt/opthread.c`.
+- Updated `tools/baseline/verify_cmake_subset.sh` so the CMake subset gate
+  builds and runs `dt_opthread_adapter_smoke`, and records its log in the
+  summary.
+- Updated `src/platform/README.md` and
+  `docs/modernization/PLATFORM_WRAPPER_DECISION.md` to document the adapter as
+  private CMake-only scaffolding. Runtime wrapper wiring remains deferred.
+- Verified CMake subset behavior with:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase10-opthread-adapter --expected tests/golden`.
+  The gate passed, including `dt_platform_smoke`, `opthread_smoke`,
+  `dt_opthread_adapter_smoke`, dictionary comparison, US audio, expanded US
+  audio suites, `libtts.so` exact symbols, and language-library symbol
+  name/type checks.
+- Verified default Autotools/current behavior with:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase10-default-verify --expected tests/golden`.
+  Public headers, exported symbols, detailed manifest, dictionaries, user
+  dictionaries, API smoke, callback smoke, US audio, expanded US audio suites,
+  non-US audio, default warning budget, and strict warning budget all matched
+  accepted baselines.
+- Did not change `src/dapi/src/nt/opthread.c`,
+  `src/dapi/src/nt/linux_audio.c`, live audio behavior, callback behavior,
+  queue behavior, thread lifecycle behavior, public API behavior, exported
+  symbols, dictionaries, deterministic audio, install layout, or default
+  runtime routing.
 
 ## Phase 11: Experimental Runtime Wrapper Opt-In Decision
 
