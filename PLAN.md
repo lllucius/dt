@@ -798,7 +798,7 @@ Implementation Summary:
 
 ## Phase 9: Platform Wrapper Adapter Decision
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -832,6 +832,30 @@ Rules:
   libraries or installed public API surfaces.
 - Do not change live audio behavior, callback behavior, queue behavior, thread
   lifecycle behavior, or public API behavior.
+
+Implementation Summary:
+
+- Reviewed the accelerated Phase 8 `opthread_smoke` evidence against the
+  current `dt_thread`, `dt_mutex`, `dt_event`, and `dt_time` wrapper semantics.
+- Decision: defer platform adapter scaffolding. The current wrappers do not
+  encode legacy `OP_*` handle ownership, Linux wait return behavior, priority
+  get/set behavior, `ThreadLock` timeout-polling behavior, or exact `OP_WAIT_*`
+  compatibility.
+- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md` with the Phase 9
+  adapter decision, required future evidence, and reasons for deferral.
+- No new adapter source or header was created.
+- Files changed: `docs/modernization/PLATFORM_WRAPPER_DECISION.md` and
+  `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because this phase was documentation-only.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. This phase changed documentation only after the
+  Phase 8 CMake and Autotools gates passed.
+- Known limitations: runtime wrapper wiring, live audio, callbacks, queues,
+  pipes, buffer ownership, reset/pause/restart behavior, exact timing, and
+  non-current platform `OP_*` behavior remain outside verified coverage.
 
 ## Phase 10: CMake Live-Audio Option Parity Scaffolding
 

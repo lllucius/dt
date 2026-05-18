@@ -178,3 +178,40 @@ Still not covered:
 Decision remains unchanged: no runtime wrapper pilot is approved. The new
 evidence helps define adapter requirements, but `src/platform` is still not a
 drop-in replacement for active DECtalk runtime code.
+
+## Accelerated Phase 9 Adapter Decision
+
+Decision: defer platform adapter scaffolding.
+
+The accelerated Phase 8 `opthread_smoke` target gives useful legacy evidence,
+but it also confirms that an adapter would need to preserve details that are
+not represented by the current `src/platform` APIs:
+
+- Linux `OP_WaitForThreadTermination` currently returns `1` after a successful
+  join in the smoke harness while also returning the thread status value.
+- Legacy thread handles are heap-allocated `pthread_t *` values owned and freed
+  by the wait function.
+- Priority get/set calls are part of the legacy contract even though the
+  wrapper API does not expose priority.
+- `ThreadLock` uses the legacy timeout-polling contract, including immediate
+  failure on zero-timeout relock in the smoke harness.
+- Event constants, return values, and auto-reset/manual-reset semantics must
+  remain compatible with `OP_WAIT_*` behavior.
+
+Current `dt_thread`, `dt_mutex`, `dt_event`, and `dt_time` wrappers remain
+useful scaffolding, but their APIs do not encode those legacy contracts exactly.
+Adding adapter files now would either duplicate `opthread.c` semantics without
+a runtime user or create a misleading migration path before live runtime gates
+exist.
+
+Required before reconsidering adapter scaffolding:
+
+- define whether adapters preserve `OP_*` names and return values exactly or
+  expose a separate compatibility layer;
+- add callback, queue, pipe, reset, pause, restart, and buffer-ownership
+  evidence for any audio-adjacent adapter;
+- keep exact public API, symbol, dictionary, manifest, and deterministic audio
+  gates in the adapter plan;
+- decide how non-current platform `OP_*` branches remain quarantined.
+
+No new adapter source or header is approved by this phase.
