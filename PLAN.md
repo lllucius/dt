@@ -859,7 +859,7 @@ Implementation Summary:
 
 ## Phase 10: CMake Live-Audio Option Parity Scaffolding
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -895,6 +895,57 @@ Rules:
 - Do not change `src/dapi/src/nt/linux_audio.c`.
 - Stop on any unexplained audio, symbol, manifest, compile-command, or
   dictionary delta.
+
+Implementation Summary:
+
+- Added side-by-side CMake cache options for the Autotools audio macro surface:
+  `DECTALK_CMAKE_DISABLE_AUDIO`, `DECTALK_CMAKE_USE_ALSA`, and
+  `DECTALK_CMAKE_USE_PULSEAUDIO`.
+- The options define `DISABLE_AUDIO`, `USE_ALSA`, and `USE_PULSEAUDIO` for
+  CMake targets when enabled. `DISABLE_AUDIO` takes precedence over ALSA and
+  PulseAudio macro options.
+- Preserved the default verified CMake state with all new options `OFF`.
+- Updated `docs/modernization/AUDIO_BACKEND.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`, and
+  `docs/modernization/MACRO_INVENTORY.md` with the option surface, default
+  metadata, disabled-audio metadata probe, and limitations.
+- Files changed: `CMakeLists.txt`, `docs/modernization/AUDIO_BACKEND.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/MACRO_INVENTORY.md`, and `PLAN.md`.
+- CMake default verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase10-cmake-audio-options --expected tests/golden`.
+- CMake default verification results: generated dictionaries matched; one-shot
+  US audio matched; expanded US audio suites matched; `libtts.so` exported
+  symbols matched exactly; language-library exported symbol name/type sets
+  matched; `dt_platform_smoke` passed with `audio_disabled=0`, `audio_oss=1`,
+  `audio_alsa=0`, and `audio_pulseaudio=0`; `opthread_smoke` passed;
+  `compile_commands.json` had `3,307` lines; detailed CMake staged manifest had
+  `1,126` lines.
+- Metadata-only disabled-audio probe:
+  `cmake -S . -B baseline-runs/next3-phase10-cmake-disable-audio/build -DCMAKE_BUILD_TYPE=Release -DDECTALK_CMAKE_DISABLE_AUDIO=ON -DCMAKE_C_COMPILER=/usr/bin/gcc`,
+  `cmake --build baseline-runs/next3-phase10-cmake-disable-audio/build --target dt_platform_smoke -- -j1`,
+  and
+  `baseline-runs/next3-phase10-cmake-disable-audio/build/dt_platform_smoke /home/yam/dt PLAN.md`.
+  Result: `audio_disabled=1`, `audio_oss=0`, `audio_alsa=0`,
+  `audio_pulseaudio=0`, and `audio_audioqueue=0`.
+- Autotools verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase10-cmake-audio-options-autotools --expected tests/golden`.
+- Autotools verification results: default warning-line count `1,778`, strict
+  warning-line count `29,760`, parser-visible default warnings `1,757`, and
+  warning budget status `ok`. Public headers, exported symbols, detailed
+  Autotools manifest, dictionaries, user dictionaries, API smoke WAV, one-shot
+  US audio, and expanded US audio suites all matched accepted baselines.
+- Public exports did not change according to the committed symbol comparisons.
+  Dictionaries did not change according to the committed dictionary
+  comparisons. Golden audio did not change according to the committed one-shot
+  and expanded deterministic WAV comparisons.
+- Behavior risk level: medium. This phase changes side-by-side CMake
+  configuration only; defaults preserve verified behavior, but non-default
+  live-audio macro combinations are not promoted or runtime-certified.
+- Known limitations: this phase does not replace Autotools audio probing, does
+  not open live audio devices, does not link ALSA or PulseAudio libraries, does
+  not route runtime audio through wrappers, and does not validate live-audio
+  callbacks, queues, timing, or backend device selection.
 
 ## Phase 11: API-Boundary Warning Pilot
 

@@ -10,6 +10,21 @@ option(
   "Allow configuring the initial CMake build on non-Linux legacy/non-current targets"
   OFF
 )
+option(
+  DECTALK_CMAKE_DISABLE_AUDIO
+  "Define DISABLE_AUDIO for side-by-side CMake DECtalk targets"
+  OFF
+)
+option(
+  DECTALK_CMAKE_USE_ALSA
+  "Define USE_ALSA for side-by-side CMake DECtalk targets"
+  OFF
+)
+option(
+  DECTALK_CMAKE_USE_PULSEAUDIO
+  "Define USE_PULSEAUDIO for side-by-side CMake DECtalk targets"
+  OFF
+)
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT DECTALK_CMAKE_ENABLE_LEGACY_TARGETS)
   message(FATAL_ERROR
@@ -164,6 +179,18 @@ set(DECTALK_COMMON_DEFINES
   TYPING_MODE
   DECTALK_INSTALL_PREFIX="/opt/dectalk"
 )
+set(DECTALK_AUDIO_OPTION_DEFINES)
+if(DECTALK_CMAKE_DISABLE_AUDIO)
+  list(APPEND DECTALK_AUDIO_OPTION_DEFINES DISABLE_AUDIO)
+else()
+  if(DECTALK_CMAKE_USE_ALSA)
+    list(APPEND DECTALK_AUDIO_OPTION_DEFINES USE_ALSA)
+  endif()
+  if(DECTALK_CMAKE_USE_PULSEAUDIO)
+    list(APPEND DECTALK_AUDIO_OPTION_DEFINES USE_PULSEAUDIO)
+  endif()
+endif()
+list(APPEND DECTALK_COMMON_DEFINES ${DECTALK_AUDIO_OPTION_DEFINES})
 
 set(DECTALK_COMMON_COMPILE_OPTIONS
   -Wall
@@ -191,6 +218,9 @@ add_library(dt_platform STATIC
 )
 target_include_directories(dt_platform PUBLIC src/platform)
 target_compile_options(dt_platform PRIVATE ${DECTALK_COMMON_COMPILE_OPTIONS})
+if(DECTALK_AUDIO_OPTION_DEFINES)
+  target_compile_definitions(dt_platform PRIVATE ${DECTALK_AUDIO_OPTION_DEFINES})
+endif()
 if(DECTALK_CMAKE_ENABLE_LEGACY_TARGETS)
   target_compile_definitions(dt_platform PUBLIC DECTALK_ENABLE_LEGACY_TARGET_SOURCE=1)
 endif()

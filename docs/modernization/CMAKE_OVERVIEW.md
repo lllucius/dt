@@ -80,11 +80,20 @@ loader path are available during CMake runtime checks.
 
 ## Audio options
 
-The CMake build does not currently expose live audio backend options. It does
-not pass `USE_ALSA`, `USE_PULSEAUDIO`, or `DISABLE_AUDIO` into DECtalk runtime
-targets, and it does not replace Autotools audio probing. See
-`docs/modernization/AUDIO_BACKEND.md` for the current backend inventory and the
-Phase 11 containment scaffolding.
+The CMake build exposes side-by-side cache options for the Autotools audio macro
+surface:
+
+- `DECTALK_CMAKE_DISABLE_AUDIO`, which defines `DISABLE_AUDIO` when enabled.
+- `DECTALK_CMAKE_USE_ALSA`, which defines `USE_ALSA` when enabled and audio is
+  not disabled.
+- `DECTALK_CMAKE_USE_PULSEAUDIO`, which defines `USE_PULSEAUDIO` when enabled
+  and audio is not disabled.
+
+The default values are all `OFF`, preserving the current verified CMake state:
+OSS metadata is visible on Linux, ALSA and PulseAudio are off, and audio is not
+disabled. These options do not replace Autotools probing and do not prove
+live-audio behavior. See `docs/modernization/AUDIO_BACKEND.md` for the current
+backend inventory and containment scaffolding.
 
 The dictionary custom commands intentionally pass build-relative output paths to
 `dic_<lang>`. The dictionary compiler treats leading `/` arguments as options,
