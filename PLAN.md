@@ -285,7 +285,7 @@ Implementation Summary:
 
 ## Phase 2: Knowledge Base Reconciliation
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -319,6 +319,34 @@ Rules:
 - Documentation-only phase.
 - Do not change phase gates or accepted baselines unless Phase 1 revealed a
   factual mismatch that must be recorded.
+
+Implementation Summary:
+
+- Reconciled the modernization knowledge base with the post-PR #4 state.
+- Updated `docs/modernization/READINESS_REVIEW.md` so the previous plan is
+  described as published and merged through PR #4 rather than awaiting hosted
+  PR CI.
+- Updated `docs/modernization/README.md` to describe readiness reviews as
+  cumulative, the active gate map as the active-plan map, and the platform
+  wrapper decision document as the current runtime-wiring decision record.
+- Replaced the stale previous-plan phase table in
+  `docs/modernization/NEXT_PLAN_GATE_MAP.md` with the active accelerated plan's
+  Phase 1 through Phase 13 target map, required gates, throughput strategy, and
+  deferred areas.
+- Files changed: `docs/modernization/READINESS_REVIEW.md`,
+  `docs/modernization/README.md`,
+  `docs/modernization/NEXT_PLAN_GATE_MAP.md`, and `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because this phase was documentation-only.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. This phase changed documentation only and did not
+  modify source, build scripts, golden artifacts, or runtime behavior.
+- Known limitations: this phase did not run new build gates beyond the Phase 1
+  accepted gates and did not change the deferred status of high-risk runtime,
+  audio, callback, queue, non-US, phoneme/text, CMake-promotion, or historical
+  target work.
 
 ## Phase 3: Warning Inventory Refresh And Candidate Selection
 

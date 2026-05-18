@@ -1,6 +1,6 @@
-# Next Plan Gate Map
+# Active Plan Gate Map
 
-This note maps the next modernization plan to concrete work targets and
+This note maps the accelerated modernization plan to concrete work targets and
 verification gates. It is planning documentation only; it does not approve
 behavior changes.
 
@@ -14,34 +14,42 @@ behavior changes.
   sample rate, and default voice are unchanged unless a later phase explicitly
   approves and verifies a change.
 - Historical targets remain preserved and are not deleted.
+- Extra-high reasoning is active for the risky block, so the plan can proceed
+  without additional reasoning-change prompts unless a regression or ambiguity
+  appears.
 
 ## Target Map
 
 | Phase | Target | Risk | Required gates |
 | --- | --- | --- | --- |
-| 3 | Deterministic phoneme or text-mode baseline feasibility | medium until output source is proven deterministic; extra-high before accepting any baseline | inventory only unless feasible; if accepted, exact capture/compare scripts plus `verify_current.sh`, public header audit, symbol comparison, dictionary comparison, API smoke, and golden audio comparison |
-| 4 | Public API smoke matrix expansion in `tools/baseline/` | medium because it exercises public API behavior, but test-only if public headers and runtime code are unchanged | installed-header compile, API smoke output, public header audit, exact exported symbols, dictionaries, one-shot and expanded US audio |
-| 5 | CMake staged packaging gap closure | medium to high because install layout and source membership can drift | `verify_cmake_subset.sh` with exact local `libtts.so` symbols, Autotools `verify_current.sh`, detailed manifest capture/compare, dictionary comparison, one-shot and expanded US audio, language-library symbol name/type sets |
-| 6 | CMake parity decision checkpoint | low if documentation-only | manifest and symbol evidence from Phase 5, no source changes unless separately approved |
-| 7 | Low-risk warning budget expansion in auxiliary files | low only when limited to private tools/samples and simple warning categories | targeted warning inventory, `verify_current.sh`, warning budget check, public header and symbol comparisons when relevant |
-| 8 | API-boundary warning cleanup | high | expanded API smoke matrix, public header audit, exact exported symbols, dictionaries, one-shot and expanded US audio, warning summary and budget check |
-| 9 | Platform wrapper parity harness | high if it adds runtime-adjacent tests; must remain no-runtime-wiring | CMake smoke/parity test, `verify_cmake_subset.sh` when CMake targets change, Autotools gate if shared scripts or source membership change |
-| 10 | Runtime wrapper pilot decision | extra-high | decision-only unless explicitly approved; any implementation requires `verify_current.sh`, API smoke, CMake subset, symbols, public headers, dictionaries, audio, warning budget, and a candidate-specific OP/platform parity test |
-| 11 | Macro and historical target quarantine audit | low for documentation; high for macro/build changes | documentation-only by default; build-system quarantine changes require Autotools and CMake gates plus macro classification evidence |
-| 12 | Final readiness review | low if documentation-only | final Autotools and CMake accepted gates plus explicit limitations |
+| 1 | Post-merge baseline refresh | low if documentation-only after gates pass | `verify_current.sh`, `verify_cmake_subset.sh`, warning counts, symbols, manifests, dictionaries, public headers, API smoke, one-shot and expanded US audio |
+| 2 | Knowledge base reconciliation | low if documentation-only | `git diff --check`; no source, build, baseline, or runtime changes |
+| 3 | Warning inventory refresh and candidate selection | low if inventory-only | Phase 1 warning summaries, warning-risk classification, explicit Phase 4 candidate and rejected candidates |
+| 4 | Low-risk auxiliary warning cleanup | low only when limited to private tools/samples and simple warning categories | targeted warning evidence, `verify_current.sh`, warning budget check, public headers, symbols, dictionaries, API smoke, one-shot and expanded US audio |
+| 5 | Deterministic coverage gap map | low if documentation-only | existing API, audio, phoneme feasibility, CMake, and platform-smoke evidence; no new baselines accepted |
+| 6 | CMake detailed parity policy | low if documentation/comparison-only | current Autotools and CMake detailed manifests, language-library symbol name/type evidence, audio-option blocker classification |
+| 7 | Public API smoke matrix expansion | medium to high because it exercises more public API behavior, but test-only if public headers and runtime code are unchanged | installed-header compile, API smoke output, public header audit, exact exported symbols, dictionaries, one-shot and expanded US audio |
+| 8 | Legacy `OP_*` parity harness | high if it adds runtime-adjacent tests; must remain no-runtime-wiring | deterministic OP/platform parity test, CMake and/or Autotools harness integration, `verify_cmake_subset.sh` when CMake targets change, Autotools gate when shared scripts or source membership change |
+| 9 | Platform wrapper adapter decision | extra-high | decision-only unless isolated non-runtime scaffolding is justified; any new source/header needs standard docs and CMake smoke coverage |
+| 10 | CMake live-audio option parity scaffolding | extra-high | `verify_cmake_subset.sh`, Autotools `verify_current.sh`, compile-command/config evidence, symbols, manifests, dictionaries, public headers, API smoke, one-shot and expanded US audio |
+| 11 | API-boundary warning pilot | extra-high | expanded API smoke, public header audit, exact exported symbols, dictionaries, one-shot and expanded US audio, warning summary and budget check |
+| 12 | CMake promotion readiness decision | extra-high; documentation-only unless separately approved | manifest and symbol evidence from Phase 10, compile-command evidence, explicit promotion blockers or future promotion plan |
+| 13 | Final readiness review, PR, and merge | extra-high | final Autotools and CMake accepted gates, warning budgets, explicit limitations, PR checks, merge accepted by repository policy |
 
-## Preferred Initial Targets
+## Preferred Throughput Strategy
 
-The safest implementation targets after Phase 2 are:
+The fastest useful route is not broad refactoring. It is to keep every risky
+implementation behind deterministic gates and to defer work when evidence is
+missing instead of widening scope mid-phase.
 
-- CMake staged-layout work where the Autotools source path is explicit and the
-  staged artifact can be compared without changing runtime code.
-- Public API smoke matrix expansion in `tools/baseline/`, using installed
-  headers and no-audio deterministic calls.
-- Low-risk warning budget expansion in private auxiliary code, one warning
-  class at a time.
-- Platform-wrapper parity tests that compare semantics without routing runtime
-  code through wrappers.
+Safe acceleration choices:
+
+- keep extra-high reasoning active through the full plan;
+- avoid reasoning-change prompts because all remaining risky phases are grouped
+  together;
+- keep warning cleanup to one file and one category at a time;
+- prefer non-runtime tests and scaffolding before runtime wrapper work;
+- keep CMake side-by-side and defer promotion to a separate future plan.
 
 ## Deferred Areas
 

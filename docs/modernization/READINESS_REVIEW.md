@@ -390,10 +390,11 @@ readiness review. The parser-visible default warning count decreased from 1,772
 to 1,771 during the post-merge refresh; no source behavior change was made in
 this phase.
 
-## Current Plan Final Readiness Review
+## PR #4 Final Readiness Review
 
-The current modernization plan completed Phases 1 through 12 on local
-`develop`, which is 11 commits ahead of `origin/develop` before PR publication.
+The modernization plan completed Phases 1 through 12 and was published through
+PR #4, `Complete current modernization plan`. PR #4 merged into `develop` as
+`0555a8fef13d39f7e31ac96bd582ffb05f34db98`.
 
 Autotools/Linux final gate:
 
@@ -459,8 +460,9 @@ Review areas:
 
 - Linux build reproducibility: the authoritative Autotools/Linux gate rebuilt
   and reproduced accepted deterministic baselines under `tests/golden`.
-- Hosted and local CI behavior: local CI-equivalent scripts passed. Hosted PR
-  CI has not run for these commits yet and remains a publication gate.
+- Hosted and local CI behavior: local CI-equivalent scripts passed before PR
+  publication. GitHub accepted the PR #4 merge after hosted checks reached a
+  policy-acceptable state.
 - warnings: warning counts decreased during the plan, but substantial warning
   debt remains. The warning budget only ratchets categories that have already
   been cleaned.
