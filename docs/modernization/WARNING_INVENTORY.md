@@ -410,6 +410,58 @@ The detailed manifest baseline was refreshed after repeated captures showed a
 stable, expected metadata/hash change only for the rebuilt `tools/tunecheck_*`
 binaries.
 
+## Next Warning Cleanup Plan Phase 5 Cleanup
+
+Phase 5 implemented the selected `src/samplosf/src/dtsamples/tunecheck.c`
+`-Wunused-variable` cleanup.
+
+Implementation:
+
+- removed unused local variable `level` from `main`;
+- removed unused local variables `dwAvgSamplesPerSecond`,
+  `dwCurrentSamplesPerSecond`, `dwOldSamples`, and `dwOldTime` from
+  `TTSCallbackRoutine`;
+- removed unused local variable `kk` from `DoFullAutoTune`;
+- did not change callback logic, buffer processing, audio file generation,
+  tuner-string generation, command-line parsing, or displayed output.
+
+Warning evidence:
+
+- `src/samplosf/src/dtsamples/tunecheck.c` strict `-Wunused-variable` rows
+  decreased to zero.
+- remaining `tunecheck.c` strict warnings are deferred
+  `-Wdiscarded-qualifiers` and `-Wformat-y2k` rows.
+- strict parser-visible warnings decreased from 29,535 in the Phase 4 final
+  verification to 29,500 in the Phase 5 final verification.
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/samplosf/src/dtsamples/tunecheck.c`, `-Wunused-variable`, maximum count
+  `0`.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase5-tunecheck-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,519.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,500.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+The detailed manifest baseline was refreshed after repeated captures showed a
+stable, expected metadata/hash change only for the rebuilt `tools/tunecheck_*`
+binaries.
+
 Result: the final gate passed with public headers, exported symbols, detailed
 manifest, dictionaries, user dictionaries, API smoke, callback smoke, US
 one-shot audio, expanded US audio suites, non-US one-shot audio, default warning

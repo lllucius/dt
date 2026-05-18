@@ -2,3 +2,4 @@ file	flag	max_count	note
 src/dapi/src/api/coop.h	-Wdiscarded-qualifiers	0	Phase 6 changed literal-backed dictionary and registry path globals to const character pointers without changing exported names.
 src/udicunix/src/alphabet.c	-Wunused-variable	0	Next warning cleanup Phase 3 removed unused local variables without changing user-dictionary output logic.
 src/samplosf/src/dtsamples/tunecheck.c	-Wmissing-prototypes	0	Next warning cleanup Phase 4 made the private MakeTunerParams helper file-local.
+src/samplosf/src/dtsamples/tunecheck.c	-Wunused-variable	0	Next warning cleanup Phase 5 removed unused local variables without changing tunecheck control flow.

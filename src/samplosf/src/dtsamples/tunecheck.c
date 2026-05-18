@@ -370,7 +370,6 @@ int	startTime=0;
 int	main(int argc, char *argv[])
 {
 	int			argp = 0;
-	int			level = 0;
 
 #if !defined(HLSYN) && !defined(CHANGES_AFTER_V43)
 	printf("Can't tune with current configuration, need either HLSYN or CHANGES_AFTER_V43!\n");
@@ -1169,13 +1168,9 @@ VOID TTSCallbackRoutine(LONG lParam1, LONG lParam2,
 			LPTTS_BUFFER_T	lpttsbBuffer = (LPTTS_BUFFER_T)(lParam2);
 			int	iI=0;
 			
-			DWORD	dwAvgSamplesPerSecond=0;
-			DWORD	dwCurrentSamplesPerSecond=0;
-			DWORD	dwOldSamples = 0;
 			DWORD	dwCurrentSamples = 0;
 			DWORD	dwDeltaTime = 0;
 			DWORD	dwDeltaTimeSinceFirst = 0;
-			DWORD	dwOldTime = 0;
 		DWORD	dwTime;
 		
 		short *psData;
@@ -1525,7 +1520,6 @@ void DoFullAutoTune()
 {
 	int			ii = 0;
 	int			jj = 0;	
-	int			kk = 0;
 	int startVoice = STARTING_VOICE;
 	int voice	   = 0;
 	int param      = 0;

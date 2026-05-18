@@ -549,12 +549,12 @@ f 755 46168 tools/dic_gr ->
 f 755 46168 tools/dic_uk -> 
 f 755 46176 tools/dic_us -> 
 f 755 59536 say -> 
-f 755 73352 tools/tunecheck_fr -> 
-f 755 73352 tools/tunecheck_gr -> 
-f 755 73352 tools/tunecheck_la -> 
-f 755 73352 tools/tunecheck_sp -> 
-f 755 73352 tools/tunecheck_uk -> 
-f 755 73352 tools/tunecheck_us -> 
+f 755 73152 tools/tunecheck_fr -> 
+f 755 73152 tools/tunecheck_gr -> 
+f 755 73152 tools/tunecheck_la -> 
+f 755 73152 tools/tunecheck_sp -> 
+f 755 73152 tools/tunecheck_uk -> 
+f 755 73152 tools/tunecheck_us -> 
 f 755 82712 lib/libtts.so -> 
 l 777 11 usr/bin/say -> ../dist/say
 l 777 14 usr/bin/aclock -> ../dist/aclock
@@ -1112,12 +1112,12 @@ c6ad6dd981ee478bc029c11906f763c5f5b87dd42e682ec037ff8f1614f8109a  tools/dump_vdf
 908c2fae38e9346b377c07db014c6387a900e64503abaff21b0db67ed82d3367  tools/say_demo_sp
 1c3af38375eedd4a8f558a54f6cb76c9288d66a2e117bcff1157bfc9ef1a6c2f  tools/say_demo_uk
 81aafb84b0153b5808a581cfa1e8afa703b953892fdea21fbca70ed461bd9c5d  tools/say_demo_us
-a47b8d37a19c001d47038436b5dd87f96ccee351c80daa2a47d6e6d513a698b9  tools/tunecheck_fr
-17a39b756d07aaf26a7c0bf175acb50d29d79016671c8402d3584334e65dd008  tools/tunecheck_gr
-4454ae5c4ce61f1e5966118729d2a2b7be0f4c33819fb443d69a9142ebd90c9a  tools/tunecheck_la
-c1969e5bfb3107f16fb1d99dd8c19dd961d2c4ecbdd10c0a951bcbfaa5b2ba45  tools/tunecheck_sp
-0fffe6a84f79a3363d2512b94bbcafa143a0c7ea8e6f7cd4faff78a2ccd85e2f  tools/tunecheck_uk
-40c262c729b2468abd7810267375269df4288de819148d21a5f561cc1dd96d2c  tools/tunecheck_us
+9ec2d8a3fef0b2bfb6965efafd67d7d45595c447b0dbf6561af36e3d7a717584  tools/tunecheck_fr
+239adaabaab1570c067468607931d795a8bbcad5d29b0430ec24e0427ad04fd7  tools/tunecheck_gr
+77c57cac736fe475d5c592f6baa27e312d630d14121297bdfeeff0b15afa470b  tools/tunecheck_la
+4c0f19d4f1af6231aa4110b2f7b3a0e214e8baecff8a949f7e277b136c0ad293  tools/tunecheck_sp
+f928ba21b55dabcd26b4fecba12816b1001d0998888502298b9782d41d90fe23  tools/tunecheck_uk
+5176e7819b325803f54df62c290888a689dc3f2662f00ccc8bb9f7ebda90a045  tools/tunecheck_us
 e4b0ab2ba338e73a6b1c1c43d904c0d55329dd4ce3146d4dbf787b61a962c525  tools/udic_fr
 8ac383da7b023a613a5f89685c4974b8fe264b8f5bdf12c88bc44e667d7bc5a6  tools/udic_gr
 6372153bccfd49e4ceb554c8d724d7dae625540522170f50d6de9d44af0e7663  tools/udic_la

@@ -443,7 +443,7 @@ Implementation Summary:
 
 ## Phase 5: Tunecheck Unused-Variable Cleanup
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -475,6 +475,34 @@ Rules:
   behavior, generated dictionaries, public APIs, or exported symbols.
 - Do not mix qualifier, pointer-sign, format, or timing cleanup into this
   phase.
+
+Implementation Summary:
+
+- Removed only unused local variables from
+  `src/samplosf/src/dtsamples/tunecheck.c`: `level` in `main`,
+  `dwAvgSamplesPerSecond`, `dwCurrentSamplesPerSecond`, `dwOldSamples`, and
+  `dwOldTime` in `TTSCallbackRoutine`, and `kk` in `DoFullAutoTune`.
+- Added a strict warning-budget row for
+  `src/samplosf/src/dtsamples/tunecheck.c` `-Wunused-variable` at maximum
+  count `0`.
+- Refreshed `tests/golden/dist-manifest-detailed.txt` after repeated captures
+  proved the expected binary metadata/hash change was stable and limited to
+  rebuilt `tools/tunecheck_*` binaries.
+- Updated `docs/modernization/WARNING_INVENTORY.md` and
+  `docs/modernization/READINESS_REVIEW.md` with the Phase 5 evidence.
+- Verification:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next5-phase5-tunecheck-unused-final --expected tests/golden`
+  passed. Counts were 1,778 default warning lines, 29,519 strict warning
+  lines, 1,757 parser-visible default warnings, and 29,500 parser-visible
+  strict warnings. Default and strict warning budgets passed.
+- Public headers, exported symbols, detailed manifest, generated dictionaries,
+  user dictionaries, API smoke, callback smoke, US one-shot audio, expanded US
+  audio suites, and non-US one-shot audio all matched accepted baselines.
+- Did not change callback logic, buffer processing, audio file generation,
+  tuner-string generation, command-line parsing, displayed output, public APIs,
+  exported symbols, dictionary behavior, deterministic audio output, queue
+  behavior, threading behavior, language selection, or voice selection.
 
 ## Phase 6: Final Readiness Review, PR, And Merge
 
