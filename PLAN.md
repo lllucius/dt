@@ -1063,7 +1063,7 @@ Implementation Summary:
 
 ## Phase 13: Final Readiness Review, PR, And Merge
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -1105,6 +1105,51 @@ Rules:
   backend device selection, non-current targets, non-US audio, or phoneme/text
   output unless this plan actually adds and runs those checks.
 - Do not merge if required checks fail.
+
+Implementation Summary:
+
+- Ran the final Autotools/current gate:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase13-final-default --expected tests/golden`.
+  Result: passed. Final counts were 1,778 default warning lines, 29,593 strict
+  warning lines, 1,757 parser-visible default warnings, and 29,571
+  parser-visible strict warnings. Default and strict warning budgets passed.
+- The final Autotools gate also matched accepted public headers, exported
+  symbols, detailed manifest, generated dictionaries, user dictionaries, public
+  API smoke, API callback smoke, US English one-shot WAVs for speakers 0
+  through 8, expanded US audio suites for speakers 0 through 8, and non-US
+  one-shot WAVs for `uk`, `sp`, `gr`, `la`, and `fr`, speakers 0 through 8.
+- Ran the final CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase13-final-cmake --expected tests/golden`.
+  Result: passed. CMake generated `compile_commands.json` with 3,325 lines;
+  matched dictionaries, one-shot US audio, expanded US audio suites, exact
+  `libtts.so` exported symbols, and language-library symbol name/type sets; and
+  passed `dt_platform_smoke`, `opthread_smoke`, and
+  `dt_opthread_adapter_smoke`.
+- Ran the final audio-option matrix:
+  `tools/baseline/check_audio_option_matrix.sh --run-dir
+  baseline-runs/next4-phase13-audio-option-matrix`. Result: passed as
+  metadata-only CMake evidence and configure-metadata-only Autotools evidence;
+  no live audio hardware behavior was certified.
+- Captured and compared the final CMake basic staged manifest. Basic path/type
+  comparison passed with 589 entries on each side:
+  `baseline-runs/next4-phase13-cmake-manifest/basic-vs-autotools.diff`.
+  Detailed metadata/hash comparison still differed with 1,126 detailed entries
+  on each side:
+  `baseline-runs/next4-phase13-cmake-manifest/detailed-vs-autotools.diff`.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the final readiness
+  state, final verification results, CMake status, platform wrapper status,
+  phoneme/text status, warning counts, deferred risks, and behavior statement.
+- No unexplained public header, exported symbol, dictionary, user dictionary,
+  API smoke, callback smoke, deterministic audio, warning-budget, or
+  Autotools-manifest delta remains. The only expected CMake-vs-Autotools delta
+  is the documented detailed metadata/hash packaging difference.
+- Did not change speech output, phoneme output, parser behavior, dictionary
+  behavior, public APIs, exported symbols, sample rate, default voice, install
+  layout, live audio routing, callback runtime behavior, queue behavior, thread
+  lifecycle behavior, CMake authority, Autotools authority, or historical target
+  support.
 
 ## Definition Of Done For Each Phase
 

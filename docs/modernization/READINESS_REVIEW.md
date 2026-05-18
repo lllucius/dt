@@ -939,3 +939,103 @@ Behavior statement: no build path was promoted, no build path was removed, no
 install layout changed, and no public API, exported symbol, dictionary, audio,
 callback, queue, thread lifecycle, or runtime routing behavior was
 intentionally changed.
+
+## Next High-Risk Plan Phase 13 Final Readiness
+
+Phase 13 is the final readiness review for the next high-risk modernization
+plan.
+
+Final Autotools/current gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase13-final-default \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,593.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,571.
+- default and strict warning budgets passed.
+- public headers matched accepted allowlists.
+- exported symbols matched accepted baselines.
+- detailed Autotools install manifest matched the accepted baseline.
+- generated dictionaries and the US user-dictionary fixture matched accepted
+  baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output matched exactly for speakers 0 through 8.
+- expanded US audio suites matched exactly for speakers 0 through 8.
+- non-US one-shot WAV output matched exactly for `uk`, `sp`, `gr`, `la`, and
+  `fr`, speakers 0 through 8.
+
+Final CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next4-phase13-final-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,325 lines.
+- generated dictionaries matched accepted baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the accepted exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched accepted
+  baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+
+Final audio-option matrix:
+
+```sh
+tools/baseline/check_audio_option_matrix.sh \
+  --run-dir baseline-runs/next4-phase13-audio-option-matrix
+```
+
+Results:
+
+- CMake default, disabled-audio, ALSA, and PulseAudio rows completed as
+  metadata-only probes.
+- Autotools default, `--disable-audio`, and `--disable-pulseaudio` rows
+  completed as configure-metadata-only probes.
+- Local ALSA and PulseAudio rows remain metadata-only; no live backend hardware
+  behavior was certified.
+
+Final CMake packaging comparison:
+
+- basic path/type comparison:
+  `baseline-runs/next4-phase13-cmake-manifest/basic-vs-autotools.diff`
+- result: `manifest: ok`, with 589 entries on each side.
+- detailed metadata/hash comparison:
+  `baseline-runs/next4-phase13-cmake-manifest/detailed-vs-autotools.diff`
+- result: `manifest: different`, with 1,126 detailed entries on each side.
+
+Final status:
+
+- CMake remains side-by-side and non-authoritative.
+- `src/platform` remains private scaffolding; no runtime wrapper option or
+  routing is enabled.
+- deterministic phoneme/text golden baselines were not accepted; phoneme/text
+  output remains a deferred risk area.
+- live audio hardware, backend device selection, queue timing, pipe timing,
+  full callback timing, reset/pause/restart timing, non-current targets, and
+  historical platform behavior remain outside the verified coverage.
+
+Behavior statement: this plan added and expanded verification scaffolding,
+golden audio coverage, API callback smoke coverage, warning-budget evidence,
+audio-option metadata evidence, CMake packaging evidence, and private platform
+adapter smoke evidence. It did not intentionally change speech output, phoneme
+output, parser behavior, dictionary behavior, public APIs, exported symbols,
+sample rate, default voice, install layout, live audio routing, callback
+runtime behavior, queue behavior, thread lifecycle behavior, CMake authority,
+Autotools authority, or historical target support.
