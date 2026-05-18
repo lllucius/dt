@@ -365,6 +365,51 @@ The detailed manifest baseline was refreshed after repeated captures showed a
 stable, expected metadata/hash change only for the rebuilt `tools/udic_*`
 binaries. User-dictionary output itself remained byte-exact.
 
+## Next Warning Cleanup Plan Phase 4 Cleanup
+
+Phase 4 implemented the selected `src/samplosf/src/dtsamples/tunecheck.c`
+`-Wmissing-prototypes` cleanup.
+
+Implementation:
+
+- made the private `MakeTunerParams` helper file-local with `static`;
+- did not change the generated tuner string, command-line parsing, callback
+  logic, audio buffer processing, public API usage, or exported symbols.
+
+Warning evidence:
+
+- `MakeTunerParams` strict `-Wmissing-prototypes` rows decreased to zero.
+- strict parser-visible warnings decreased from 29,542 in the Phase 3 final
+  verification to 29,535 in the Phase 4 final verification.
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/samplosf/src/dtsamples/tunecheck.c`, `-Wmissing-prototypes`, maximum
+  count `0`.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase4-tunecheck-prototype-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,556.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,535.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+The detailed manifest baseline was refreshed after repeated captures showed a
+stable, expected metadata/hash change only for the rebuilt `tools/tunecheck_*`
+binaries.
+
 Result: the final gate passed with public headers, exported symbols, detailed
 manifest, dictionaries, user dictionaries, API smoke, callback smoke, US
 one-shot audio, expanded US audio suites, non-US one-shot audio, default warning

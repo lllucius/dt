@@ -190,7 +190,7 @@ inline int checkmax(S32 value,S32 checkval);
 
 
 // the function that makes the string
-void MakeTunerParams(TUNERPARAMS *pTP)
+static void MakeTunerParams(TUNERPARAMS *pTP)
 {
 	sprintf(pTP->string,
 		"[:sync][:dv gf %d gh %d gv %d gn %d g1 %d g2 %d g3 %d g4 %d g5 %d][:sync]",

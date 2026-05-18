@@ -373,7 +373,7 @@ Implementation Summary:
 
 ## Phase 4: Tunecheck Missing-Prototype Cleanup
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -406,6 +406,40 @@ Rules:
   behavior.
 - Do not mix unused-variable, qualifier, or pointer-sign cleanup into this
   phase.
+
+Implementation Summary:
+
+- Reviewed `MakeTunerParams` references and confirmed the helper is only used
+  inside `src/samplosf/src/dtsamples/tunecheck.c`.
+- Because `tunecheck.c` contains legacy non-UTF-8 bytes, the edit was made with
+  a byte-preserving exact substitution after `apply_patch` could not decode the
+  file.
+- Made `MakeTunerParams` file-local with `static` without changing the
+  generated tuner string.
+- Added a strict warning-budget row for
+  `src/samplosf/src/dtsamples/tunecheck.c` `-Wmissing-prototypes` at maximum
+  count `0`.
+- Added a `.gitattributes` whitespace rule for legacy CRLF
+  `src/samplosf/src/dtsamples/tunecheck.c` so the standard diff check can
+  validate focused edits without reformatting the file.
+- Refreshed `tests/golden/dist-manifest-detailed.txt` after repeated captures
+  proved the expected binary metadata/hash change was stable and limited to
+  rebuilt `tools/tunecheck_*` binaries.
+- Updated `docs/modernization/WARNING_INVENTORY.md` and
+  `docs/modernization/READINESS_REVIEW.md` with the Phase 4 evidence.
+- Verification:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next5-phase4-tunecheck-prototype-final --expected
+  tests/golden` passed. Counts were 1,778 default warning lines, 29,556 strict
+  warning lines, 1,757 parser-visible default warnings, and 29,535
+  parser-visible strict warnings. Default and strict warning budgets passed.
+- Public headers, exported symbols, detailed manifest, generated dictionaries,
+  user dictionaries, API smoke, callback smoke, US one-shot audio, expanded US
+  audio suites, and non-US one-shot audio all matched accepted baselines.
+- Did not change generated tuner strings, command-line behavior, public APIs,
+  exported symbols, dictionary behavior, deterministic audio output, callback
+  behavior, queue behavior, threading behavior, language selection, or voice
+  selection.
 
 ## Phase 5: Tunecheck Unused-Variable Cleanup
 

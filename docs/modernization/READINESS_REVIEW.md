@@ -1136,3 +1136,42 @@ Behavior statement: no dictionary format, dictionary sorting, dictionary
 lookup, text parsing, codepage conversion, public API, exported symbol,
 synthesis, audio, callback, queue, thread lifecycle, language selection, or
 voice selection behavior was intentionally changed.
+
+## Next Warning Cleanup Plan Phase 4 Readiness
+
+Phase 4 cleaned one low-risk strict missing-prototype warning in the tunecheck
+sample tool:
+
+- file: `src/samplosf/src/dtsamples/tunecheck.c`;
+- category: `-Wmissing-prototypes`;
+- change: made private helper `MakeTunerParams` file-local with `static`.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase4-tunecheck-prototype-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,556.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,535.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV output matched exactly.
+
+The detailed install manifest baseline was refreshed after two captures proved
+the expected binary metadata/hash change was stable and limited to rebuilt
+`tools/tunecheck_*` binaries.
+
+Behavior statement: no generated tuner string, command-line behavior, public
+API, exported symbol, dictionary behavior, synthesis behavior, deterministic
+audio output, callback behavior, queue behavior, thread lifecycle behavior,
+language selection, or voice selection behavior was intentionally changed.
