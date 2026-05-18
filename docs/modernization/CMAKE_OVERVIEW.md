@@ -253,6 +253,70 @@ Promotion blockers:
 Promotion should be handled by a separate future plan. This phase does not
 promote CMake and does not remove Autotools or any existing build path.
 
+## Next High-Risk Plan Phase 8 Detailed Parity Recheck
+
+Recommendation: continue side-by-side and defer CMake promotion.
+
+Fresh CMake evidence:
+
+- `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next4-phase8-cmake-detailed --expected tests/golden`
+  passed.
+- `compile_commands.json` was generated with 3,307 lines.
+- generated dictionaries matched committed dictionary baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata:
+  `audio_disabled=0`, `audio_oss=1`, `audio_alsa=0`,
+  `audio_pulseaudio=0`, and `audio_audioqueue=0`.
+- `opthread_smoke` passed with current `OP_*` smoke semantics.
+
+Manifest evidence:
+
+- Autotools detailed manifest:
+  `baseline-runs/next4-phase7-api-deferral/dist-manifest-detailed.txt`
+- CMake detailed manifest:
+  `baseline-runs/next4-phase8-cmake-detailed/dist-manifest-detailed.txt`
+- exact detailed comparison:
+  `baseline-runs/next4-phase8-cmake-detailed/detailed-vs-autotools.diff`
+- result: `manifest: different`, with 1,126 entries in each manifest.
+- path/type checks passed in both directions with no missing or extra entries.
+
+Detailed difference classes:
+
+- directory metadata: `doc/DECtalk/html` mode stayed `755`, but captured
+  directory size differed (`32768` for Autotools, `36864` for CMake). The files
+  below that directory did not show content-hash differences.
+- binary size and binary hash: 36 executable or shared-library paths differed:
+  `lib/libtts.so`, all six `lib/libtts_<lang>.so` language libraries, `say`,
+  `aclock`, `dtmemory`, all six `tools/say_demo_<lang>` binaries, all six
+  `tools/tunecheck_<lang>` binaries, all six `tools/dic_<lang>` binaries, all
+  six `tools/udic_<lang>` binaries, `tools/dump_vdf`, and `tools/mfg_load`.
+- build flags and link model: Autotools build logs show the authoritative Linux
+  build compiling with `-g -fPIC -O2`, while the CMake Release build compiles
+  with `-O3 -DNDEBUG -fPIC`. CMake also stages binaries produced by its
+  side-by-side target graph and RPATH/link model.
+- generated content: generated dictionaries, US deterministic audio, sample
+  text files, public headers, config files, documentation files, and symlinks
+  did not show accepted-check failures.
+- source membership: no source-membership change was made in this phase. The
+  remaining detailed differences are not path/type omissions; CMake source and
+  target membership should still be treated as a promotion review item before
+  byte-level artifact parity is claimed.
+- packaging metadata: path/type packaging parity remains exact, but detailed
+  metadata/hash parity remains unaccepted.
+
+No CMake build-system adjustment was made in this phase. Matching the remaining
+binary metadata exactly would require a deliberate build-flag and link-model
+parity project, and could invalidate the current exact CMake symbol baseline
+without proving a runtime behavior improvement. That work should be planned as a
+dedicated CMake promotion objective.
+
 ## Phase 18 Promotion Recommendation
 
 This historical recommendation predates the later Phase 5 packaging closure. See

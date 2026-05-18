@@ -689,7 +689,7 @@ Implementation Summary:
 
 ## Phase 8: CMake Detailed Parity Closure Attempt
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -726,6 +726,43 @@ Rules:
 - Do not change install layout unless exact path/type and detailed manifest
   evidence supports the change.
 - Do not promote CMake in this phase.
+
+Implementation Summary:
+
+- Ran the CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase8-cmake-detailed --expected tests/golden`.
+- Verified CMake generated `compile_commands.json` with 3,307 lines, matched
+  generated dictionaries, matched one-shot US English WAVs for speakers 0
+  through 8, matched expanded US audio suites for speakers 0 through 8, matched
+  `libtts.so` exact exported symbols, matched language-library exported symbol
+  name/type sets, passed `dt_platform_smoke`, and passed `opthread_smoke`.
+- Compared the current Autotools detailed manifest from
+  `baseline-runs/next4-phase7-api-deferral/dist-manifest-detailed.txt` with the
+  CMake detailed manifest from
+  `baseline-runs/next4-phase8-cmake-detailed/dist-manifest-detailed.txt`.
+- Path/type checks passed in both directions with no missing or extra entries,
+  and both detailed manifests contain 1,126 entries.
+- Exact detailed comparison remains different:
+  `baseline-runs/next4-phase8-cmake-detailed/detailed-vs-autotools.diff`.
+- Classified remaining differences as one directory metadata-size difference
+  for `doc/DECtalk/html`, plus size/hash differences for 36 CMake-built
+  executable or shared-library artifacts: `lib/libtts.so`, all six
+  `lib/libtts_<lang>.so` libraries, `say`, `aclock`, `dtmemory`, all six
+  `tools/say_demo_<lang>` binaries, all six `tools/tunecheck_<lang>` binaries,
+  all six `tools/dic_<lang>` binaries, all six `tools/udic_<lang>` binaries,
+  `tools/dump_vdf`, and `tools/mfg_load`.
+- Reviewed build-flag evidence: Autotools compiles the authoritative Linux build
+  with `-g -fPIC -O2`, while CMake Release compiles with `-O3 -DNDEBUG -fPIC`
+  and its side-by-side target/link model. Matching those binaries exactly would
+  require a dedicated build-model parity effort and could invalidate the current
+  exact CMake symbol gate.
+- Made no CMake, Autotools, source, build-system, install-layout, dictionary,
+  golden audio, symbol, public-header, API, callback, queue, threading,
+  language-selection, or voice-selection changes.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` and
+  `docs/modernization/PACKAGING_LAYOUT.md` with the Phase 8 evidence,
+  difference classification, and promotion-blocker decision.
 
 ## Phase 9: CMake And Autotools Audio Option Build Matrix
 

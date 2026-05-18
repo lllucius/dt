@@ -120,3 +120,35 @@ Decision: CMake remains side-by-side. Basic path/type staging parity is still
 accepted, but detailed metadata/hash differences for built binaries and
 `doc/DECtalk/html` directory metadata remain release-packaging promotion
 blockers.
+
+## Next High-Risk Plan Phase 8 Detailed Packaging Recheck
+
+Phase 8 rechecked CMake packaging against the current Autotools baseline:
+
+- Autotools detailed manifest:
+  `baseline-runs/next4-phase7-api-deferral/dist-manifest-detailed.txt`
+- CMake detailed manifest:
+  `baseline-runs/next4-phase8-cmake-detailed/dist-manifest-detailed.txt`
+- exact comparison output:
+  `baseline-runs/next4-phase8-cmake-detailed/detailed-vs-autotools.diff`
+
+Result: CMake remains side-by-side. Both detailed manifests contain 1,126
+entries, and path/type checks pass in both directions with no missing or extra
+entries. Exact detailed metadata/hash parity is still not accepted.
+
+Remaining detailed difference classes:
+
+- `doc/DECtalk/html` directory metadata size differs while mode and child file
+  contents remain accepted by the detailed comparison evidence.
+- 36 built executable or shared-library files differ in size and SHA-256 hash:
+  the multi-language and language libraries, main and language sample binaries,
+  dictionary tools, user-dictionary tools, tunecheck binaries, `aclock`,
+  `dtmemory`, `dump_vdf`, and `mfg_load`.
+- The differences are consistent with CMake's side-by-side build flags and link
+  model rather than an install path/type omission.
+
+No packaging or build-system change was made in this phase. Future CMake
+promotion must either eliminate the binary metadata/hash differences with a
+dedicated build-model parity effort or explicitly approve them as release
+packaging differences after matching behavior, symbol, dictionary, audio,
+callback, queue, and threading evidence.
