@@ -195,7 +195,7 @@ Use additional checks when relevant:
 
 ## Phase 1: Post-PR #6 Baseline Refresh
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -228,6 +228,33 @@ Rules:
 
 - This phase is a synchronization and verification checkpoint only.
 - Do not update golden files in this phase.
+
+Implementation Summary:
+
+- Confirmed local `develop` was synchronized with `origin/develop` at the
+  merged PR #6 state before running verification.
+- Ran the Autotools/current gate:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next5-phase1-post-pr6 --expected tests/golden`. Result:
+  passed. Counts were 1,778 default warning lines, 29,593 strict warning
+  lines, 1,757 parser-visible default warnings, and 29,572 parser-visible
+  strict warnings. Default and strict warning budgets passed.
+- The Autotools/current gate also matched accepted public headers, exported
+  symbols, detailed manifest, generated dictionaries, user dictionaries, public
+  API smoke, API callback smoke, US one-shot audio, expanded US audio suites,
+  and non-US one-shot audio.
+- Ran the CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next5-phase1-post-pr6-cmake --expected tests/golden`. Result:
+  passed. CMake generated `compile_commands.json` with 3,325 lines; matched
+  dictionaries, US one-shot audio, expanded US audio suites, exact `libtts.so`
+  symbols, and language-library symbol name/type sets; and passed
+  `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the refreshed starting
+  state. The parser-visible strict count is one row higher than the PR #6 final
+  readiness note, but all warning budgets and accepted behavior gates passed.
+- No source, public API, build script, runtime, dictionary-generation, audio,
+  threading, golden baseline, or accepted behavior artifact was changed.
 
 ## Phase 2: Warning Candidate Gate Map
 

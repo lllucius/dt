@@ -1039,3 +1039,61 @@ output, parser behavior, dictionary behavior, public APIs, exported symbols,
 sample rate, default voice, install layout, live audio routing, callback
 runtime behavior, queue behavior, thread lifecycle behavior, CMake authority,
 Autotools authority, or historical target support.
+
+## Next Warning Cleanup Plan Phase 1 Baseline
+
+The warning-focused follow-on plan started with a post-PR #6 baseline refresh
+after PR #6 was merged to `origin/develop` as
+`5b408cbea26ba5d9697366e0a4169c86a5f424cc`.
+
+Autotools/current refresh:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase1-post-pr6 \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,593.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,572.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and the US user-dictionary fixture matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output and expanded US audio suites matched exactly.
+- non-US one-shot WAV output matched exactly for `uk`, `sp`, `gr`, `la`, and
+  `fr`, speakers 0 through 8.
+
+CMake subset refresh:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next5-phase1-post-pr6-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,325 lines.
+- generated dictionaries matched accepted baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the accepted exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched accepted
+  baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+
+The parser-visible strict count is one row higher than the PR #6 final
+readiness note, but both strict warning budgets still pass and all accepted
+behavior gates reproduced. No source, public API, build script, runtime,
+dictionary-generation, audio, or threading behavior was intentionally changed
+in this refresh phase.
