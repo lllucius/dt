@@ -271,7 +271,7 @@ Implementation Summary:
 
 ## Phase 2: Risk Backlog And Gate Map Compression
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -304,6 +304,29 @@ Rules:
 
 - Documentation-only phase.
 - Do not widen later phases beyond what can be verified deterministically.
+
+Implementation Summary:
+
+- Replaced `docs/modernization/NEXT_PLAN_GATE_MAP.md` with a gate map that
+  matches this active post-PR #5 plan instead of the previous accelerated plan.
+- Reviewed the current readiness, baseline expansion, phoneme feasibility,
+  public API, API-boundary warning, CMake, packaging, audio backend, and
+  platform-wrapper documentation before selecting candidate scopes.
+- Added explicit candidate scopes, required gates, rollback rules, tooling
+  needs, and deferred areas for the phoneme/text pilot, callback smoke pilot,
+  non-US audio expansion, warning cleanup waves, CMake detailed parity work,
+  audio-option matrix, platform adapter scaffold, wrapper opt-in decision, and
+  CMake promotion decision.
+- Selected initial warning candidates without approving edits:
+  `src/dapi/src/api/coop.h` `-Wdiscarded-qualifiers` as the primary
+  medium-risk candidate, `src/dapi/src/kernel/services.c` unused parameters as
+  a lower-risk fallback, and private local-prototype or initialization warnings
+  in `src/dapi/src/api/ttsapi.c` and `src/dapi/src/api/init.c` only after
+  callback/API coverage improves.
+- Verification was documentation-only: `git diff --check -- .
+  ':(exclude)src/dapi/src/cmd/cm_cmd.c'` passed.
+- No source, build script, runtime behavior, public API, golden artifact, or
+  baseline output was changed in this phase.
 
 ## Phase 3: Phoneme And Text Output Baseline Pilot
 
