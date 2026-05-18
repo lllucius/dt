@@ -330,7 +330,7 @@ Implementation Summary:
 
 ## Phase 3: Phoneme And Text Output Baseline Pilot
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -366,6 +366,36 @@ Rules:
   or audio generation behavior.
 - Golden phoneme/text fixtures may be added only if the phase proves repeatable
   byte-exact output.
+
+Implementation Summary:
+
+- Rechecked public-facing phoneme and text capture paths with temporary probes
+  under `baseline-runs/next4-phase3-phoneme-text/`; no probe source, baseline
+  tooling, or golden fixture was committed.
+- Confirmed `dist/say -h` still does not expose the Windows sample `-lp`
+  phoneme log option, while `libtts.so` still exports the relevant public API
+  functions for phoneme conversion, log files, and in-memory output.
+- Confirmed the probes must run from `dist/` to match the installed runtime
+  dictionary lookup context used by the API smoke test.
+- Reproduced the blocker: `TextToSpeechConvertToPhonemes` with `TTS_SILENT`
+  segfaulted twice, and `TextToSpeechOpenLogFile(..., LOG_TEXT)`,
+  `LOG_PHONEMES`, and `LOG_SYLLABLES` returned `MMSYSERR_ERROR` in no-audio
+  mode.
+- Probed a no-live-audio WAV-output variant; with relative WAV output,
+  `TextToSpeechOpenWaveOutFile` could be opened, but `TextToSpeechOpenLogFile`
+  still returned `MMSYSERR_ERROR`.
+- Confirmed inline `[:log text on]`, `[:log phonemes on]`, and
+  `[:log syllables on]` commands through `dist/say -fo` generated WAV output
+  only and did not create a separate deterministic text artifact.
+- Updated `docs/modernization/PHONEME_BASELINE_FEASIBILITY.md` with the
+  refreshed reproduction evidence and deferred phoneme/text baselines.
+- Verification was documentation-only plus API smoke:
+  `tools/baseline/check_api_smoke.sh --out
+  baseline-runs/next4-phase3-api-smoke-check` passed, and `git diff --check --
+  . ':(exclude)src/dapi/src/cmd/cm_cmd.c'` passed.
+- No parser, phoneme, LTS, synthesis, timing, dictionary, public API, audio,
+  source, build script, golden fixture, or accepted baseline behavior was
+  changed.
 
 ## Phase 4: Public API Callback And Queue-Adjacent Smoke Pilot
 
