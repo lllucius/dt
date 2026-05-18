@@ -413,6 +413,87 @@ static int check_handle_scalar_apis(LPTTS_HANDLE_T tts_handle)
     return failed;
 }
 
+static int check_handle_error_paths(LPTTS_HANDLE_T tts_handle)
+{
+    DWORD status_ids[2];
+    DWORD status_values[2];
+    int failed = 0;
+
+    failed |= check_expected_mmresult(
+        "TextToSpeechGetRate(null-rate)",
+        TextToSpeechGetRate(tts_handle, NULL),
+        MMSYSERR_INVALPARAM);
+    failed |= check_expected_mmresult(
+        "TextToSpeechGetSpeaker(null-speaker)",
+        TextToSpeechGetSpeaker(tts_handle, NULL),
+        MMSYSERR_INVALPARAM);
+
+    status_ids[0] = INPUT_CHARACTER_COUNT;
+    status_values[0] = 0U;
+    failed |= check_expected_mmresult(
+        "TextToSpeechGetStatus(zero-count)",
+        TextToSpeechGetStatus(tts_handle, status_ids, status_values, 0),
+        MMSYSERR_INVALPARAM);
+
+    status_ids[0] = STATUS_SPEAKING;
+    status_values[0] = 0U;
+    failed |= check_expected_mmresult(
+        "TextToSpeechGetStatus(no-audio-speaking)",
+        TextToSpeechGetStatus(tts_handle, status_ids, status_values, 1),
+        MMSYSERR_ERROR);
+    failed |= check_dword_equal("status.no_audio_speaking", status_values[0], 0xFFFFFFFFU);
+
+    status_ids[0] = WAVE_OUT_DEVICE_ID;
+    status_values[0] = 0U;
+    failed |= check_expected_mmresult(
+        "TextToSpeechGetStatus(no-audio-device)",
+        TextToSpeechGetStatus(tts_handle, status_ids, status_values, 1),
+        MMSYSERR_ERROR);
+    failed |= check_dword_equal("status.no_audio_device", status_values[0], 0xFFFFFFFFU);
+
+    status_ids[0] = INPUT_CHARACTER_COUNT;
+    status_ids[1] = STATUS_SPEAKING;
+    status_values[0] = 0U;
+    status_values[1] = 0U;
+    failed |= check_expected_mmresult(
+        "TextToSpeechGetStatus(mixed-no-audio)",
+        TextToSpeechGetStatus(tts_handle, status_ids, status_values, 2),
+        MMSYSERR_ERROR);
+    failed |= check_dword_equal("status.mixed_input_count", status_values[0], 0);
+    failed |= check_dword_equal("status.mixed_no_audio_speaking", status_values[1], 0xFFFFFFFFU);
+
+    failed |= check_expected_mmresult(
+        "TextToSpeechCloseInMemory(not-open)",
+        TextToSpeechCloseInMemory(tts_handle),
+        MMSYSERR_ERROR);
+    failed |= check_expected_mmresult(
+        "TextToSpeechOpenInMemory(invalid-format)",
+        TextToSpeechOpenInMemory(tts_handle, 0xFFFFFFFFU),
+        MMSYSERR_INVALPARAM);
+
+    return failed;
+}
+
+static int check_repeated_startup_shutdown(void)
+{
+    LPTTS_HANDLE_T second_handle = NULL;
+    MMRESULT status;
+    int failed = 0;
+
+    status = TextToSpeechStartup(
+        &second_handle,
+        WAVE_MAPPER,
+        DO_NOT_USE_AUDIO_DEVICE,
+        NULL,
+        0);
+    if (check_mmresult("TextToSpeechStartup(second)", status) != 0) {
+        return 1;
+    }
+
+    failed |= check_mmresult("TextToSpeechShutdown(second)", TextToSpeechShutdown(second_handle));
+    return failed;
+}
+
 int main(int argc, char **argv)
 {
     const char *input_path;
@@ -443,6 +524,7 @@ int main(int argc, char **argv)
         MMSYSERR_ERROR);
     failed |= check_language_enumeration();
     failed |= check_version_and_features();
+    failed |= check_repeated_startup_shutdown();
 
     language_id = TextToSpeechStartLang(language);
     if ((language_id & TTS_LANG_ERROR) != 0U) {
@@ -471,6 +553,7 @@ int main(int argc, char **argv)
     }
 
     failed |= check_handle_scalar_apis(tts_handle);
+    failed |= check_handle_error_paths(tts_handle);
     if (failed != 0) {
         failed = 1;
         goto shutdown;

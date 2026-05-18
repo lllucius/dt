@@ -624,7 +624,7 @@ Implementation Summary:
 
 ## Phase 7: Public API Smoke Matrix Expansion
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -662,6 +662,45 @@ Rules:
 - Do not touch `ttsapi.h`, `tts.h`, public headers, exported symbol lists, or
   runtime API implementation files unless this phase is explicitly revised.
 - Stop on any API, symbol, header, dictionary, or audio delta.
+
+Implementation Summary:
+
+- Expanded `tools/baseline/api_smoke.c` only. No public headers, exported
+  symbol baselines, or runtime API implementation files were changed.
+- Added deterministic no-live-audio coverage for a second
+  `TextToSpeechStartup()`/`TextToSpeechShutdown()` cycle, null output-pointer
+  validation for `TextToSpeechGetRate()` and `TextToSpeechGetSpeaker()`,
+  zero-count `TextToSpeechGetStatus()`, no-audio `STATUS_SPEAKING` and
+  `WAVE_OUT_DEVICE_ID`, mixed no-audio status behavior,
+  `TextToSpeechCloseInMemory()` when memory output is not open, and
+  `TextToSpeechOpenInMemory()` invalid-format validation.
+- Updated `docs/modernization/PUBLIC_API_AUDIT.md` with the expanded API smoke
+  matrix and verification evidence.
+- Files changed: `tools/baseline/api_smoke.c`,
+  `docs/modernization/PUBLIC_API_AUDIT.md`, and `PLAN.md`.
+- Targeted verification run:
+  `tools/baseline/check_api_smoke.sh --out baseline-runs/next3-phase7-api-smoke/api-smoke`.
+  Result: expanded API smoke compiled, ran, and produced an exact WAV match
+  against `tests/golden/audio/us/speaker_0.wav`.
+- Full verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase7-api-smoke --expected tests/golden`.
+- Full verification results: default warning-line count `1,778`, strict
+  warning-line count `29,761`, parser-visible default warnings `1,757`, and
+  warning budget status `ok`. Public headers, exported symbols, detailed
+  Autotools manifest, dictionaries, user dictionaries, API smoke WAV, one-shot
+  US audio, and expanded US audio suites all matched accepted baselines.
+- Public exports did not change according to the committed symbol comparisons.
+  Dictionaries did not change according to the committed dictionary
+  comparisons. Golden audio did not change according to the committed one-shot
+  and expanded deterministic WAV comparisons.
+- Behavior risk level: low to medium. The change expands test coverage for
+  public API behavior but does not alter installed headers, exported symbols,
+  runtime implementation, dictionaries, audio generation, live-audio routing,
+  callbacks, queues, or threading behavior.
+- Known limitations: this still is not a full API conformance suite and does
+  not test live audio hardware, callbacks, in-memory buffers with returned
+  samples, phoneme arrays, timing-sensitive behavior, non-US speech output, or
+  queue/pipe behavior.
 
 ## Phase 8: Legacy OP_* Parity Harness
 
