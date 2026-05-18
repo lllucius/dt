@@ -920,7 +920,7 @@ Implementation Summary:
 
 ## Phase 11: Experimental Runtime Wrapper Opt-In Decision
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -952,6 +952,42 @@ Rules:
 - Do not change audio, callback, queue, pipe, or thread timing behavior.
 - Do not claim runtime wrapper replacement safety unless default and
   experimental gates prove it.
+
+Implementation Summary:
+
+- Reviewed Phase 10 adapter evidence and current runtime ownership boundaries.
+  The private adapter now preserves observed legacy `OP_*` primitive behavior,
+  but it does not prove API thread ownership, queue, pipe, callback, reset,
+  pause, restart, buffer ownership, or audio-timing behavior.
+- Deferred disabled-by-default runtime wrapper opt-in scaffolding. No CMake,
+  Autotools, installed-header, public-API, runtime-library, or executable option
+  was added because an experimental runtime option would create an unproven
+  second threading path before runtime-specific evidence exists.
+- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md` with the Phase 11
+  decision, blockers, and future gates required before any option such as an
+  experimental OP-thread adapter can be added.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` to list
+  `dt_opthread_adapter_smoke` among the developer-only smoke targets and to
+  state that CMake exposes no runtime wrapper opt-in option.
+- Verified the CMake subset with:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake --expected
+  tests/golden`. The gate passed, including `dt_platform_smoke`,
+  `opthread_smoke`, `dt_opthread_adapter_smoke`, dictionary comparison, US
+  audio, expanded US audio suites, `libtts.so` exact symbols, and
+  language-library symbol name/type checks.
+- Verified default Autotools/current behavior with:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-default --expected
+  tests/golden`. Public headers, exported symbols, detailed manifest,
+  dictionaries, user dictionaries, API smoke, callback smoke, US audio,
+  expanded US audio suites, non-US audio, default warning budget, and strict
+  warning budget all matched accepted baselines.
+- Did not change `src/dapi/src/nt/opthread.c`,
+  `src/dapi/src/nt/linux_audio.c`, live audio behavior, callback behavior,
+  queue behavior, pipe behavior, thread timing, public API behavior, exported
+  symbols, dictionaries, deterministic audio, install layout, or default
+  runtime routing.
 
 ## Phase 12: CMake Promotion Readiness Decision
 

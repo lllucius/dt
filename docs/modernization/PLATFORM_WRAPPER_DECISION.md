@@ -8,6 +8,8 @@ Accelerated Phase 8 update: add isolated legacy `OP_*` parity evidence, but
 continue to defer runtime wiring.
 Next plan Phase 10 update: add a private `OP_*` adapter scaffold for CMake-only
 evidence, but keep runtime wiring deferred.
+Next plan Phase 11 decision: do not add a disabled-by-default runtime wrapper
+option yet.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -270,3 +272,42 @@ Still not covered:
 
 Decision remains unchanged for runtime code: no existing DECtalk runtime source
 is routed through this adapter by default.
+
+## Next Plan Phase 11 Experimental Opt-In Decision
+
+Decision: defer disabled-by-default runtime wrapper opt-in scaffolding.
+
+The Phase 10 adapter gives a private compatibility shape for legacy `OP_*`
+primitives, but it is still not enough evidence for a runtime build option. A
+real opt-in would require at least one default runtime library, executable, or
+call path to choose between `opthread.c` behavior and adapter-routed behavior.
+That would create an unproven second threading path around API initialization,
+audio-adjacent thread ownership, queues, pipes, callbacks, and reset/pause/
+restart transitions.
+
+No CMake, Autotools, installed-header, public-API, or runtime-library option is
+added in this phase. Adding an option such as
+`DECTALK_EXPERIMENTAL_OPTHREAD_ADAPTER` would be premature until the option can
+be compiled and tested against runtime-specific evidence rather than only
+primitive smoke tests.
+
+Blocking gaps before any future opt-in:
+
+- deterministic evidence for API-owned thread lifecycle and shutdown behavior;
+- callback ordering and callback repeatability evidence when runtime threads
+  are active;
+- queue, pipe, and buffer-ownership evidence around `src/dapi/src/nt` runtime
+  code;
+- reset, pause, restart, and audio-timing evidence, ideally without requiring
+  live audio hardware first;
+- default and opt-in comparisons for exported symbols, public headers,
+  dictionaries, user dictionaries, manifests, warning budgets, and deterministic
+  WAV output;
+- a rollback plan that removes only the opt-in path without disturbing the
+  authoritative default build.
+
+Future opt-in naming should be explicit and experimental, disabled by default,
+excluded from installed public APIs, and documented as non-production until the
+runtime gates above pass. Until then, the only approved wrapper work remains
+CMake-only smoke or compile evidence that does not alter default runtime
+routing.

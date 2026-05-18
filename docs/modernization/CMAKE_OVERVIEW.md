@@ -32,8 +32,9 @@ The current CMake build creates:
 - `dectalk_cmake_stage`, which installs the CMake-built subset into
   `baseline-runs/.../cmake-dist` by default.
 - `compile_commands.json` for analysis tooling.
-- developer smoke targets `dt_platform_smoke` and `opthread_smoke`, which are
-  built by the CMake subset verifier but are not installed.
+- developer smoke targets `dt_platform_smoke`, `opthread_smoke`, and
+  `dt_opthread_adapter_smoke`, which are built by the CMake subset verifier
+  but are not installed.
 
 Configure and stage example:
 
@@ -56,7 +57,8 @@ The subset verifier configures and builds the CMake stage, checks
 `compile_commands.json`, compares generated dictionaries, compares the original
 US English WAVs and expanded US audio suites against golden outputs, compares
 `libtts.so` symbols exactly, and compares language-library exported symbol
-name/type sets.
+name/type sets. It also builds and runs the platform, legacy `OP_*`, and
+private `OP_*` adapter smoke targets as developer-only checks.
 
 ## Source membership
 
@@ -98,6 +100,17 @@ backend inventory and containment scaffolding.
 The dictionary custom commands intentionally pass build-relative output paths to
 `dic_<lang>`. The dictionary compiler treats leading `/` arguments as options,
 so absolute output paths are not accepted by its current command-line parser.
+
+## Runtime Wrapper Options
+
+CMake does not expose a runtime wrapper opt-in option. The
+`dt_opthread_adapter_smoke` target is private verification scaffolding only; it
+does not add a second runtime path and is not linked into installed DECtalk
+libraries or tools.
+
+Phase 11 deferred disabled-by-default runtime wrapper options because the
+adapter evidence covers primitive `OP_*` behavior, not API thread ownership,
+queue, pipe, callback, reset, pause, restart, or audio-timing behavior.
 
 ## Remaining Gaps
 
