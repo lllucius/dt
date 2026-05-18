@@ -700,3 +700,91 @@ Known limitations:
 - Historical target branches are preserved and documented, not proven working.
 - Behavior preservation is claimed only for the deterministic checks listed in
   this section.
+
+## Next High-Risk Plan Phase 1 Baseline
+
+The next high-risk modernization plan started after merged PR #5 and local
+planning commit `747e73e`.
+
+Initial Autotools gates:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5 \
+  --expected tests/golden
+
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5-rerun \
+  --expected tests/golden
+```
+
+Both runs reproduced the same detailed manifest hash deltas for the language
+shared libraries and `say_demo_*` tools. Public headers, exported symbols,
+generated dictionaries, the US user-dictionary fixture, API smoke output,
+one-shot US English audio, expanded US English audio suites, and warning budget
+checks passed. Comparing the first and second captured detailed manifests
+returned `manifest: ok`, proving the current rebuilt binary hashes were stable.
+The committed detailed manifest baseline was therefore refreshed from the second
+capture before the final gate.
+
+Final Autotools gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,665.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,642.
+- warning budget status was `ok`.
+- public header audit matched the committed allowlists.
+- exported symbols matched the committed symbol baselines.
+- detailed Autotools manifest matched the refreshed detailed manifest.
+- generated main dictionaries and the US user-dictionary fixture matched the
+  committed dictionary baselines.
+- public API smoke built against installed headers and libraries and matched
+  the committed speaker 0 WAV exactly.
+- US English one-shot golden WAV output matched exactly for speakers 0 through
+  8.
+- expanded deterministic US audio suites matched exactly for speakers 0 through
+  8.
+
+CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,307 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata showing OSS selected
+  and ALSA, PulseAudio, AudioQueue, and legacy source opt-in disabled.
+- `opthread_smoke` passed.
+- CMake path/type staged manifest matched current Autotools path/type staging:
+  589 entries on each side.
+- CMake detailed metadata-hash manifest still differs from Autotools detailed
+  output: 1,126 entries on each side.
+
+Behavior statement: no source, public API, build script, runtime,
+dictionary-generation, audio, or threading behavior was intentionally changed in
+this phase. The only golden artifact changed was the detailed install manifest
+hash list for stable rebuilt binaries after repeated captures and passing
+behavior gates proved the committed post-merge detailed manifest was stale.

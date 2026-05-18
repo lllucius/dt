@@ -209,7 +209,7 @@ Use additional checks when relevant:
 
 ## Phase 1: Post-PR #5 Baseline Refresh
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -240,7 +240,34 @@ Success criteria:
 Rules:
 
 - This phase is a synchronization and verification checkpoint only.
-- Do not update golden files in this phase.
+- Do not update golden files in this phase unless repeated captures prove the
+  committed post-merge detailed manifest is stale and all other behavior gates
+  pass. Any such repair must be documented before advancing.
+
+Implementation Summary:
+
+- Updated `tests/golden/dist-manifest-detailed.txt` after two independent
+  post-PR #5 Autotools captures reproduced the same detailed binary hash deltas
+  for the language shared libraries and `say_demo_*` tools while all other
+  behavior gates passed. The first and second captured detailed manifests
+  matched each other exactly, proving the committed post-merge detailed manifest
+  was stale rather than unstable.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the refreshed
+  post-PR #5 baseline evidence, warning counts, and CMake subset status.
+- Final Autotools verification passed with public headers, exported symbols,
+  generated dictionaries, the US user-dictionary fixture, API smoke output,
+  one-shot US English audio, expanded US English audio suites, detailed
+  manifest, and warning budget all matching accepted baselines. Recorded counts
+  were 1,778 default warning lines, 29,665 strict warning lines, 1,757
+  parser-visible default warnings, and 29,642 parser-visible strict warnings.
+- Final CMake subset verification passed for dictionary generation,
+  deterministic US English audio, expanded audio suites, `libtts.so` exported
+  symbols, language-library symbol name/type sets, platform smoke, and OP thread
+  smoke. CMake path/type staging matched Autotools with 589 entries each; CMake
+  detailed metadata-hash staging still differs from Autotools with 1,126 entries
+  each.
+- No source, public API, build script, runtime, dictionary-generation, audio, or
+  threading behavior was intentionally changed in this phase.
 
 ## Phase 2: Risk Backlog And Gate Map Compression
 
