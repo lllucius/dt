@@ -1,3 +1,5 @@
 file	flag	max_count	note
 src/dapi/src/dic/dic_comm.c	-Wformat=	0	Phase 13 cleaned dictionary compiler diagnostic format warnings.
 src/samplosf/src/dtsamples/mfg_load.c	-Wold-style-definition	0	Phase 5 converted sample loader baud/format helpers to prototype-style definitions.
+src/licunix/src/liceninc.c	-Wformat-overflow=	0	Phase 7 enlarged the local license line buffer to fit the existing formatted output.
+src/dapi/src/api/ttsapi.c	-Wmisleading-indentation	0	Phase 8 realigned the close-log cleanup statement without changing API control flow.

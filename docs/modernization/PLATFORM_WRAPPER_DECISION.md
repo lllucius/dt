@@ -1,6 +1,9 @@
 # Platform Wrapper Wiring Decision
 
 Phase 8 decision: defer runtime wrapper wiring.
+Phase 9 update: add non-runtime wrapper parity coverage, but continue to defer
+runtime wiring.
+Phase 10 decision: no runtime wrapper pilot is approved.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -31,6 +34,39 @@ that is not yet covered by wrapper parity tests includes:
 cleaner POSIX wrappers, but their APIs are not drop-in equivalents for those
 legacy contracts.
 
+## Phase 9 Parity Harness
+
+Phase 9 expands the CMake-only `dt_platform_smoke` harness and runs it from
+`tools/baseline/verify_cmake_subset.sh`. The harness still does not link into
+Autotools runtime libraries or route DECtalk runtime behavior through
+`src/platform`.
+
+Covered by the harness:
+
+- `dt_thread_create`, `dt_thread_join`, and `dt_thread_destroy` can run a
+  simple worker and return a successful thread status.
+- `dt_mutex_lock` and `dt_mutex_unlock` protect shared smoke-test state.
+- `dt_event_wait` covers auto-reset consumption after one waiter, finite
+  timeout after consumption, manual-reset repeated waits while signaled, and
+  timeout after manual reset.
+- `dt_sleep_milliseconds(0)` and `dt_monotonic_milliseconds` remain simple
+  smoke checks only.
+- filesystem path join/existence, compile-time audio backend metadata, and
+  historical-target inventory still run as scaffolding checks.
+
+Still not covered:
+
+- legacy `OP_CreateThread` stack-size handling;
+- `OP_WaitForThreadTermination` timeout and handle ownership semantics;
+- `OP_GetThreadPriority` and `OP_SetThreadPriority`;
+- `OP_Sleep(0)` scheduler-yield equivalence;
+- `ThreadLock` and `ThreadUnlock` timeout-polling behavior;
+- live audio routing, device opening, callback timing, queue behavior, buffer
+  ownership, reset/pause/restart transitions, and backend-specific state.
+
+The added harness improves wrapper evidence but does not prove drop-in parity
+with `opthread.c` or `linux_audio.c`.
+
 `src/dapi/src/nt/linux_audio.c` owns live audio backend selection, device
 opening, player-thread lifecycle, message queues, callback notification, buffer
 state, timing, reset/pause/restart transitions, and backend-specific routing.
@@ -40,15 +76,15 @@ timing, or model the `WINE_WAVEOUT` state machine.
 
 ## Smallest Candidate
 
-No runtime wiring candidate is approved for Phase 9.
+No runtime wiring candidate is approved after Phase 10.
 
-The smallest plausible future candidate is not a runtime redirect. It is a
-parity-test step for `OP_*` and `dt_*` behavior:
+The smallest plausible future candidate remains another parity-test step, not a
+runtime redirect:
 
-- add a dedicated OP/thread/event parity smoke test that exercises event
-  manual-reset and auto-reset behavior, finite timeout behavior, thread
-  create/join behavior, mutex lock/unlock behavior, and sleep/yield behavior;
-- compare that evidence with the existing `dt_platform_smoke` behavior;
+- add a dedicated legacy `OP_*` smoke test that exercises stack-size handling,
+  timeout behavior, heap-allocated handle ownership, priority calls,
+  scheduler-yield behavior, and lightweight lock timeout polling;
+- compare that evidence with the expanded `dt_platform_smoke` behavior;
 - only then consider a small adapter, if the wrapper API is adjusted to preserve
   the legacy `OP_*` contract.
 
@@ -73,10 +109,25 @@ audio backend should be part of that evidence before replacing
 
 ## Recommendation
 
-Defer Phase 9 runtime wrapper wiring. The next useful step is to add parity
+Continue to defer runtime wrapper wiring. The next useful step is to add parity
 tests around the legacy `OP_*` behavior and decide whether `src/platform` should
 grow adapter APIs that preserve those contracts exactly.
 
 This keeps the current Linux runtime behavior under the established Autotools
 path while preserving `src/platform` as isolated scaffolding for future
 modernization.
+
+## Phase 10 Pilot Decision
+
+Decision: defer all runtime wrapper pilots.
+
+The Phase 9 evidence is useful but not strong enough to route any existing
+runtime path through `src/platform`. The expanded `dt_platform_smoke` harness
+covers standalone wrapper behavior, not drop-in parity for legacy runtime
+contracts. A safe pilot still needs legacy `OP_*` evidence for stack size,
+priority, timeout handling, handle ownership, scheduler yield, and lightweight
+lock behavior. Audio routing remains higher risk because no live-audio,
+callback-timing, queue, pipe, or buffer-ownership parity harness exists.
+
+No exact file, wrapper, behavior gate, or rollback plan is proposed for
+implementation in this phase because the prerequisite evidence is incomplete.

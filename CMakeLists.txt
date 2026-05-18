@@ -322,6 +322,97 @@ target_compile_definitions(say_cmake PRIVATE
 )
 target_link_libraries(say_cmake PRIVATE tts_multi m pthread)
 
+function(dectalk_add_sample_tool target_name output_name source_file)
+  add_executable(${target_name} ${source_file})
+  set_target_properties(${target_name} PROPERTIES
+    OUTPUT_NAME ${output_name}
+    BUILD_RPATH "$ORIGIN;$ORIGIN/lib;$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN/lib;$ORIGIN/../lib"
+  )
+  dectalk_apply_common_c_settings(${target_name})
+  target_compile_definitions(${target_name} PRIVATE ENGLISH ENGLISH_US ACNA)
+  target_link_libraries(${target_name} PRIVATE tts_multi m pthread dl)
+endfunction()
+
+dectalk_add_sample_tool(aclock_cmake aclock src/samplosf/src/dtsamples/aclock.c)
+dectalk_add_sample_tool(dtmemory_cmake dtmemory src/samplosf/src/dtsamples/dtmemory.c)
+
+function(dectalk_add_language_sample lang_code output_name)
+  add_executable(${output_name} src/samplosf/src/dtsamples/say.c)
+  set_target_properties(${output_name} PROPERTIES
+    BUILD_RPATH "$ORIGIN;$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN/../lib"
+  )
+  dectalk_apply_common_c_settings(${output_name})
+  target_compile_definitions(${output_name} PRIVATE DEC ${ARGN})
+  target_link_libraries(${output_name} PRIVATE tts_${lang_code} m pthread dl)
+endfunction()
+
+dectalk_add_language_sample(us say_demo_us ENGLISH ENGLISH_US ACNA)
+dectalk_add_language_sample(uk say_demo_uk ENGLISH ENGLISH_UK)
+dectalk_add_language_sample(sp say_demo_sp SPANISH SPANISH_SP)
+dectalk_add_language_sample(gr say_demo_gr GERMAN)
+dectalk_add_language_sample(la say_demo_la SPANISH SPANISH_LA)
+dectalk_add_language_sample(fr say_demo_fr FRENCH)
+
+function(dectalk_add_tunecheck lang_code output_name)
+  add_executable(${output_name} src/samplosf/src/dtsamples/tunecheck.c)
+  set_target_properties(${output_name} PROPERTIES
+    C_STANDARD 90
+    C_EXTENSIONS ON
+    BUILD_RPATH "$ORIGIN;$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN/../lib"
+  )
+  dectalk_apply_common_c_settings(${output_name})
+  target_compile_definitions(${output_name} PRIVATE DEC ${ARGN})
+  target_include_directories(${output_name} PRIVATE src/dapi/src/osf)
+  target_link_libraries(${output_name} PRIVATE tts_multi tts_${lang_code} m pthread dl)
+endfunction()
+
+dectalk_add_tunecheck(us tunecheck_us ENGLISH ENGLISH_US ACNA)
+dectalk_add_tunecheck(uk tunecheck_uk ENGLISH ENGLISH_UK)
+dectalk_add_tunecheck(sp tunecheck_sp SPANISH SPANISH_SP)
+dectalk_add_tunecheck(gr tunecheck_gr GERMAN)
+dectalk_add_tunecheck(la tunecheck_la SPANISH SPANISH_LA)
+dectalk_add_tunecheck(fr tunecheck_fr FRENCH)
+
+add_executable(dump_vdf_cmake src/samplosf/src/dtsamples/dump_vdf.c)
+set_target_properties(dump_vdf_cmake PROPERTIES OUTPUT_NAME dump_vdf)
+dectalk_apply_common_c_settings(dump_vdf_cmake)
+target_compile_definitions(dump_vdf_cmake PRIVATE ENGLISH ENGLISH_US ACNA)
+target_link_libraries(dump_vdf_cmake PRIVATE m pthread dl)
+
+add_executable(mfg_load_cmake src/samplosf/src/dtsamples/mfg_load.c)
+set_target_properties(mfg_load_cmake PROPERTIES OUTPUT_NAME mfg_load)
+dectalk_apply_common_c_settings(mfg_load_cmake)
+target_compile_definitions(mfg_load_cmake PRIVATE ENGLISH ENGLISH_US ACNA)
+target_include_directories(mfg_load_cmake PRIVATE
+  src/hardware/src/console
+  src/hardware/src/misc
+)
+target_link_libraries(mfg_load_cmake PRIVATE m pthread dl)
+
+function(dectalk_add_udic lang_code output_name)
+  add_executable(${output_name}
+    src/udicunix/src/udic_com.c
+    src/udicunix/src/alphabet.c
+  )
+  dectalk_apply_common_c_settings(${output_name})
+  target_compile_definitions(${output_name} PRIVATE ${ARGN})
+  target_include_directories(${output_name} PRIVATE
+    src/udicunix/src
+    src/dapi/src/osf
+  )
+  target_link_libraries(${output_name} PRIVATE m pthread dl)
+endfunction()
+
+dectalk_add_udic(us udic_us ENGLISH ENGLISH_US ACNA)
+dectalk_add_udic(uk udic_uk ENGLISH ENGLISH_UK)
+dectalk_add_udic(sp udic_sp SPANISH SPANISH_SP)
+dectalk_add_udic(gr udic_gr GERMAN)
+dectalk_add_udic(la udic_la SPANISH SPANISH_LA)
+dectalk_add_udic(fr udic_fr FRENCH)
+
 set(DECTALK_PHONEME_HEADERS
   src/dapi/src/include/l_all_ph.h
   src/dapi/src/include/l_com_ph.h
@@ -358,9 +449,40 @@ file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/generated/DECtalk.conf"
 "LANG:fr,French\n"
 )
 
+set(DECTALK_SAMPLE_TEXT_OUTPUTS)
+
+function(dectalk_add_sample_text sample_name)
+  set(input_file "${CMAKE_CURRENT_SOURCE_DIR}/src/samplosf/src/data/${sample_name}.txt")
+  set(output_file "${CMAKE_CURRENT_BINARY_DIR}/generated/sample-data/${sample_name}.txt")
+  add_custom_command(
+    OUTPUT "${output_file}"
+    COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/generated/sample-data"
+    COMMAND /bin/sh -c "grep -v '^#' '${input_file}' > '${output_file}'"
+    DEPENDS "${input_file}"
+    VERBATIM
+  )
+  list(APPEND DECTALK_SAMPLE_TEXT_OUTPUTS "${output_file}")
+  set(DECTALK_SAMPLE_TEXT_OUTPUTS "${DECTALK_SAMPLE_TEXT_OUTPUTS}" PARENT_SCOPE)
+endfunction()
+
+dectalk_add_sample_text(birthday)
+dectalk_add_sample_text(demo)
+dectalk_add_sample_text(startup)
+dectalk_add_sample_text(noglass)
+
+add_custom_target(cmake_sample_texts DEPENDS ${DECTALK_SAMPLE_TEXT_OUTPUTS})
+
 install(TARGETS ${DECTALK_TTS_TARGETS} tts_multi LIBRARY DESTINATION lib)
-install(TARGETS say_cmake RUNTIME DESTINATION .)
+install(TARGETS say_cmake aclock_cmake dtmemory_cmake RUNTIME DESTINATION .)
 install(TARGETS dic_us dic_uk dic_sp dic_gr dic_la dic_fr RUNTIME DESTINATION tools)
+install(TARGETS
+  dump_vdf_cmake
+  mfg_load_cmake
+  say_demo_us say_demo_uk say_demo_sp say_demo_gr say_demo_la say_demo_fr
+  tunecheck_us tunecheck_uk tunecheck_sp tunecheck_gr tunecheck_la tunecheck_fr
+  udic_us udic_uk udic_sp udic_gr udic_la udic_fr
+  RUNTIME DESTINATION tools
+)
 install(FILES ${DECTALK_DICTIONARY_OUTPUTS} DESTINATION dic)
 install(FILES
   src/dapi/src/api/ttsapi.h
@@ -378,6 +500,7 @@ install(FILES
   src/dapi/src/dic/user.tab
   DESTINATION src/DECtalk/dtsamples
 )
+install(FILES ${DECTALK_SAMPLE_TEXT_OUTPUTS} DESTINATION src/DECtalk/dtsamples)
 install(FILES src/samplosf/src/speak/gspeak.c DESTINATION src/DECtalk/gspeak)
 install(FILES
   src/docsosf/ps/dtk_install_guide.ps
@@ -396,12 +519,67 @@ install(DIRECTORY src/docsosf/man/man3/ DESTINATION doc/DECtalk/man/man3)
 install(FILES src/docsosf/html/dectalk.htm DESTINATION doc/DECtalk/html RENAME index.html)
 install(DIRECTORY src/docsosf/html/ DESTINATION doc/DECtalk/html)
 
+install(CODE [[
+  file(MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/usr/bin")
+  set(dectalk_tool_links
+    "say:../dist/say"
+    "aclock:../dist/aclock"
+    "dtmemory:../dist/dtmemory"
+    "gspeak:../dist/gspeak"
+    "windic:../dist/windic"
+    "dic_fr:../dist/tools/dic_fr"
+    "dic_gr:../dist/tools/dic_gr"
+    "dic_la:../dist/tools/dic_la"
+    "dic_sp:../dist/tools/dic_sp"
+    "dic_uk:../dist/tools/dic_uk"
+    "dic_us:../dist/tools/dic_us"
+    "dump_vdf:../dist/tools/dump_vdf"
+    "mfg_load:../dist/tools/mfg_load"
+    "say_demo_fr:../dist/tools/say_demo_fr"
+    "say_demo_gr:../dist/tools/say_demo_gr"
+    "say_demo_la:../dist/tools/say_demo_la"
+    "say_demo_sp:../dist/tools/say_demo_sp"
+    "say_demo_uk:../dist/tools/say_demo_uk"
+    "say_demo_us:../dist/tools/say_demo_us"
+    "tunecheck_fr:../dist/tools/tunecheck_fr"
+    "tunecheck_gr:../dist/tools/tunecheck_gr"
+    "tunecheck_la:../dist/tools/tunecheck_la"
+    "tunecheck_sp:../dist/tools/tunecheck_sp"
+    "tunecheck_uk:../dist/tools/tunecheck_uk"
+    "tunecheck_us:../dist/tools/tunecheck_us"
+    "udic_fr:../dist/tools/udic_fr"
+    "udic_gr:../dist/tools/udic_gr"
+    "udic_la:../dist/tools/udic_la"
+    "udic_sp:../dist/tools/udic_sp"
+    "udic_uk:../dist/tools/udic_uk"
+    "udic_us:../dist/tools/udic_us"
+  )
+  foreach(link_spec IN LISTS dectalk_tool_links)
+    string(REPLACE ":" ";" link_parts "${link_spec}")
+    list(GET link_parts 0 link_name)
+    list(GET link_parts 1 link_target)
+    file(CREATE_LINK
+      "${link_target}"
+      "${CMAKE_INSTALL_PREFIX}/usr/bin/${link_name}"
+      SYMBOLIC
+    )
+  endforeach()
+]])
+
 add_custom_target(dectalk_cmake_stage
   COMMAND "${CMAKE_COMMAND}" --install "${CMAKE_CURRENT_BINARY_DIR}" --prefix "${DECTALK_CMAKE_STAGE_DIR}"
   DEPENDS
     ${DECTALK_TTS_TARGETS}
     tts_multi
     say_cmake
+    aclock_cmake
+    dtmemory_cmake
+    dump_vdf_cmake
+    mfg_load_cmake
+    say_demo_us say_demo_uk say_demo_sp say_demo_gr say_demo_la say_demo_fr
+    tunecheck_us tunecheck_uk tunecheck_sp tunecheck_gr tunecheck_la tunecheck_fr
+    udic_us udic_uk udic_sp udic_gr udic_la udic_fr
     dic_us dic_uk dic_sp dic_gr dic_la dic_fr
     cmake_dictionaries
+    cmake_sample_texts
 )

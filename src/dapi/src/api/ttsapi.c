@@ -8293,7 +8293,7 @@ MMRESULT TextToSpeechCloseLogFile( LPTTS_HANDLE_T phTTS )
 #endif
 		mmStatus = MMSYSERR_ERROR;
 	
-		LeaveCriticalSection( phTTS->pcsLogFile );
+	  LeaveCriticalSection( phTTS->pcsLogFile );
 	
 	return( mmStatus );
 }

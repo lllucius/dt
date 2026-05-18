@@ -44,6 +44,65 @@ static void *smoke_thread_main(void *context)
     return 0;
 }
 
+static int expect_event_wait(dt_event_t *event, unsigned int timeout_milliseconds,
+    int expected_result, const char *label)
+{
+    int actual_result = dt_event_wait(event, timeout_milliseconds);
+
+    if (actual_result != expected_result) {
+        fprintf(stderr, "%s: expected wait result %d, got %d\n", label,
+            expected_result, actual_result);
+        return 1;
+    }
+
+    return 0;
+}
+
+static int run_event_semantics_smoke(void)
+{
+    dt_event_t *auto_event = dt_event_create(0, 1);
+    dt_event_t *manual_event = dt_event_create(1, 0);
+    int status = 0;
+
+    if (auto_event == NULL || manual_event == NULL) {
+        fprintf(stderr, "failed to create event semantic wrappers\n");
+        status = 1;
+        goto cleanup;
+    }
+
+    if (expect_event_wait(auto_event, 0, DT_EVENT_WAIT_NORMAL,
+            "auto-reset initial wait") != 0 ||
+        expect_event_wait(auto_event, 1, DT_EVENT_WAIT_TIMEOUT,
+            "auto-reset consumed wait") != 0 ||
+        dt_event_set(auto_event) != 0 ||
+        expect_event_wait(auto_event, 0, DT_EVENT_WAIT_NORMAL,
+            "auto-reset set wait") != 0 ||
+        expect_event_wait(auto_event, 1, DT_EVENT_WAIT_TIMEOUT,
+            "auto-reset second consumed wait") != 0) {
+        status = 1;
+        goto cleanup;
+    }
+
+    if (expect_event_wait(manual_event, 0, DT_EVENT_WAIT_TIMEOUT,
+            "manual-reset unsignaled wait") != 0 ||
+        dt_event_set(manual_event) != 0 ||
+        expect_event_wait(manual_event, 0, DT_EVENT_WAIT_NORMAL,
+            "manual-reset first signaled wait") != 0 ||
+        expect_event_wait(manual_event, 0, DT_EVENT_WAIT_NORMAL,
+            "manual-reset repeated signaled wait") != 0 ||
+        dt_event_reset(manual_event) != 0 ||
+        expect_event_wait(manual_event, 1, DT_EVENT_WAIT_TIMEOUT,
+            "manual-reset reset wait") != 0) {
+        status = 1;
+        goto cleanup;
+    }
+
+cleanup:
+    dt_event_destroy(manual_event);
+    dt_event_destroy(auto_event);
+    return status;
+}
+
 int main(int argc, char **argv)
 {
     const char *base = argc > 1 ? argv[1] : ".";
@@ -128,11 +187,25 @@ int main(int argc, char **argv)
     }
     dt_mutex_unlock(smoke.mutex);
 
+    if (dt_event_wait(smoke.event, 1) != DT_EVENT_WAIT_TIMEOUT) {
+        fprintf(stderr, "auto-reset thread event remained signaled\n");
+        dt_event_destroy(smoke.event);
+        dt_mutex_destroy(smoke.mutex);
+        return 1;
+    }
+
+    if (run_event_semantics_smoke() != 0) {
+        dt_event_destroy(smoke.event);
+        dt_mutex_destroy(smoke.mutex);
+        return 1;
+    }
+
     printf("path=%s\n", joined_path);
     printf("absolute=%d\n", dt_path_is_absolute(joined_path));
     printf("exists=%d\n", dt_path_exists(joined_path));
     printf("elapsed_ms=%" PRIu64 "\n", after_ms - before_ms);
     printf("thread_value=%d\n", smoke.value);
+    printf("event_semantics=ok\n");
     dt_audio_backend_get_compile_config(&audio_config);
     printf("audio_disabled=%d\n", audio_config.disable_audio);
     printf("audio_oss=%d\n", audio_config.use_oss);
