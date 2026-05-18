@@ -487,7 +487,7 @@ Implementation Summary:
 
 ## Phase 5: Deterministic Coverage Gap Map
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -522,6 +522,39 @@ Rules:
 - Documentation and planning only.
 - Do not change parser, phoneme, synthesis, audio, API implementation, or
   runtime threading code.
+
+Implementation Summary:
+
+- Reviewed current public API smoke coverage, accepted US audio suites, phoneme
+  baseline feasibility notes, CMake subset verification, and platform wrapper
+  smoke coverage.
+- Updated `docs/modernization/BASELINE_EXPANSION_PLAN.md` with the accelerated
+  plan Phase 5 deterministic coverage gap map.
+- Accepted Phase 7 candidate: expand the public API smoke harness through
+  installed public headers/libraries only, keeping deterministic no-live-audio
+  scalar/status/error-path checks and preserving the final WAV output.
+- Accepted Phase 8 candidate: add isolated legacy `OP_*` parity evidence only
+  if it can be tested without routing runtime behavior through `src/platform`.
+- Accepted Phase 10 candidate: model CMake live-audio option state as
+  side-by-side configuration evidence only, without opening audio devices or
+  changing runtime routing.
+- Deferred phoneme/text-mode golden baselines, non-US audio baselines,
+  callback ordering, in-memory phoneme arrays, queue timing, pipe behavior, and
+  live-audio backend behavior.
+- Files changed: `docs/modernization/BASELINE_EXPANSION_PLAN.md` and
+  `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because no source cleanup was performed in this
+  phase.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. This phase changed planning documentation only and
+  did not modify source, build scripts, golden artifacts, parser behavior,
+  phoneme output, audio behavior, API implementation, or runtime threading.
+- Known limitations: this phase selected coverage candidates but did not add
+  new tests or baselines; the deferred areas remain outside verified behavior
+  claims.
 
 ## Phase 6: CMake Detailed Parity Policy
 

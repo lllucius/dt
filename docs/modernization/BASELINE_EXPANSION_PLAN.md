@@ -159,3 +159,45 @@ Results:
 The accepted additions are verification artifacts only. They do not approve
 speech output changes, runtime audio changes, API changes, dictionary changes,
 or CMake promotion.
+
+## Accelerated Plan Phase 5 Coverage Gap Map
+
+The accelerated plan reuses the accepted US English WAV suites, public API
+smoke test, CMake subset verifier, phoneme feasibility notes, and platform
+wrapper smoke evidence. This phase does not accept new baselines.
+
+Accepted candidates for the extra-high block:
+
+- Phase 7: expand `tools/baseline/api_smoke.c` using installed public headers
+  and installed libraries only. Keep the smoke deterministic and no-live-audio.
+  Candidate additions are repeated startup/shutdown safety, stable additional
+  scalar/status checks, safe invalid-parameter checks, and explicit language or
+  speaker restoration checks that do not alter the final WAV output.
+- Phase 8: add a legacy `OP_*` parity harness if it can be built as an isolated
+  test without routing DECtalk runtime behavior through `src/platform`.
+  Candidate coverage is thread create/join handle ownership, finite wait or
+  timeout behavior where deterministic, priority call return behavior,
+  `OP_Sleep(0)` smoke-level scheduler yield, event auto-reset behavior, and
+  lightweight lock timeout polling.
+- Phase 10: model CMake live-audio option state only as side-by-side CMake
+  configuration evidence. Do not open devices or route live audio through new
+  wrappers.
+
+Deferred candidates:
+
+- Phoneme/text-mode golden baselines remain deferred because
+  `TextToSpeechConvertToPhonemes` crashed in the staged Linux probe,
+  `LOG_PHONEMES` returned `MMSYSERR_ERROR` in the no-audio setup, and
+  `[:phoneme on]` does not produce a separate deterministic text artifact.
+- Non-US audio baselines remain deferred until language-specific fixed input
+  texts are chosen and approved.
+- Callback ordering, in-memory phoneme arrays, queue timing, pipe behavior, and
+  live-audio backend behavior remain deferred because current deterministic
+  gates do not prove timing or hardware behavior.
+- Broader internal captures should be used only when they directly verify that
+  public-facing functionality has not been lost.
+
+Default audio baseline shape remains US English, all 9 speakers, one-shot and
+accepted expanded suites, WAV output, byte-for-byte comparison. This phase does
+not change `tests/golden/audio/`, `tests/golden/dictionaries/`, or
+`tests/golden/symbols/`.
