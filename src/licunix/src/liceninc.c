@@ -9,7 +9,7 @@
 extern  void encryptString(const unsigned char *string,unsigned long key,unsigned char *output);
 extern  unsigned int decryptString(const unsigned char *input,unsigned long key,unsigned char *string);
 
-int all_digits(char *input)
+static int all_digits(char *input)
 {
 	while (*input)
 	{

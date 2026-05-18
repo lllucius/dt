@@ -411,7 +411,7 @@ Implementation Summary:
 
 ## Phase 4: Low-Risk Auxiliary Warning Cleanup
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: high.
 
@@ -444,6 +444,46 @@ Rules:
 - Do not perform pointer signedness, pointer qualifier, callback, volatile,
   structure layout, public API, audio, threading, parser, or synthesis cleanup
   in this phase.
+
+Implementation Summary:
+
+- Reviewed the selected `src/licunix/src/liceninc.c` helper and confirmed the
+  `all_digits` symbol is used only inside that translation unit for this tool.
+- Changed `src/licunix/src/liceninc.c` to make `all_digits` `static`, keeping
+  the existing parameter type and function body unchanged.
+- Added a zero-count warning-budget row for `src/licunix/src/liceninc.c`
+  `-Wmissing-prototypes` in `tests/golden/warnings/default-cleaned.tsv`.
+- Updated `docs/modernization/WARNING_INVENTORY.md` with the Phase 4 cleanup
+  result and verification evidence.
+- Files changed: `src/licunix/src/liceninc.c`,
+  `tests/golden/warnings/default-cleaned.tsv`,
+  `docs/modernization/WARNING_INVENTORY.md`, and `PLAN.md`.
+- Verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase4-liceninc-warning --expected tests/golden`.
+- Verification results: default warning-line count `1,778`, strict warning-line
+  count `29,761`, parser-visible default warnings `1,757`, and warning budget
+  status `ok`. Public headers, exported symbols, detailed Autotools manifest,
+  dictionaries, user dictionaries, API smoke WAV, one-shot US audio, and
+  expanded US audio suites all matched accepted baselines.
+- Additional strict parser verification:
+  `tools/baseline/summarize_warnings.py --log baseline-runs/next3-phase4-liceninc-warning/build/build-strict-warnings.log --out-dir baseline-runs/next3-phase4-warning-strict`.
+  Parser-visible strict warnings decreased from `29,743` to `29,738`, and the
+  refreshed strict parser reported no remaining warnings for
+  `src/licunix/src/liceninc.c`.
+- Additional warning-budget verification:
+  `tools/baseline/check_warning_budgets.py --warnings baseline-runs/next3-phase4-liceninc-warning/warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/next3-phase4-liceninc-warning/warning-budget-after.tsv`.
+  Result: `warning_budget_status=ok`.
+- Public exports did not change according to the committed symbol comparisons.
+  Dictionaries did not change according to the committed dictionary
+  comparisons. Golden audio did not change according to the committed one-shot
+  and expanded deterministic WAV comparisons.
+- Behavior risk level: low. The source change only narrowed a private helper's
+  linkage in a license maintenance tool and did not alter runtime synthesis,
+  public headers, exported symbols, dictionaries, audio, API behavior, or
+  threading behavior.
+- Known limitations: the warning-budget checker uses the default warning
+  summary; strict warning evidence was captured separately for this strict-only
+  cleanup. Pointer-sign warnings and other categories remain deferred.
 
 ## Phase 5: Deterministic Coverage Gap Map
 

@@ -194,3 +194,31 @@ Rejected candidates for this pass:
 
 Do not expand Phase 4 beyond the selected file and warning category unless the
 candidate proves invalid during source review.
+
+## Accelerated Plan Phase 4 Cleanup
+
+Phase 4 implemented the selected `src/licunix/src/liceninc.c`
+`-Wmissing-prototypes` cleanup by making the private `all_digits` helper
+file-local with `static`.
+
+Verification:
+
+- `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase4-liceninc-warning --expected tests/golden`
+- `tools/baseline/summarize_warnings.py --log baseline-runs/next3-phase4-liceninc-warning/build/build-strict-warnings.log --out-dir baseline-runs/next3-phase4-warning-strict`
+- `tools/baseline/check_warning_budgets.py --warnings baseline-runs/next3-phase4-liceninc-warning/warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/next3-phase4-liceninc-warning/warning-budget-after.tsv`
+
+Results:
+
+- strict warning-line count decreased from 29,762 to 29,761.
+- parser-visible strict warnings decreased from 29,743 to 29,738.
+- the refreshed strict parser reported no remaining warnings for
+  `src/licunix/src/liceninc.c`.
+- the warning budget passed after adding a zero-count
+  `src/licunix/src/liceninc.c` `-Wmissing-prototypes` row.
+- public headers, exported symbols, dictionaries, user dictionaries, API smoke,
+  one-shot US audio, expanded US audio suites, and the detailed Autotools
+  manifest matched accepted baselines.
+
+The pointer-sign cleanup originally visible in this file remains out of scope
+as a warning category. It should not be mixed into low-risk warning cleanup
+unless a later phase explicitly selects it.
