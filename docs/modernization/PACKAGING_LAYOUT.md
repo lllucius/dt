@@ -90,3 +90,33 @@ Acceptance policy:
 - future CMake promotion must either eliminate these differences or explicitly
   approve each remaining difference class with matching release and behavior
   verification.
+
+## Accelerated Plan Phase 12 CMake Packaging Decision
+
+Phase 12 rechecked CMake packaging after the API-boundary warning pilot and the
+Autotools detailed manifest refresh.
+
+Current path/type evidence:
+
+- Autotools manifest:
+  `baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest.txt`
+- CMake manifest:
+  `baseline-runs/next3-phase12-cmake-readiness/dist-manifest.txt`
+- comparison output:
+  `baseline-runs/next3-phase12-cmake-basic-vs-autotools.diff`
+- result: `manifest: ok`, with 589 entries in each manifest.
+
+Current detailed evidence:
+
+- Autotools detailed manifest:
+  `baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest-detailed.txt`
+- CMake detailed manifest:
+  `baseline-runs/next3-phase12-cmake-readiness/dist-manifest-detailed.txt`
+- comparison output:
+  `baseline-runs/next3-phase12-cmake-detailed-vs-autotools.diff`
+- result: `manifest: different`, with 1,126 entries in each manifest.
+
+Decision: CMake remains side-by-side. Basic path/type staging parity is still
+accepted, but detailed metadata/hash differences for built binaries and
+`doc/DECtalk/html` directory metadata remain release-packaging promotion
+blockers.

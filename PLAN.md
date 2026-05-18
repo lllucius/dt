@@ -1042,7 +1042,7 @@ Implementation Summary:
 
 ## Phase 12: CMake Promotion Readiness Decision
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -1076,6 +1076,51 @@ Rules:
 - Do not promote CMake in this phase.
 - Do not remove Autotools or existing build paths.
 - Do not change install layout unless explicitly approved by a revised phase.
+
+Implementation Summary:
+
+- Rechecked current CMake readiness after Phase 10 audio-option modeling and
+  the Phase 11 API-boundary warning pilot.
+- Ran
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase12-cmake-readiness --expected tests/golden`.
+- CMake verification results: generated dictionaries matched; one-shot US audio
+  matched for speakers 0 through 8; expanded US audio suites matched for
+  speakers 0 through 8; CMake-staged `libtts.so` matched the committed exact
+  exported-symbol baseline; language-library exported symbol name/type sets
+  matched; `dt_platform_smoke` passed with default audio metadata;
+  `opthread_smoke` passed; `compile_commands.json` had `3,307` lines; and the
+  detailed CMake staged manifest had `1,126` lines.
+- Captured the current CMake path/type manifest and compared it with the
+  current Phase 11 Autotools path/type manifest:
+  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest.txt --actual baseline-runs/next3-phase12-cmake-readiness/dist-manifest.txt --out baseline-runs/next3-phase12-cmake-basic-vs-autotools.diff`.
+  Result: `manifest: ok`, with `589` entries on each side.
+- Compared the current CMake detailed metadata-hash manifest with the current
+  Phase 11 Autotools detailed metadata-hash manifest:
+  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest-detailed.txt --actual baseline-runs/next3-phase12-cmake-readiness/dist-manifest-detailed.txt --out baseline-runs/next3-phase12-cmake-detailed-vs-autotools.diff`.
+  Result: `manifest: different`, with `1,126` entries on each side.
+- Decision: CMake remains side-by-side and is not promoted. Basic path/type
+  parity is still accepted, but detailed binary metadata/hash differences,
+  `doc/DECtalk/html` directory metadata, unaccepted full language-library
+  symbol address/order differences, and unverified live-audio behavior remain
+  promotion blockers.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/PACKAGING_LAYOUT.md`, and
+  `docs/modernization/READINESS_REVIEW.md`.
+- Files changed: `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/PACKAGING_LAYOUT.md`,
+  `docs/modernization/READINESS_REVIEW.md`, and `PLAN.md`.
+- Verification command:
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Warning counts did not change because this phase was documentation and
+  comparison only.
+- Public exports did not change. Dictionaries did not change. Golden audio did
+  not change.
+- Behavior risk level: low. This phase changed documentation only and did not
+  modify source, build scripts, install layout, public APIs, dictionaries,
+  audio output, or CMake promotion state.
+- Known limitations: CMake promotion remains deferred; live audio hardware,
+  callbacks, queue behavior, backend device selection, non-current targets,
+  non-US audio, and phoneme/text output remain outside verified coverage.
 
 ## Phase 13: Final Readiness Review, PR, And Merge
 

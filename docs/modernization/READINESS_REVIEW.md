@@ -562,3 +562,46 @@ The default warning-line count and parser-visible default warning count matched
 the previous final readiness review. The strict warning-line count decreased
 from 29,764 to 29,762 during the post-merge refresh. No source behavior change
 was made in this phase.
+
+## Accelerated Plan Phase 12 CMake Readiness
+
+Phase 12 rechecked CMake promotion readiness after Phase 10 audio-option
+modeling and the Phase 11 API-boundary warning pilot.
+
+CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next3-phase12-cmake-readiness \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built the staged target.
+- `compile_commands.json` was generated with 3,307 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata showing OSS selected
+  and ALSA/PulseAudio disabled.
+- `opthread_smoke` passed.
+
+Manifest decision:
+
+- CMake path/type staging still matches current Autotools path/type staging:
+  589 entries on each side, `manifest: ok`.
+- CMake detailed metadata-hash staging still differs from current Autotools
+  detailed staging: 1,126 entries on each side, `manifest: different`.
+- Remaining detailed differences are built-binary sizes and hashes plus
+  `doc/DECtalk/html` directory metadata.
+
+Decision: CMake is not promoted by this plan. Autotools remains authoritative.
+CMake is suitable as a side-by-side verification build, but detailed packaging
+differences and unverified live-audio behavior remain promotion blockers.
