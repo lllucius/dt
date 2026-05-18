@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Purpose: generate deterministic US English DECtalk WAV baseline outputs.
+# Purpose: generate deterministic DECtalk WAV baseline outputs for one language.
 # Scope: Linux baseline verification using dist/say and committed input text.
 # Behavior preservation: generated WAV files are compared byte-for-byte against
 # committed golden audio.
@@ -8,15 +8,16 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: tools/baseline/capture_audio.sh [--dist DIR] [--input FILE] [--out DIR]
+Usage: tools/baseline/capture_audio.sh [--dist DIR] [--input FILE] [--out DIR] [--language LANG]
 
-Generates US English WAV files for speakers 0 through 8 using dist/say.
+Generates WAV files for speakers 0 through 8 using dist/say.
 USAGE
 }
 
 dist_dir=""
 input_file=""
 out_dir=""
+language="us"
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -42,6 +43,14 @@ while [ "$#" -gt 0 ]; do
         exit 2
       fi
       out_dir="$2"
+      shift 2
+      ;;
+    --language)
+      if [ "$#" -lt 2 ]; then
+        echo "error: --language requires a language code" >&2
+        exit 2
+      fi
+      language="$2"
       shift 2
       ;;
     -h|--help)
@@ -78,7 +87,7 @@ mkdir -p "$out_dir"
 for speaker in 0 1 2 3 4 5 6 7 8; do
   LD_LIBRARY_PATH="$dist_dir/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
     "$dist_dir/say" \
-    -l us \
+    -l "$language" \
     -s "$speaker" \
     -fi "$input_file" \
     -fo "$out_dir/speaker_${speaker}.wav" \

@@ -95,6 +95,10 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/compare_audio_suites.sh" \
   --actual "$run_dir/audio-us-suites" \
   --metrics-out "$run_dir/audio-suite-metrics" > "$run_dir/audio-suite-compare.txt"
+"$repo_root/tools/baseline/capture_non_us_audio.sh" --out "$run_dir/audio-non-us"
+"$repo_root/tools/baseline/compare_non_us_audio.sh" \
+  --actual "$run_dir/audio-non-us" \
+  --metrics-out "$run_dir/audio-non-us-metrics" > "$run_dir/audio-non-us-compare.txt"
 
 if [ -n "$expected_dir" ]; then
   if [ -d "$expected_dir/symbols" ]; then
@@ -148,6 +152,8 @@ fi
   printf 'audio_metrics=%s\n' "$run_dir/audio-metrics.tsv"
   printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
   printf 'audio_suite_metrics=%s\n' "$run_dir/audio-suite-metrics"
+  printf 'audio_non_us_compare=%s\n' "$run_dir/audio-non-us-compare.txt"
+  printf 'audio_non_us_metrics=%s\n' "$run_dir/audio-non-us-metrics"
   [ -f "$run_dir/symbol-compare.txt" ] && printf 'symbol_compare=%s\n' "$run_dir/symbol-compare.txt"
   [ -f "$run_dir/manifest-compare.txt" ] && printf 'manifest_compare=%s\n' "$run_dir/manifest-compare.txt"
   [ -f "$run_dir/manifest-detailed-compare.txt" ] && printf 'manifest_detailed_compare=%s\n' "$run_dir/manifest-detailed-compare.txt"

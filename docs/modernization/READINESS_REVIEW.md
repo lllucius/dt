@@ -788,3 +788,57 @@ dictionary-generation, audio, or threading behavior was intentionally changed in
 this phase. The only golden artifact changed was the detailed install manifest
 hash list for stable rebuilt binaries after repeated captures and passing
 behavior gates proved the committed post-merge detailed manifest was stale.
+
+## Next High-Risk Plan Phase 5 Non-US Audio Baselines
+
+Phase 5 expanded deterministic file-output WAV coverage beyond US English.
+
+Accepted one-shot language baselines:
+
+- `uk`: UK English, speakers 0 through 8.
+- `sp`: Spanish, speakers 0 through 8.
+- `gr`: German, speakers 0 through 8.
+- `la`: Latin American Spanish, speakers 0 through 8.
+- `fr`: French, speakers 0 through 8.
+
+Repeatability gate:
+
+```sh
+tools/baseline/capture_non_us_audio.sh \
+  --out baseline-runs/next4-phase5-non-us-audio-pass1
+tools/baseline/capture_non_us_audio.sh \
+  --out baseline-runs/next4-phase5-non-us-audio-pass2
+tools/baseline/compare_non_us_audio.sh \
+  --expected baseline-runs/next4-phase5-non-us-audio-pass1 \
+  --actual baseline-runs/next4-phase5-non-us-audio-pass2 \
+  --metrics-out baseline-runs/next4-phase5-non-us-audio-repeat-metrics
+```
+
+Result: all 45 non-US WAV files matched exactly across repeated captures.
+
+Full Autotools gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase5-non-us-audio \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,665.
+- parser-visible default warnings: 1,757.
+- warning budget status was `ok`.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and the US user-dictionary fixture matched accepted baselines.
+- public API smoke and callback smoke matched accepted baselines.
+- US English one-shot WAV output and expanded US audio suites matched exactly.
+- non-US one-shot WAV output matched exactly for `uk`, `sp`, `gr`, `la`, and
+  `fr`, speakers 0 through 8.
+
+Behavior statement: the phase added deterministic baseline coverage and
+language-aware capture tooling only. It did not change language selection,
+voice ROM selection, sample rate, default voice, synthesis code, parser
+behavior, dictionary behavior, public APIs, exported symbols, or live-audio
+behavior.

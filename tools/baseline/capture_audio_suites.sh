@@ -7,7 +7,8 @@
 # comparison; it does not update accepted baselines unless the caller writes
 # into tests/golden intentionally.
 # Limitations: current suites are US English only and do not exercise live audio
-# devices, callback timing, or non-US language dictionaries.
+# devices or callback timing. Non-US one-shot coverage is handled separately by
+# capture_non_us_audio.sh.
 set -euo pipefail
 
 usage() {

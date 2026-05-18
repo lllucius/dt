@@ -471,7 +471,7 @@ Implementation Summary:
 
 ## Phase 5: Non-US Deterministic Audio Baseline Expansion
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -505,6 +505,44 @@ Rules:
   default voice, synthesis code, parser behavior, or dictionary behavior.
 - If any language output is unstable, defer that language rather than accepting
   fuzzy thresholds.
+
+Implementation Summary:
+
+- Extended `tools/baseline/capture_audio.sh` with `--language LANG` while
+  preserving US English as the default.
+- Added `tools/baseline/capture_non_us_audio.sh` and
+  `tools/baseline/compare_non_us_audio.sh` with standard documentation.
+- Added fixed ASCII one-shot input fixtures for `uk`, `sp`, `gr`, `la`, and
+  `fr` under `tests/golden/input/`.
+- Ran two independent non-US capture passes for UK English, Spanish, German,
+  Latin American Spanish, and French, speakers 0 through 8. All 45 WAV files
+  matched byte-for-byte across repeated captures.
+- Accepted the stable non-US WAV fixtures under `tests/golden/audio/uk/`,
+  `tests/golden/audio/sp/`, `tests/golden/audio/gr/`,
+  `tests/golden/audio/la/`, and `tests/golden/audio/fr/`.
+- Wired `tools/baseline/verify_current.sh` to run non-US audio capture and
+  exact comparison after the accepted US one-shot and US suite gates.
+- Updated `docs/modernization/BASELINE_EXPANSION_PLAN.md` and
+  `docs/modernization/READINESS_REVIEW.md` with accepted inputs, directories,
+  repeatability evidence, and verification results.
+- Verification passed:
+  `tools/baseline/compare_non_us_audio.sh --expected
+  baseline-runs/next4-phase5-non-us-audio-pass1 --actual
+  baseline-runs/next4-phase5-non-us-audio-pass2 --metrics-out
+  baseline-runs/next4-phase5-non-us-audio-repeat-metrics`,
+  `tools/baseline/compare_non_us_audio.sh --actual
+  baseline-runs/next4-phase5-non-us-audio-pass2 --metrics-out
+  baseline-runs/next4-phase5-non-us-audio-accepted-metrics`,
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase5-non-us-audio --expected tests/golden`, and
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public headers, exported symbols, dictionaries, user dictionaries, detailed
+  manifest, API smoke, callback smoke, US one-shot audio, expanded US audio
+  suites, non-US one-shot audio, and warning budgets all matched accepted
+  baselines.
+- No language selection, voice ROM selection, sample rate, default voice,
+  synthesis code, parser behavior, dictionary behavior, public API, exported
+  symbol, or live-audio behavior was intentionally changed.
 
 ## Phase 6: Medium-Risk Warning Cleanup Wave
 

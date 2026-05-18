@@ -201,3 +201,79 @@ Default audio baseline shape remains US English, all 9 speakers, one-shot and
 accepted expanded suites, WAV output, byte-for-byte comparison. This phase does
 not change `tests/golden/audio/`, `tests/golden/dictionaries/`, or
 `tests/golden/symbols/`.
+
+## Next High-Risk Plan Phase 5 Non-US Audio Baselines
+
+Phase 5 accepted deterministic one-shot WAV baselines for the five staged
+non-US language libraries after repeated captures matched byte-for-byte.
+
+Accepted language inputs:
+
+- `tests/golden/input/uk_one_shot.txt`
+- `tests/golden/input/sp_one_shot.txt`
+- `tests/golden/input/gr_one_shot.txt`
+- `tests/golden/input/la_one_shot.txt`
+- `tests/golden/input/fr_one_shot.txt`
+
+Accepted audio directories:
+
+- `tests/golden/audio/uk/`
+- `tests/golden/audio/sp/`
+- `tests/golden/audio/gr/`
+- `tests/golden/audio/la/`
+- `tests/golden/audio/fr/`
+
+Tooling added:
+
+- `tools/baseline/capture_audio.sh --language LANG` keeps US English as the
+  default while allowing staged language-library selection.
+- `tools/baseline/capture_non_us_audio.sh` captures `uk`, `sp`, `gr`, `la`,
+  and `fr` one-shot WAVs for speakers 0 through 8.
+- `tools/baseline/compare_non_us_audio.sh` compares those language directories
+  with exact WAV equality through `compare_audio.py`.
+- `tools/baseline/verify_current.sh` now runs the non-US capture and compare
+  gate after the accepted US one-shot and US suite gates.
+
+Repeatability evidence:
+
+```sh
+tools/baseline/capture_non_us_audio.sh \
+  --out baseline-runs/next4-phase5-non-us-audio-pass1
+tools/baseline/capture_non_us_audio.sh \
+  --out baseline-runs/next4-phase5-non-us-audio-pass2
+tools/baseline/compare_non_us_audio.sh \
+  --expected baseline-runs/next4-phase5-non-us-audio-pass1 \
+  --actual baseline-runs/next4-phase5-non-us-audio-pass2 \
+  --metrics-out baseline-runs/next4-phase5-non-us-audio-repeat-metrics
+```
+
+Result: all 45 non-US WAV files matched exactly across repeated captures.
+
+Accepted-baseline comparison:
+
+```sh
+tools/baseline/compare_non_us_audio.sh \
+  --actual baseline-runs/next4-phase5-non-us-audio-pass2 \
+  --metrics-out baseline-runs/next4-phase5-non-us-audio-accepted-metrics
+```
+
+Result: accepted `uk`, `sp`, `gr`, `la`, and `fr` WAV files matched exactly
+for speakers 0 through 8.
+
+Full verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase5-non-us-audio \
+  --expected tests/golden
+```
+
+Result: the Autotools gate passed with public headers, exported symbols,
+dictionaries, user dictionaries, detailed manifest, API smoke, callback smoke,
+US one-shot audio, expanded US audio suites, non-US one-shot audio, and warning
+budget all matching accepted baselines.
+
+Behavior statement: this phase added deterministic WAV coverage only. It did
+not change language selection behavior, voice ROM selection, sample rate,
+default voice, synthesis code, parser behavior, dictionary behavior, live audio
+behavior, public APIs, or exported symbols.
