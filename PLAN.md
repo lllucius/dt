@@ -951,7 +951,7 @@ Implementation Summary:
 
 ## Phase 12: Final Readiness Review For This Plan
 
-Status: not started
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -981,6 +981,46 @@ Success criteria:
 - All accepted baselines are reproducible.
 - Known limitations are explicit.
 - No behavior preservation claim is made beyond checks actually run.
+
+Implementation Summary:
+
+- Updated `docs/modernization/READINESS_REVIEW.md` with the final readiness
+  review for this plan.
+- Re-ran the authoritative Autotools/Linux gate:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase12-readiness --expected tests/golden`.
+  Default warning-line count was 1,778, strict warning-line count was 29,764,
+  parser-visible default warnings were 1,757, and the warning budget passed.
+  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
+  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
+  suites all matched accepted baselines.
+- Re-ran the CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next2-phase12-readiness-cmake --expected tests/golden`.
+  CMake dictionaries, one-shot US audio, expanded US audio suites, exact
+  `libtts.so` symbols, language-library symbol name/type sets,
+  `compile_commands.json`, and expanded `dt_platform_smoke` passed.
+- Captured and compared the final CMake basic staged manifest:
+  `tools/baseline/capture_dist_manifest.sh --dist baseline-runs/next2-phase12-readiness-cmake/build/cmake-dist --out baseline-runs/next2-phase12-readiness-cmake/dist-manifest-basic.txt`
+  and
+  `tools/baseline/compare_manifest.sh --expected baseline-runs/next2-phase12-readiness/dist-manifest.txt --actual baseline-runs/next2-phase12-readiness-cmake/dist-manifest-basic.txt --out baseline-runs/next2-phase12-readiness-cmake/dist-manifest-basic-compare.diff`.
+  Result: exact path/type parity, 589 Autotools entries and 589 CMake entries.
+- Rechecked CMake detailed metadata-hash parity against Autotools:
+  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual baseline-runs/next2-phase12-readiness-cmake/dist-manifest-detailed.txt --out baseline-runs/next2-phase12-readiness-cmake/dist-manifest-detailed-vs-autotools.diff`.
+  Result: manifests still differ for CMake-built binary metadata/hashes and
+  `doc/DECtalk/html` directory metadata; CMake remains side-by-side and is not
+  promoted.
+- Ran `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`
+  successfully.
+- Warning counts changed over the plan as documented in the readiness review;
+  no additional warning cleanup was performed in this phase.
+- Public exports did not change in this phase. Dictionaries did not change in
+  this phase. Golden audio did not change in this phase. No phoneme or
+  text-mode baseline was added.
+- Behavior risk level: low. This phase updated documentation only after final
+  verification gates passed.
+- Known limitations: hosted PR CI has not run yet; live audio hardware,
+  callbacks, queue behavior, backend device selection, non-current platforms,
+  non-US audio, and phoneme/text output remain outside the verified behavior
+  claims.
 
 ## Definition of Done for Each Phase
 
