@@ -222,3 +222,39 @@ Results:
 The pointer-sign cleanup originally visible in this file remains out of scope
 as a warning category. It should not be mixed into low-risk warning cleanup
 unless a later phase explicitly selects it.
+
+## Accelerated Plan Phase 11 API-Boundary Pilot
+
+Phase 11 selected one API-boundary warning candidate from the refreshed strict
+warning inventory:
+
+- file: `src/dapi/src/kernel/services.c`
+- normalized build-context path in API warnings: `src/dapi/src/api/services.c`
+- category: `-Wmissing-prototypes`
+- approach: add matching local prototypes for existing externally linked
+  service functions without changing linkage, definitions, public headers,
+  call sites, or exported symbol names
+
+Results:
+
+- parser-visible default warnings remained `1,757`.
+- default warning-line count decreased from `1,778` to `1,777`.
+- strict warning-line count decreased from `29,760` to `29,665`.
+- parser-visible strict warnings decreased from `29,738` to `29,644`.
+- the refreshed strict parser reported no remaining
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes` warnings.
+- a zero-count warning-budget row was added for
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes`.
+- public exported symbols, public headers, generated dictionaries, user
+  dictionaries, API smoke output, one-shot US audio, and expanded deterministic
+  US audio matched accepted baselines.
+
+The detailed Autotools manifest metadata-hash baseline was refreshed because
+`services.c` is linked into installed language libraries and sample demo
+binaries. The path/type install layout did not change when compared with the
+Phase 10 Autotools capture.
+
+Deferred warning categories remain unchanged: pointer-sign, pointer qualifier,
+unused-parameter, callback-facing, loader-adjacent, structure-layout,
+threading, and public API implementation warnings still require separate
+extra-high review and gates.

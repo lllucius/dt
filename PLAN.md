@@ -949,7 +949,7 @@ Implementation Summary:
 
 ## Phase 11: API-Boundary Warning Pilot
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -983,6 +983,62 @@ Rules:
 - Stop on any API smoke, symbol, public header, dictionary, or audio delta.
 - If the only available candidates involve callbacks, ABI-sensitive structs,
   pointer/integer casts, or runtime threading, defer instead of widening scope.
+
+Implementation Summary:
+
+- Selected the `src/dapi/src/kernel/services.c` `-Wmissing-prototypes`
+  warning cluster reported through the API build context as
+  `src/dapi/src/api/services.c`.
+- Added matching local prototypes above the existing service-function
+  definitions. No symbol was made `static`, and no function definition, public
+  header, public API signature, calling convention, structure layout, call
+  site, callback path, loader path, thread path, or audio path was changed.
+- Added a zero-count warning-budget row for
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes`.
+- Refreshed `tests/golden/dist-manifest-detailed.txt` after the first
+  verification pass showed expected metadata-hash changes for installed
+  language libraries and sample demos linked with the touched source. The
+  install path/type layout did not change compared with the Phase 10 Autotools
+  capture.
+- Updated `docs/modernization/API_BOUNDARY_WARNINGS.md` and
+  `docs/modernization/WARNING_INVENTORY.md` with the selected candidate,
+  verification evidence, and deferred warning categories.
+- Files changed: `src/dapi/src/kernel/services.c`,
+  `tests/golden/warnings/default-cleaned.tsv`,
+  `tests/golden/dist-manifest-detailed.txt`,
+  `docs/modernization/API_BOUNDARY_WARNINGS.md`,
+  `docs/modernization/WARNING_INVENTORY.md`, and `PLAN.md`.
+- Initial verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase11-api-boundary-services --expected tests/golden`.
+  Result: all captures completed, exported symbols matched, API smoke and
+  deterministic US audio matched, but the detailed manifest comparison stopped
+  on expected binary metadata-hash changes from the source edit.
+- Additional classification checks: generated dictionaries and user
+  dictionaries matched; public headers matched; warning budget passed; strict
+  warning parser output in
+  `baseline-runs/next3-phase11-api-boundary-services/warnings-strict/`
+  showed no remaining `src/dapi/src/kernel/services.c`
+  `-Wmissing-prototypes` rows.
+- Final current-tree verification run after refreshing the detailed manifest
+  baseline and normalizing the inserted prototype block:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase11-api-boundary-services-lf --expected tests/golden`.
+- Final verification results: default warning-line count `1,777`, strict
+  warning-line count `29,665`, parser-visible default warnings `1,757`,
+  parser-visible strict warnings `29,644`, and warning budget status `ok`.
+  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
+  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
+  suites all matched accepted baselines.
+- Public exports did not change according to the committed symbol
+  comparisons. Dictionaries did not change according to the committed
+  dictionary comparisons. Golden audio did not change according to the
+  committed one-shot and expanded deterministic WAV comparisons.
+- Behavior risk level: medium. The source edit is prototype-only and preserves
+  linkage, but the touched source is linked into installed runtime libraries,
+  so the binary metadata/hash baseline changed and was refreshed after behavior
+  gates passed.
+- Known limitations: pointer-sign, pointer-qualifier, unused-parameter,
+  callback-facing, loader-adjacent, structure-layout, public API
+  implementation, threading, and audio warnings remain deferred.
 
 ## Phase 12: CMake Promotion Readiness Decision
 

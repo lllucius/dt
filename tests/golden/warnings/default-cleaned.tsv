@@ -4,3 +4,4 @@ src/samplosf/src/dtsamples/mfg_load.c	-Wold-style-definition	0	Phase 5 converted
 src/licunix/src/liceninc.c	-Wformat-overflow=	0	Phase 7 enlarged the local license line buffer to fit the existing formatted output.
 src/licunix/src/liceninc.c	-Wmissing-prototypes	0	Accelerated Phase 4 made the private all_digits helper file-local.
 src/dapi/src/api/ttsapi.c	-Wmisleading-indentation	0	Phase 8 realigned the close-log cleanup statement without changing API control flow.
+src/dapi/src/kernel/services.c	-Wmissing-prototypes	0	Accelerated Phase 11 added local prototypes for API-boundary service functions.
