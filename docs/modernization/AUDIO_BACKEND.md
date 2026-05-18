@@ -123,3 +123,53 @@ audio_audioqueue=0
 
 The disabled-audio probe validates metadata visibility only. It does not
 exercise live devices, promote CMake, or approve runtime audio behavior changes.
+
+## Next High-Risk Plan Phase 9 Option Matrix
+
+Phase 9 added a repeatable audio-option metadata helper:
+
+```sh
+tools/baseline/check_audio_option_matrix.sh \
+  --run-dir baseline-runs/next4-phase9-audio-option-matrix
+```
+
+The helper does not open live audio devices. CMake rows build and run only
+`dt_platform_smoke`; Autotools rows run `configure` and capture generated audio
+macro/link metadata from Makefiles.
+
+Local dependency evidence:
+
+```text
+alsa: not found
+libpulse-simple: not found
+```
+
+CMake metadata results:
+
+| Probe | Classification | disabled | OSS | ALSA | PulseAudio | AudioQueue |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| default | metadata-only | 0 | 1 | 0 | 0 | 0 |
+| `DECTALK_CMAKE_DISABLE_AUDIO=ON` | metadata-only | 1 | 0 | 0 | 0 | 0 |
+| `DECTALK_CMAKE_USE_ALSA=ON` | metadata-only | 0 | 1 | 1 | 0 | 0 |
+| `DECTALK_CMAKE_USE_PULSEAUDIO=ON` | metadata-only | 0 | 1 | 0 | 1 | 0 |
+
+Each CMake probe generated `compile_commands.json` with 3,307 lines and
+reported the legacy Linux OSS device as `/dev/dsp`. The ALSA and PulseAudio
+CMake rows are metadata-only because the local development packages were not
+available and the CMake options do not replace Autotools probing or link those
+backend libraries.
+
+Autotools metadata results:
+
+| Probe | Classification | Captured audio metadata |
+| --- | --- | --- |
+| default | configure-metadata-only | `LINUX_AUDIO=$(OUTPUT_DIR)/linux_audio.o`; no `AUDIO_DEFINES`; no `AUDIO_LIBS` |
+| `--disable-audio` | configure-metadata-only | `AUDIO_DEFINES=-DDISABLE_AUDIO`; no `AUDIO_LIBS` |
+| `--disable-pulseaudio` | configure-metadata-only | `LINUX_AUDIO=$(OUTPUT_DIR)/linux_audio.o`; no `AUDIO_DEFINES`; no `AUDIO_LIBS` |
+
+Default live-audio behavior remains unchanged by this phase. The deterministic
+default gates remain the behavior evidence: no-hardware WAV output, API smoke,
+callback smoke, dictionaries, symbols, manifests, and warning budgets are still
+verified by the default Autotools baseline gate; CMake default dictionaries,
+US audio, symbols, platform smoke, and OP smoke remain verified by the CMake
+subset gate.

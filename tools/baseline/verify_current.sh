@@ -77,6 +77,9 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/summarize_warnings.py" \
   --log "$run_dir/build/build.log" \
   --out-dir "$run_dir/warnings-default"
+"$repo_root/tools/baseline/summarize_warnings.py" \
+  --log "$run_dir/build/build-strict-warnings.log" \
+  --out-dir "$run_dir/warnings-strict"
 "$repo_root/tools/baseline/capture_symbols.sh" --out "$run_dir/symbols"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" --out "$run_dir/dist-manifest.txt"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" \
@@ -86,6 +89,7 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/capture_user_dictionaries.sh" --out "$run_dir/user-dictionaries"
 "$repo_root/tools/baseline/check_public_headers.sh" --out "$run_dir/public-headers"
 "$repo_root/tools/baseline/check_api_smoke.sh" --out "$run_dir/api-smoke"
+"$repo_root/tools/baseline/check_api_callback_smoke.sh" --out "$run_dir/api-callback-smoke"
 "$repo_root/tools/baseline/capture_audio.sh" --out "$run_dir/audio-us"
 "$repo_root/tools/baseline/compare_audio.py" \
   --actual "$run_dir/audio-us" \
@@ -94,6 +98,10 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/compare_audio_suites.sh" \
   --actual "$run_dir/audio-us-suites" \
   --metrics-out "$run_dir/audio-suite-metrics" > "$run_dir/audio-suite-compare.txt"
+"$repo_root/tools/baseline/capture_non_us_audio.sh" --out "$run_dir/audio-non-us"
+"$repo_root/tools/baseline/compare_non_us_audio.sh" \
+  --actual "$run_dir/audio-non-us" \
+  --metrics-out "$run_dir/audio-non-us-metrics" > "$run_dir/audio-non-us-compare.txt"
 
 if [ -n "$expected_dir" ]; then
   if [ -d "$expected_dir/symbols" ]; then
@@ -137,16 +145,26 @@ if [ -n "$expected_dir" ]; then
       --budget "$expected_dir/warnings/default-cleaned.tsv" \
       --out "$run_dir/warning-budget.tsv" > "$run_dir/warning-budget.txt"
   fi
+  if [ -f "$expected_dir/warnings/strict-cleaned.tsv" ]; then
+    "$repo_root/tools/baseline/check_warning_budgets.py" \
+      --warnings "$run_dir/warnings-strict/warnings.tsv" \
+      --budget "$expected_dir/warnings/strict-cleaned.tsv" \
+      --out "$run_dir/warning-budget-strict.tsv" > "$run_dir/warning-budget-strict.txt"
+  fi
 fi
 
 {
   printf 'run_dir=%s\n' "$run_dir"
   printf 'default_warnings=%s\n' "$(cat "$run_dir/build/default-warning-count.txt")"
   printf 'strict_warnings=%s\n' "$(cat "$run_dir/build/strict-warning-count.txt")"
+  printf 'parser_default_warnings=%s\n' "$(($(wc -l < "$run_dir/warnings-default/warnings.tsv") - 1))"
+  printf 'parser_strict_warnings=%s\n' "$(($(wc -l < "$run_dir/warnings-strict/warnings.tsv") - 1))"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
   printf 'audio_metrics=%s\n' "$run_dir/audio-metrics.tsv"
   printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
   printf 'audio_suite_metrics=%s\n' "$run_dir/audio-suite-metrics"
+  printf 'audio_non_us_compare=%s\n' "$run_dir/audio-non-us-compare.txt"
+  printf 'audio_non_us_metrics=%s\n' "$run_dir/audio-non-us-metrics"
   [ -f "$run_dir/symbol-compare.txt" ] && printf 'symbol_compare=%s\n' "$run_dir/symbol-compare.txt"
   [ -f "$run_dir/manifest-compare.txt" ] && printf 'manifest_compare=%s\n' "$run_dir/manifest-compare.txt"
   [ -f "$run_dir/manifest-detailed-compare.txt" ] && printf 'manifest_detailed_compare=%s\n' "$run_dir/manifest-detailed-compare.txt"
@@ -154,7 +172,9 @@ fi
   [ -f "$run_dir/user-dictionary-compare.txt" ] && printf 'user_dictionary_compare=%s\n' "$run_dir/user-dictionary-compare.txt"
   [ -f "$run_dir/public-header-compare.txt" ] && printf 'public_header_compare=%s\n' "$run_dir/public-header-compare.txt"
   [ -f "$run_dir/api-smoke/summary.txt" ] && printf 'api_smoke=%s\n' "$run_dir/api-smoke/summary.txt"
+  [ -f "$run_dir/api-callback-smoke/summary.txt" ] && printf 'api_callback_smoke=%s\n' "$run_dir/api-callback-smoke/summary.txt"
   [ -f "$run_dir/warning-budget.txt" ] && printf 'warning_budget=%s\n' "$run_dir/warning-budget.txt"
+  [ -f "$run_dir/warning-budget-strict.txt" ] && printf 'warning_budget_strict=%s\n' "$run_dir/warning-budget-strict.txt"
 } > "$run_dir/summary.txt"
 
 cat "$run_dir/summary.txt"

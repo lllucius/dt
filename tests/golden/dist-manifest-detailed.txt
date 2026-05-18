@@ -520,19 +520,19 @@ f 644 9835 doc/DECtalk/html/idh_sdk_2_texttospeechgetcaps.htm ->
 f 644 988 bitmaps/bet16b.gif -> 
 f 644 9932 doc/DECtalk/html/idh_sdk_1_loading_the_user_dictionary.htm -> 
 f 644 9948 doc/DECtalk/html/idh_sdk_2_texttospeechclosewaveoutfile.htm -> 
-f 755 1758632 tools/say_demo_sp -> 
-f 755 1758664 tools/say_demo_la -> 
-f 755 1802616 tools/say_demo_fr -> 
-f 755 1860704 tools/say_demo_uk -> 
-f 755 1874072 tools/say_demo_us -> 
-f 755 1928352 lib/libtts_sp.so -> 
-f 755 1928384 lib/libtts_la.so -> 
-f 755 1972296 lib/libtts_fr.so -> 
-f 755 2014312 lib/libtts_uk.so -> 
-f 755 2031504 lib/libtts_us.so -> 
+f 755 1758592 tools/say_demo_sp -> 
+f 755 1758624 tools/say_demo_la -> 
+f 755 1802568 tools/say_demo_fr -> 
+f 755 1860664 tools/say_demo_uk -> 
+f 755 1874024 tools/say_demo_us -> 
+f 755 1928312 lib/libtts_sp.so -> 
+f 755 1928344 lib/libtts_la.so -> 
+f 755 1972256 lib/libtts_fr.so -> 
+f 755 2014272 lib/libtts_uk.so -> 
+f 755 2031464 lib/libtts_us.so -> 
 f 755 21920 aclock -> 
-f 755 2234920 tools/say_demo_gr -> 
-f 755 2437928 lib/libtts_gr.so -> 
+f 755 2234880 tools/say_demo_gr -> 
+f 755 2437888 lib/libtts_gr.so -> 
 f 755 25688 dtmemory -> 
 f 755 34776 tools/dump_vdf -> 
 f 755 41064 tools/udic_fr -> 
@@ -1082,12 +1082,12 @@ fafe61d80dc7b7ef8df0d28a18584e32bf0a7aa749b2e5e0b75c1d26475021cc  doc/DECtalk/ps
 5ea7de156d6d701c3213009cf3550b1e4c37a5e114da66ae2a201dba86d2bc23  include/dtk/l_us_ph.h
 250a3a96a781f0d8092659a225615f9dc94871c04272696566f4e59173005899  include/dtk/ttsapi.h
 de8ad7c6e4478055b9afa47da36fe322658c4449d78a18e5a7445b7da407af1e  lib/libtts.so
-58c8beec21136c73cd39afbb96c39d52382b965f466948e337f9ba8ecc43adce  lib/libtts_fr.so
-3b2d639e2e3a293ae215bd727639182c755f79c379a0ebd223cd9e2ff6931693  lib/libtts_gr.so
-bc93cb8773ec5cff59422e01c9e17fa9eb181f09914169a96ba6cf3e715ee82b  lib/libtts_la.so
-5a4f152957c345fe2803e49dfd5b4effe4933eaa6bec34ec097a7ebd215f26cb  lib/libtts_sp.so
-4fee665c17a3fad7e63ce9cc07ce89b7e53da00c77bf6fcf3612c755e85712ca  lib/libtts_uk.so
-760ee4d81122896c0b35808b31ef4d5902da8b055d08d1a805350bdde3715722  lib/libtts_us.so
+e10603116d02f0b6865f52966ae26420ec9a1e5dff5b3d74960c1eb953babc4e  lib/libtts_fr.so
+05dd37d7d47db612124199df498ef9bf43686b9cbdbc2452d367df0770f0419b  lib/libtts_gr.so
+50858949944c12664ba8f0fe7258511493b1023097d0f52d49a1f01f419a0e86  lib/libtts_la.so
+bb0fe4a71131dd6a65b659a32c7f97a7c62f38afbd68d104db2870490283705c  lib/libtts_sp.so
+4199b0cbd6c79cfd50b6cf12bdb8a229b425f9df81fbd77d28cd17de489d8c40  lib/libtts_uk.so
+bd0718d36ee44f2b355c2c03b99b3367cad78a28a2279646e6dbe9a797d91c70  lib/libtts_us.so
 58931662434cfee3f741374bd39c3bd405ab5b4c136567840246176021e77720  say
 15016ddd6e9e8879015725457dbd1eaa7fd1e0f4ee5a27af6bcda7fdec298466  src/DECtalk/dtsamples/aclock.c
 2b93984d9ef81c7afa45326af00d1b449f57359d823635191b8e9ddff63dca79  src/DECtalk/dtsamples/birthday.txt
@@ -1106,12 +1106,12 @@ f9279416714828e2774b643cda36f0cd046366debf1091cc8bc23ff2ad36de0b  tools/dic_la
 d7e89311ff696a344bbe3ee766c732a021f431b705791a5c9db744e1315070ee  tools/dic_us
 c6ad6dd981ee478bc029c11906f763c5f5b87dd42e682ec037ff8f1614f8109a  tools/dump_vdf
 756c741c39cff631e066f52838e7ed3f4a2e6623e8294588e77c186b54a34dd6  tools/mfg_load
-1fe6c4e0415a76049f30229f33607adbe6c2356daa56b0e96b10b362d59639ee  tools/say_demo_fr
-2b76179d4b96ae4f5c6fef4dd4f9986206fdcde5d12cc86ca7e19ee490afaf83  tools/say_demo_gr
-af48342ca8c333e8d2821980892152b5e9b67d39aa119fd6effc8263800f3517  tools/say_demo_la
-210826253d07d10c5cd5c45f81a9a07fa15ee2ab8034a225c94576170d575112  tools/say_demo_sp
-b4df387f3537d2ad4c184968f43d5b4d965cafe94f5d7bc2da3a6abc538f82b0  tools/say_demo_uk
-1d3ee8ac81a7a60a5174e7f7eba3ace646176060eb166a4192cd5ba288f2172c  tools/say_demo_us
+531f6bca37c397abaf93ae8a42778f6e2bd41cfde5ff919a6bf23185615d7ca1  tools/say_demo_fr
+9c2a87aef91298cb4905d95aaac30401bd0b44aac8c8ebe650a10b15f85d1e51  tools/say_demo_gr
+55ba01e667535c7a67354b9be62e0214c685127f86f3539c26724a5a66077c64  tools/say_demo_la
+908c2fae38e9346b377c07db014c6387a900e64503abaff21b0db67ed82d3367  tools/say_demo_sp
+1c3af38375eedd4a8f558a54f6cb76c9288d66a2e117bcff1157bfc9ef1a6c2f  tools/say_demo_uk
+81aafb84b0153b5808a581cfa1e8afa703b953892fdea21fbca70ed461bd9c5d  tools/say_demo_us
 eb5219eab15faeb7cca67b67c6ddd687f9f5237a22f6ec3ae7ae54bc99cca807  tools/tunecheck_fr
 bedf4d314ded804e53d8c3b5f28f135ab4af698ad9d158ca71716cc29f6181e6  tools/tunecheck_gr
 44d902d2f42247cfef7e07400696cf1c42c86ae8c30195d312e4511bb4eca74e  tools/tunecheck_la

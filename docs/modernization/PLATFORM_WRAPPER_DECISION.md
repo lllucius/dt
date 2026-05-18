@@ -6,6 +6,10 @@ runtime wiring.
 Phase 10 decision: no runtime wrapper pilot is approved.
 Accelerated Phase 8 update: add isolated legacy `OP_*` parity evidence, but
 continue to defer runtime wiring.
+Next plan Phase 10 update: add a private `OP_*` adapter scaffold for CMake-only
+evidence, but keep runtime wiring deferred.
+Next plan Phase 11 decision: do not add a disabled-by-default runtime wrapper
+option yet.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -215,3 +219,95 @@ Required before reconsidering adapter scaffolding:
 - decide how non-current platform `OP_*` branches remain quarantined.
 
 No new adapter source or header is approved by this phase.
+
+## Next Plan Phase 10 Adapter Scaffold
+
+Decision: add a private CMake-only adapter scaffold while continuing to defer
+runtime wrapper wiring.
+
+The adapter files `src/platform/dt_opthread_adapter.h` and
+`src/platform/dt_opthread_adapter.c` wrap the current legacy `OP_*` primitives
+without translating their visible contracts. The scaffold models the evidence
+captured by `opthread_smoke`:
+
+- thread handles remain legacy `HTHREAD_T` values owned by
+  `OP_WaitForThreadTermination`;
+- wait return values are preserved, including the current Linux smoke-observed
+  successful join result;
+- priority get/set calls delegate to `OP_GetThreadPriority` and
+  `OP_SetThreadPriority`;
+- auto-reset and manual-reset event behavior delegates to `OP_CreateEvent`,
+  `OP_WaitForEvent`, `OP_SetEvent`, and `OP_ResetEvent`;
+- `OP_Sleep(0)` and `ThreadLock`/`ThreadUnlock` remain delegated legacy
+  behavior.
+
+The adapter is exercised by the CMake-only `dt_opthread_adapter_smoke` target.
+That smoke target links directly with `src/dapi/src/nt/opthread.c`, is not
+installed, and is not linked into DECtalk runtime libraries. Its purpose is to
+keep a private compatibility shape available for future migration experiments
+without changing the active Linux runtime.
+
+Observed adapter smoke output:
+
+```text
+adapter_thread_stack_size=65536
+adapter_thread_wait_status=1
+adapter_thread_return=91
+adapter_thread_priority=0
+adapter_mutex=ok
+adapter_event_semantics=ok
+adapter_lightweight_lock=ok
+adapter_sleep_zero=ok
+dt_opthread_adapter_smoke=ok
+```
+
+Still not covered:
+
+- live audio routing, device opening, callback timing, queue behavior, pipe
+  behavior, buffer ownership, reset/pause/restart transitions, and backend
+  state;
+- exact scheduler fairness or timing guarantees;
+- non-current platform `OP_*` behavior;
+- replacement of any active DECtalk runtime call path with `src/platform`.
+
+Decision remains unchanged for runtime code: no existing DECtalk runtime source
+is routed through this adapter by default.
+
+## Next Plan Phase 11 Experimental Opt-In Decision
+
+Decision: defer disabled-by-default runtime wrapper opt-in scaffolding.
+
+The Phase 10 adapter gives a private compatibility shape for legacy `OP_*`
+primitives, but it is still not enough evidence for a runtime build option. A
+real opt-in would require at least one default runtime library, executable, or
+call path to choose between `opthread.c` behavior and adapter-routed behavior.
+That would create an unproven second threading path around API initialization,
+audio-adjacent thread ownership, queues, pipes, callbacks, and reset/pause/
+restart transitions.
+
+No CMake, Autotools, installed-header, public-API, or runtime-library option is
+added in this phase. Adding an option such as
+`DECTALK_EXPERIMENTAL_OPTHREAD_ADAPTER` would be premature until the option can
+be compiled and tested against runtime-specific evidence rather than only
+primitive smoke tests.
+
+Blocking gaps before any future opt-in:
+
+- deterministic evidence for API-owned thread lifecycle and shutdown behavior;
+- callback ordering and callback repeatability evidence when runtime threads
+  are active;
+- queue, pipe, and buffer-ownership evidence around `src/dapi/src/nt` runtime
+  code;
+- reset, pause, restart, and audio-timing evidence, ideally without requiring
+  live audio hardware first;
+- default and opt-in comparisons for exported symbols, public headers,
+  dictionaries, user dictionaries, manifests, warning budgets, and deterministic
+  WAV output;
+- a rollback plan that removes only the opt-in path without disturbing the
+  authoritative default build.
+
+Future opt-in naming should be explicit and experimental, disabled by default,
+excluded from installed public APIs, and documented as non-production until the
+runtime gates above pass. Until then, the only approved wrapper work remains
+CMake-only smoke or compile evidence that does not alter default runtime
+routing.

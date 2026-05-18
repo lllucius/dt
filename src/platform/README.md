@@ -19,6 +19,9 @@ Current wrappers:
   audio routing.
 - `dt_legacy_targets.*`: compile-time historical target inventory and opt-in
   gate for platform scaffolding.
+- `dt_opthread_adapter.*`: private compatibility adapter that delegates to the
+  legacy `OP_*` thread, mutex, event, sleep, priority, and lightweight-lock
+  primitives for CMake-only migration evidence.
 
 The CMake-only `dt_platform_smoke` target exercises these wrappers as a
 developer check without installing them or routing DECtalk runtime behavior
@@ -34,3 +37,11 @@ thread create/join, priority, event, mutex, sleep, and lightweight-lock
 behavior as comparison evidence for future adapter work. It is not installed,
 does not link to DECtalk runtime libraries, and does not route any runtime
 threading or audio behavior through `src/platform`.
+
+The CMake-only `dt_opthread_adapter_smoke` target exercises the private
+`dt_opthread_adapter.*` layer against the same legacy `opthread.c`
+implementation. The adapter intentionally preserves the observed legacy return
+values and ownership model instead of translating them into the cleaner
+`dt_thread.*`, `dt_mutex.*`, `dt_event.*`, or `dt_time.*` APIs. It remains a
+developer-only scaffold and must not be installed or linked into DECtalk
+runtime libraries until a later phase explicitly approves runtime wiring.

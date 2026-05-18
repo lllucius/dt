@@ -700,3 +700,342 @@ Known limitations:
 - Historical target branches are preserved and documented, not proven working.
 - Behavior preservation is claimed only for the deterministic checks listed in
   this section.
+
+## Next High-Risk Plan Phase 1 Baseline
+
+The next high-risk modernization plan started after merged PR #5 and local
+planning commit `747e73e`.
+
+Initial Autotools gates:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5 \
+  --expected tests/golden
+
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5-rerun \
+  --expected tests/golden
+```
+
+Both runs reproduced the same detailed manifest hash deltas for the language
+shared libraries and `say_demo_*` tools. Public headers, exported symbols,
+generated dictionaries, the US user-dictionary fixture, API smoke output,
+one-shot US English audio, expanded US English audio suites, and warning budget
+checks passed. Comparing the first and second captured detailed manifests
+returned `manifest: ok`, proving the current rebuilt binary hashes were stable.
+The committed detailed manifest baseline was therefore refreshed from the second
+capture before the final gate.
+
+Final Autotools gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,665.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,642.
+- warning budget status was `ok`.
+- public header audit matched the committed allowlists.
+- exported symbols matched the committed symbol baselines.
+- detailed Autotools manifest matched the refreshed detailed manifest.
+- generated main dictionaries and the US user-dictionary fixture matched the
+  committed dictionary baselines.
+- public API smoke built against installed headers and libraries and matched
+  the committed speaker 0 WAV exactly.
+- US English one-shot golden WAV output matched exactly for speakers 0 through
+  8.
+- expanded deterministic US audio suites matched exactly for speakers 0 through
+  8.
+
+CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next4-phase1-post-pr5-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,307 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata showing OSS selected
+  and ALSA, PulseAudio, AudioQueue, and legacy source opt-in disabled.
+- `opthread_smoke` passed.
+- CMake path/type staged manifest matched current Autotools path/type staging:
+  589 entries on each side.
+- CMake detailed metadata-hash manifest still differs from Autotools detailed
+  output: 1,126 entries on each side.
+
+Behavior statement: no source, public API, build script, runtime,
+dictionary-generation, audio, or threading behavior was intentionally changed in
+this phase. The only golden artifact changed was the detailed install manifest
+hash list for stable rebuilt binaries after repeated captures and passing
+behavior gates proved the committed post-merge detailed manifest was stale.
+
+## Next High-Risk Plan Phase 5 Non-US Audio Baselines
+
+Phase 5 expanded deterministic file-output WAV coverage beyond US English.
+
+Accepted one-shot language baselines:
+
+- `uk`: UK English, speakers 0 through 8.
+- `sp`: Spanish, speakers 0 through 8.
+- `gr`: German, speakers 0 through 8.
+- `la`: Latin American Spanish, speakers 0 through 8.
+- `fr`: French, speakers 0 through 8.
+
+Repeatability gate:
+
+```sh
+tools/baseline/capture_non_us_audio.sh \
+  --out baseline-runs/next4-phase5-non-us-audio-pass1
+tools/baseline/capture_non_us_audio.sh \
+  --out baseline-runs/next4-phase5-non-us-audio-pass2
+tools/baseline/compare_non_us_audio.sh \
+  --expected baseline-runs/next4-phase5-non-us-audio-pass1 \
+  --actual baseline-runs/next4-phase5-non-us-audio-pass2 \
+  --metrics-out baseline-runs/next4-phase5-non-us-audio-repeat-metrics
+```
+
+Result: all 45 non-US WAV files matched exactly across repeated captures.
+
+Full Autotools gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase5-non-us-audio \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,665.
+- parser-visible default warnings: 1,757.
+- warning budget status was `ok`.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and the US user-dictionary fixture matched accepted baselines.
+- public API smoke and callback smoke matched accepted baselines.
+- US English one-shot WAV output and expanded US audio suites matched exactly.
+- non-US one-shot WAV output matched exactly for `uk`, `sp`, `gr`, `la`, and
+  `fr`, speakers 0 through 8.
+
+Behavior statement: the phase added deterministic baseline coverage and
+language-aware capture tooling only. It did not change language selection,
+voice ROM selection, sample rate, default voice, synthesis code, parser
+behavior, dictionary behavior, public APIs, exported symbols, or live-audio
+behavior.
+
+## Next High-Risk Plan Phase 6 Warning Cleanup
+
+Phase 6 cleaned one medium-risk strict warning category:
+
+- file: `src/dapi/src/api/coop.h`.
+- category: `-Wdiscarded-qualifiers`.
+- implementation: changed literal-backed dictionary and registry path globals
+  from mutable `LPSTR` declarations to `const char *` declarations while
+  preserving the global variable names.
+
+Warning results:
+
+- `coop.h` parser-visible strict `-Wdiscarded-qualifiers` rows decreased from
+  66 to 0.
+- strict warning-line count decreased from 29,665 to 29,593.
+- parser-visible strict warnings decreased from 29,642 to 29,572.
+- `tests/golden/warnings/strict-cleaned.tsv` now enforces this category at
+  zero, and `verify_current.sh` checks strict warning budgets when present.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase6-coop-const-final2 \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,593.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,572.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and the US user-dictionary fixture matched accepted baselines.
+- public API smoke and callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+Behavior statement: no public API signatures, exported symbol names,
+dictionary strings, parser behavior, synthesis behavior, callback behavior,
+audio behavior, language selection behavior, or voice selection behavior were
+intentionally changed.
+
+## Next High-Risk Plan Phase 12 CMake Promotion Readiness
+
+Phase 12 reviewed whether CMake is ready for promotion after the detailed
+manifest, audio-option, adapter-smoke, and default behavior work.
+
+Decision: CMake is not ready to replace Autotools as the authoritative Linux
+build path. It remains useful side-by-side verification scaffolding.
+
+Verification reviewed:
+
+- CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake --expected
+  tests/golden`
+- Default Autotools/current gate:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-default --expected
+  tests/golden`
+
+Results:
+
+- CMake generated `compile_commands.json` with 3,325 lines.
+- CMake dictionaries, one-shot US English audio, expanded US audio suites,
+  exact `libtts.so` exported symbols, and language-library symbol name/type
+  sets matched accepted baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+- Default Autotools public headers, exported symbols, detailed manifest,
+  dictionaries, user dictionaries, API smoke, callback smoke, US audio,
+  expanded US audio suites, non-US audio, default warning budget, and strict
+  warning budget matched accepted baselines.
+- CMake path/type staged manifest comparison passed with 589 entries on each
+  side.
+- CMake detailed metadata-hash comparison still differed with 1,126 detailed
+  entries on each side.
+
+Promotion blockers:
+
+- CMake-built binaries still differ in size and SHA-256 hash from
+  Autotools-built binaries.
+- `doc/DECtalk/html` directory metadata still differs.
+- CMake uses a different Release build flag and target/link model than the
+  authoritative Autotools build.
+- CMake audio options remain metadata-only and do not certify live backend
+  probing, linkage, callback timing, queues, or live-audio behavior.
+- No runtime platform-wrapper opt-in is approved.
+
+Behavior statement: no build path was promoted, no build path was removed, no
+install layout changed, and no public API, exported symbol, dictionary, audio,
+callback, queue, thread lifecycle, or runtime routing behavior was
+intentionally changed.
+
+## Next High-Risk Plan Phase 13 Final Readiness
+
+Phase 13 is the final readiness review for the next high-risk modernization
+plan.
+
+Final Autotools/current gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase13-final-default \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,593.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,571.
+- default and strict warning budgets passed.
+- public headers matched accepted allowlists.
+- exported symbols matched accepted baselines.
+- detailed Autotools install manifest matched the accepted baseline.
+- generated dictionaries and the US user-dictionary fixture matched accepted
+  baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output matched exactly for speakers 0 through 8.
+- expanded US audio suites matched exactly for speakers 0 through 8.
+- non-US one-shot WAV output matched exactly for `uk`, `sp`, `gr`, `la`, and
+  `fr`, speakers 0 through 8.
+
+Final CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next4-phase13-final-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,325 lines.
+- generated dictionaries matched accepted baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the accepted exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched accepted
+  baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+
+Final audio-option matrix:
+
+```sh
+tools/baseline/check_audio_option_matrix.sh \
+  --run-dir baseline-runs/next4-phase13-audio-option-matrix
+```
+
+Results:
+
+- CMake default, disabled-audio, ALSA, and PulseAudio rows completed as
+  metadata-only probes.
+- Autotools default, `--disable-audio`, and `--disable-pulseaudio` rows
+  completed as configure-metadata-only probes.
+- Local ALSA and PulseAudio rows remain metadata-only; no live backend hardware
+  behavior was certified.
+
+Final CMake packaging comparison:
+
+- basic path/type comparison:
+  `baseline-runs/next4-phase13-cmake-manifest/basic-vs-autotools.diff`
+- result: `manifest: ok`, with 589 entries on each side.
+- detailed metadata/hash comparison:
+  `baseline-runs/next4-phase13-cmake-manifest/detailed-vs-autotools.diff`
+- result: `manifest: different`, with 1,126 detailed entries on each side.
+
+Final status:
+
+- CMake remains side-by-side and non-authoritative.
+- `src/platform` remains private scaffolding; no runtime wrapper option or
+  routing is enabled.
+- deterministic phoneme/text golden baselines were not accepted; phoneme/text
+  output remains a deferred risk area.
+- live audio hardware, backend device selection, queue timing, pipe timing,
+  full callback timing, reset/pause/restart timing, non-current targets, and
+  historical platform behavior remain outside the verified coverage.
+
+Behavior statement: this plan added and expanded verification scaffolding,
+golden audio coverage, API callback smoke coverage, warning-budget evidence,
+audio-option metadata evidence, CMake packaging evidence, and private platform
+adapter smoke evidence. It did not intentionally change speech output, phoneme
+output, parser behavior, dictionary behavior, public APIs, exported symbols,
+sample rate, default voice, install layout, live audio routing, callback
+runtime behavior, queue behavior, thread lifecycle behavior, CMake authority,
+Autotools authority, or historical target support.

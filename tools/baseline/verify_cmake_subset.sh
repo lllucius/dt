@@ -105,6 +105,10 @@ cmake --build "$build_dir" --target opthread_smoke -- -j1 \
   > "$run_dir/cmake-opthread-smoke-build.log" 2>&1
 "$build_dir/opthread_smoke" \
   > "$run_dir/opthread-smoke.log" 2>&1
+cmake --build "$build_dir" --target dt_opthread_adapter_smoke -- -j1 \
+  > "$run_dir/cmake-opthread-adapter-smoke-build.log" 2>&1
+"$build_dir/dt_opthread_adapter_smoke" \
+  > "$run_dir/dt-opthread-adapter-smoke.log" 2>&1
 
 if [ ! -s "$build_dir/compile_commands.json" ]; then
   echo "error: missing compile_commands.json" >&2
@@ -184,6 +188,7 @@ fi
   printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
   printf 'platform_smoke=%s\n' "$run_dir/dt-platform-smoke.log"
   printf 'opthread_smoke=%s\n' "$run_dir/opthread-smoke.log"
+  printf 'opthread_adapter_smoke=%s\n' "$run_dir/dt-opthread-adapter-smoke.log"
   [ -f "$run_dir/language-symbol-name-compare.txt" ] && printf 'language_symbol_names=%s\n' "$run_dir/language-symbol-name-compare.txt"
   printf 'dist_manifest_detailed=%s\n' "$run_dir/dist-manifest-detailed.txt"
 } > "$run_dir/summary.txt"

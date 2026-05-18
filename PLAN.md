@@ -2,20 +2,28 @@
 
 ## Objective
 
-Continue DECtalk modernization after PR #4 while preserving current Linux
+Continue DECtalk modernization after PR #5 while preserving current Linux
 behavior.
 
-This plan deliberately groups all ordinary high-reasoning work first, followed
-by one uninterrupted extra-high block for the higher-risk objectives. The goal
-is to reduce monitoring burden during execution while still keeping risky
-changes behind explicit verification gates.
+This plan is the next higher-risk modernization pass. It deliberately keeps
+extra-high reasoning active for every phase, so there are no reasoning-change
+prompts and no special phase sequencing for reasoning-level transitions.
 
-The plan advances documentation, verification, warning-budget ratchets, public
-API smoke coverage, legacy platform-wrapper evidence, and CMake parity
-evidence. It does not approve speech output changes, phoneme output changes,
-dictionary format changes, public API changes, install-layout changes,
-live-audio behavior changes, threading behavior changes, CMake promotion, or
-historical target deletion.
+The plan accelerates the project by pursuing the remaining blockers in one
+continuous sequence:
+
+- deterministic phoneme/text feasibility
+- callback and queue-adjacent public API coverage
+- non-US deterministic audio baseline expansion if stable
+- a focused API/kernel warning cleanup wave
+- CMake detailed parity investigation and audio-option build matrix evidence
+- isolated platform-wrapper adapter scaffolding without default runtime wiring
+- final readiness review, pull request, and merge
+
+This plan does not approve uncontrolled speech output changes, phoneme output
+changes, dictionary behavior changes, public API changes, install-layout
+changes, live-audio behavior changes, threading behavior changes, historical
+target deletion, or default runtime wrapper replacement.
 
 ## Guiding Principle
 
@@ -61,46 +69,56 @@ Use the existing modernization knowledge base before making changes:
 - `tests/golden/`
 - `src/platform/`
 
-Current starting facts after PR #4:
+## Current Starting Facts After PR #5
 
-- PR #4, `Complete current modernization plan`, was merged into `develop` as
-  merge commit `0555a8fef13d39f7e31ac96bd582ffb05f34db98`.
-- Local `develop` was synchronized with `origin/develop` after the merge.
+- PR #5, `Complete accelerated modernization plan`, was merged into `develop`
+  as merge commit `05d4dd7b03417f1c56052c911714c9773847885c`.
+- Local `develop` is synchronized with `origin/develop`.
 - Autotools remains the authoritative Linux build path.
-- The final Autotools gate for the previous plan passed:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next2-phase12-readiness --expected tests/golden`.
-- Previous final warning counts were: default warning-line count `1,778`,
-  strict warning-line count `29,764`, and parser-visible default warnings
-  `1,757`.
+- The final Autotools gate for PR #5 passed:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase13-final --expected tests/golden`.
+- Final PR #5 Autotools warning counts were: default warning-line count
+  `1,778`, strict warning-line count `29,665`, parser-visible default warnings
+  `1,756`, and parser-visible strict warnings `29,643`.
 - The warning budget passed and currently ratchets cleaned warning classes for:
-  `src/dapi/src/dic/dic_comm.c`, `src/samplosf/src/dtsamples/mfg_load.c`,
-  `src/licunix/src/liceninc.c`, and `src/dapi/src/api/ttsapi.c`.
+  `src/dapi/src/dic/dic_comm.c`,
+  `src/samplosf/src/dtsamples/mfg_load.c`,
+  `src/licunix/src/liceninc.c`,
+  `src/dapi/src/api/ttsapi.c`, and
+  `src/dapi/src/kernel/services.c`.
 - Public headers, exported symbols, generated dictionaries, the US
   user-dictionary fixture, the public API smoke WAV, one-shot US English WAVs,
   and expanded deterministic US English audio suites matched accepted
   baselines.
-- The final CMake subset gate for the previous plan passed:
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next2-phase12-readiness-cmake --expected tests/golden`.
-- CMake basic staged manifest path/type parity matched Autotools exactly:
-  589 Autotools entries and 589 CMake entries.
-- CMake detailed metadata-hash parity is not accepted: CMake-built binary
-  metadata/hashes and one documentation directory metadata entry still differ.
-- CMake does not yet expose the Autotools live-audio backend option surface.
-- CMake remains side-by-side and must not be promoted by this plan.
+- The final CMake subset gate for PR #5 passed:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase13-final-cmake --expected tests/golden`.
+- Final PR #5 CMake evidence included `compile_commands.json` with `3,307`
+  lines, generated dictionaries matching baselines, US one-shot and expanded
+  audio matching baselines, exact `libtts.so` exported-symbol parity,
+  language-library symbol name/type parity, passing `dt_platform_smoke`, and
+  passing `opthread_smoke`.
+- CMake path/type staged manifest parity matched Autotools exactly with `589`
+  entries on each side.
+- CMake detailed metadata-hash parity is still not accepted. The CMake and
+  Autotools detailed manifests both have `1,126` entries, but CMake-built
+  binary sizes/hashes and `doc/DECtalk/html` directory metadata still differ.
+- CMake models `DISABLE_AUDIO`, `USE_ALSA`, and `USE_PULSEAUDIO` as
+  side-by-side macro options, but live-audio probing, backend linkage, device
+  selection, callbacks, queues, timing, and live hardware behavior are not
+  certified.
 - `src/platform/` remains isolated scaffolding. Runtime wrapper wiring is still
   deferred because legacy `OP_*`, audio, callback, queue, and timing semantics
   are not proven.
-- No deterministic phoneme or text-mode golden baseline was accepted in the
-  previous plan.
-- Live audio hardware behavior, callback timing, queue behavior, backend device
-  selection, non-current platform builds, non-US audio, and phoneme/text output
-  remain outside verified behavior.
+- No deterministic phoneme or text-mode golden baseline has been accepted.
+- Non-US deterministic audio baselines have not been accepted.
 - High-risk warning debt remains in synthesis, phoneme, LTS, VTM, HLSYN,
   public API, threading, and audio code.
 
 ## Operating Rules
 
 - Work phases strictly in order.
+- Extra-high reasoning is active for every phase. Do not prompt for
+  reasoning-level changes.
 - Do not advance while the current phase has failing checks or unresolved
   regressions.
 - Keep each subtask small enough to leave the tree buildable and testable.
@@ -118,7 +136,7 @@ Current starting facts after PR #4:
   manually merge when GitHub accepts the merge.
 - Use single-threaded builds where a command exposes parallelism. Do not choose
   `-j` values greater than `1` while executing this plan.
-- Do not delete historical target code without explicit approval.
+- Do not delete historical target code.
 - Do not intentionally change speech output, phoneme output, dictionary
   behavior, public API signatures, exported symbols, install layout, command
   line behavior, sample rate, default voice, threading model, or audio backend
@@ -131,42 +149,24 @@ Current starting facts after PR #4:
   notes, and important limitations or ownership boundaries. Keep comments
   concise and avoid changing existing file headers unless the phase explicitly
   requires it.
-- Before executing this plan, inspect the current tree and ask all upfront
-  clarification questions in one response if any phase requirement is
-  ambiguous.
+- Ask only when an ambiguity, missing external credential, destructive action,
+  or unbounded behavior risk cannot be resolved from local context.
 - If a phase finds an unexplained audio, dictionary, symbol, manifest, public
-  header, API, phoneme, or timing delta, stop and treat the investigation as an
-  extra-high reasoning checkpoint.
+  header, API, phoneme, or timing delta, stop and resolve it before continuing.
 - Do not update golden baselines unless a phase explicitly allows it and the
-  extra-high reasoning gate is active.
+  relevant before/after evidence is captured.
 - Do not claim behavior preservation unless the relevant checks were run.
 
-## Reasoning Sequence
+## Extra-High Scope
 
-This plan is intentionally ordered to avoid switching reasoning levels back and
-forth.
-
-- Phases 1 through 6 are high-reasoning phases.
-- Phases 7 through 13 are extra-high-reasoning phases.
-- If execution starts or remains at extra-high reasoning, phases 1 through 13
-  may proceed without any reasoning-change prompts because extra-high satisfies
-  the high-reasoning phases.
-- If execution starts at high reasoning, stop once before Phase 7, call out the
-  need to switch to extra-high reasoning, and wait for explicit approval.
-- After Phase 7 begins, do not prompt for further reasoning changes in this
-  plan unless an ambiguity, failure, or regression requires interruption.
-- This plan never requires switching back from extra-high to high before
-  completion.
-
-## Extra-High Checkpoint Scope
-
-Extra-high reasoning is required before:
+Extra-high reasoning is already active and required for the whole plan,
+including:
 
 - accepting or updating any golden behavior baseline
 - adding non-US, phoneme, public API, callback, queue, threading, or timing
   baselines that may expose previously untracked differences
 - changing CMake source membership, generated dictionary flow, staged packaging
-  layout, live-audio option modeling, or multi-language `libtts.so` behavior
+  layout, audio option modeling, or multi-language `libtts.so` behavior
 - changing public headers, public API signatures, calling conventions, exported
   symbols, installed header layout, or ABI-sensitive structures
 - changing API implementation near `ttsapi.c`, `tts.h`, `ttsapi.h`, `init.c`,
@@ -176,8 +176,8 @@ Extra-high reasoning is required before:
   `volatile`, structure layout, or size truncation
 - editing synthesis, phoneme, LTS, VTM, HLSYN, public API, audio, or threading
   code for warning cleanup
-- wiring `src/platform` thread, mutex, event, filesystem, time, or audio
-  wrappers into existing runtime code
+- adding or wiring `src/platform` thread, mutex, event, filesystem, time, or
+  audio adapters
 - changing `src/dapi/src/nt/opthread.c` or `src/dapi/src/nt/linux_audio.c`
 - simplifying sound-critical or language-selection macros
 - quarantining historical target source branches beyond build-system opt-in
@@ -204,34 +204,34 @@ Use additional checks when relevant:
 - `tools/baseline/check_public_headers.sh --out baseline-runs/<phase>/public-headers --expected tests/golden/public-headers`
 - `tools/baseline/check_api_smoke.sh --out baseline-runs/<phase>/api-smoke`
 - `tools/baseline/summarize_warnings.py --log baseline-runs/<phase>/build/build.log --out-dir baseline-runs/<phase>/warnings-default`
+- `tools/baseline/summarize_warnings.py --log baseline-runs/<phase>/build/build-strict-warnings.log --out-dir baseline-runs/<phase>/warnings-strict`
 - `tools/baseline/check_warning_budgets.py --warnings baseline-runs/<phase>/warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/<phase>/warning-budget.tsv`
 
-## Phase 1: Post-Merge Baseline Refresh
+## Phase 1: Post-PR #5 Baseline Refresh
 
 Status: completed
 
-Reasoning checkpoint: high.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
 - Confirm the local tree is synchronized with merged `origin/develop`.
-- Re-run the accepted Linux baseline from the merged branch.
-- Establish the starting warning, symbol, dictionary, audio, API, manifest, and
-  CMake state for this plan.
+- Re-run the accepted Linux baseline from the merged PR #5 branch.
+- Establish starting warning, symbol, dictionary, audio, API, manifest, CMake,
+  platform-smoke, and OP-smoke state for this plan.
 
 Required work:
 
 - Ensure local `develop` tracks merged `origin/develop`.
 - Run the Autotools verification gate against `tests/golden`.
 - Run the CMake subset verification gate with default exact local checks.
-- Capture current warning counts and compare them to the previous final
-  readiness values.
-- Document the refreshed baseline in `docs/modernization/READINESS_REVIEW.md`
-  or a new modernization note.
+- Generate default and strict warning parser summaries from the refreshed logs.
+- Compare current counts to the PR #5 final readiness values.
+- Update `docs/modernization/READINESS_REVIEW.md` with the refreshed starting
+  state.
 
 Success criteria:
 
-- Local tree is clean before modifications begin.
 - Accepted Autotools baselines reproduce.
 - Accepted CMake subset baselines reproduce.
 - Warning counts and any deltas are recorded.
@@ -240,389 +240,531 @@ Success criteria:
 Rules:
 
 - This phase is a synchronization and verification checkpoint only.
-- Do not update golden files in this phase.
+- Do not update golden files in this phase unless repeated captures prove the
+  committed post-merge detailed manifest is stale and all other behavior gates
+  pass. Any such repair must be documented before advancing.
 
 Implementation Summary:
 
-- Confirmed local `develop` is based on merged `origin/develop` at
-  `0555a8fef13d39f7e31ac96bd582ffb05f34db98` with one local planning commit,
-  `bf6e56912a5fb9c40de35b11b721c5e42cf0255b`.
-- Updated `docs/modernization/READINESS_REVIEW.md` with the accelerated plan
-  Phase 1 post-merge baseline refresh.
-- Files changed: `docs/modernization/READINESS_REVIEW.md` and `PLAN.md`.
-- Verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase1-post-merge --expected tests/golden`.
-- Verification results: default warning-line count `1,778`, strict warning-line
-  count `29,762`, parser-visible default warnings `1,757`, and warning budget
-  status `ok`.
-- Public headers matched allowlists. Exported symbols matched committed symbol
-  baselines. Detailed Autotools manifest matched the committed baseline.
-  Generated dictionaries and the US user-dictionary fixture matched committed
-  baselines. Public API smoke output matched the committed speaker 0 golden WAV
-  exactly. One-shot US English golden WAVs matched for speakers 0 through 8.
-  Expanded US audio suites matched for speakers 0 through 8.
-- Additional verification run:
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase1-post-merge-cmake --expected tests/golden`.
-- Additional verification results: CMake configured and built the staged
-  target; `compile_commands.json` had `3,295` lines; generated dictionaries
-  matched; one-shot and expanded US audio matched; `libtts.so` exported symbols
-  matched exactly; language-library exported symbol name/type sets matched; the
-  expanded platform smoke passed with `event_semantics=ok`; the CMake detailed
-  staged manifest had `1,126` lines.
-- Warning counts changed only by observation: default warnings and
-  parser-visible default warnings matched the previous final readiness values;
-  strict warning-line count decreased from `29,764` to `29,762`.
-- Public exports did not change according to the committed symbol comparisons.
-  Dictionaries did not change according to the committed dictionary
-  comparisons. Golden audio did not change according to the committed one-shot
-  and expanded deterministic WAV comparisons.
-- Behavior risk level: low. This phase changed documentation only after
-  verification passed.
-- Known limitations: CMake remains side-by-side; CMake detailed metadata/hash
-  parity, live audio hardware, callback timing, backend device selection,
-  non-current platform builds, non-US audio, and phoneme/text output remain
-  outside the verified behavior claims.
+- Updated `tests/golden/dist-manifest-detailed.txt` after two independent
+  post-PR #5 Autotools captures reproduced the same detailed binary hash deltas
+  for the language shared libraries and `say_demo_*` tools while all other
+  behavior gates passed. The first and second captured detailed manifests
+  matched each other exactly, proving the committed post-merge detailed manifest
+  was stale rather than unstable.
+- Updated `docs/modernization/READINESS_REVIEW.md` with the refreshed
+  post-PR #5 baseline evidence, warning counts, and CMake subset status.
+- Final Autotools verification passed with public headers, exported symbols,
+  generated dictionaries, the US user-dictionary fixture, API smoke output,
+  one-shot US English audio, expanded US English audio suites, detailed
+  manifest, and warning budget all matching accepted baselines. Recorded counts
+  were 1,778 default warning lines, 29,665 strict warning lines, 1,757
+  parser-visible default warnings, and 29,642 parser-visible strict warnings.
+- Final CMake subset verification passed for dictionary generation,
+  deterministic US English audio, expanded audio suites, `libtts.so` exported
+  symbols, language-library symbol name/type sets, platform smoke, and OP thread
+  smoke. CMake path/type staging matched Autotools with 589 entries each; CMake
+  detailed metadata-hash staging still differs from Autotools with 1,126 entries
+  each.
+- No source, public API, build script, runtime, dictionary-generation, audio, or
+  threading behavior was intentionally changed in this phase.
 
-## Phase 2: Knowledge Base Reconciliation
+## Phase 2: Risk Backlog And Gate Map Compression
 
 Status: completed
 
-Reasoning checkpoint: high.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Bring the documentation forward from "before PR publication" wording to the
-  post-PR #4 merged state.
-- Keep the modernization knowledge base internally consistent before new work
-  begins.
+- Convert the remaining deferred modernization areas into a concrete
+  implementation queue.
+- Keep the next risky phases bounded by verifiable gates.
 
 Required work:
 
-- Review `docs/modernization/READINESS_REVIEW.md`,
-  `docs/modernization/README.md`, `docs/modernization/CMAKE_OVERVIEW.md`,
-  `docs/modernization/PACKAGING_LAYOUT.md`,
-  `docs/modernization/PLATFORM_WRAPPER_DECISION.md`, and
-  `docs/modernization/NEXT_PLAN_GATE_MAP.md`.
-- Update only stale facts that affect this plan's execution.
-- Record remaining deferred areas without turning them into approved work.
+- Review `READINESS_REVIEW.md`, `BASELINE_EXPANSION_PLAN.md`,
+  `PHONEME_BASELINE_FEASIBILITY.md`, `PUBLIC_API_AUDIT.md`,
+  `API_BOUNDARY_WARNINGS.md`, `CMAKE_OVERVIEW.md`,
+  `PACKAGING_LAYOUT.md`, `AUDIO_BACKEND.md`, and
+  `PLATFORM_WRAPPER_DECISION.md`.
+- Update `docs/modernization/NEXT_PLAN_GATE_MAP.md` for this plan.
+- Select initial candidate scopes for phoneme/text capture, callback coverage,
+  non-US audio capture, warning cleanup, CMake parity work, and platform
+  adapter work.
+- Explicitly mark any candidate that needs new tooling before behavior can be
+  claimed.
 
 Success criteria:
 
-- Documentation accurately identifies PR #4 as merged.
-- Autotools remains described as authoritative.
-- CMake remains described as side-by-side.
-- Deferred high-risk areas remain explicit.
-- No code, build script, golden artifact, or runtime behavior change is made.
+- Each later implementation phase has an explicit candidate and rollback rule.
+- No code, build script, runtime behavior, or golden artifact changes are made.
 
 Rules:
 
 - Documentation-only phase.
-- Do not change phase gates or accepted baselines unless Phase 1 revealed a
-  factual mismatch that must be recorded.
+- Do not widen later phases beyond what can be verified deterministically.
 
 Implementation Summary:
 
-- Reconciled the modernization knowledge base with the post-PR #4 state.
-- Updated `docs/modernization/READINESS_REVIEW.md` so the previous plan is
-  described as published and merged through PR #4 rather than awaiting hosted
-  PR CI.
-- Updated `docs/modernization/README.md` to describe readiness reviews as
-  cumulative, the active gate map as the active-plan map, and the platform
-  wrapper decision document as the current runtime-wiring decision record.
-- Replaced the stale previous-plan phase table in
-  `docs/modernization/NEXT_PLAN_GATE_MAP.md` with the active accelerated plan's
-  Phase 1 through Phase 13 target map, required gates, throughput strategy, and
-  deferred areas.
-- Files changed: `docs/modernization/READINESS_REVIEW.md`,
-  `docs/modernization/README.md`,
-  `docs/modernization/NEXT_PLAN_GATE_MAP.md`, and `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Warning counts did not change because this phase was documentation-only.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change.
-- Behavior risk level: low. This phase changed documentation only and did not
-  modify source, build scripts, golden artifacts, or runtime behavior.
-- Known limitations: this phase did not run new build gates beyond the Phase 1
-  accepted gates and did not change the deferred status of high-risk runtime,
-  audio, callback, queue, non-US, phoneme/text, CMake-promotion, or historical
-  target work.
+- Replaced `docs/modernization/NEXT_PLAN_GATE_MAP.md` with a gate map that
+  matches this active post-PR #5 plan instead of the previous accelerated plan.
+- Reviewed the current readiness, baseline expansion, phoneme feasibility,
+  public API, API-boundary warning, CMake, packaging, audio backend, and
+  platform-wrapper documentation before selecting candidate scopes.
+- Added explicit candidate scopes, required gates, rollback rules, tooling
+  needs, and deferred areas for the phoneme/text pilot, callback smoke pilot,
+  non-US audio expansion, warning cleanup waves, CMake detailed parity work,
+  audio-option matrix, platform adapter scaffold, wrapper opt-in decision, and
+  CMake promotion decision.
+- Selected initial warning candidates without approving edits:
+  `src/dapi/src/api/coop.h` `-Wdiscarded-qualifiers` as the primary
+  medium-risk candidate, `src/dapi/src/kernel/services.c` unused parameters as
+  a lower-risk fallback, and private local-prototype or initialization warnings
+  in `src/dapi/src/api/ttsapi.c` and `src/dapi/src/api/init.c` only after
+  callback/API coverage improves.
+- Verification was documentation-only: `git diff --check -- .
+  ':(exclude)src/dapi/src/cmd/cm_cmd.c'` passed.
+- No source, build script, runtime behavior, public API, golden artifact, or
+  baseline output was changed in this phase.
 
-## Phase 3: Warning Inventory Refresh And Candidate Selection
+## Phase 3: Phoneme And Text Output Baseline Pilot
 
 Status: completed
 
-Reasoning checkpoint: high.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Refresh the warning inventory from the current merged tree.
-- Select one narrow low-risk warning cleanup target for Phase 4.
+- Determine whether deterministic phoneme or text-mode output can be captured
+  and accepted as a golden baseline.
+- Prefer public-facing tool or API output over internal memory capture.
 
 Required work:
 
-- Use the Phase 1 default and strict warning summaries.
-- Inspect warning counts by file, flag, and risk class.
-- Prefer a private auxiliary tool, sample, or maintenance path.
-- Select one warning category and one ownership area only.
-- Update `docs/modernization/WARNING_INVENTORY.md` or a focused warning note
-  with the selected candidate, verification gates, and rejected candidates.
+- Inspect existing command-line tools, API flags, and prior feasibility notes.
+- Add a focused capture script under `tools/baseline/` only if the capture path
+  is deterministic and does not require live audio.
+- Capture fixed US English inputs first.
+- If the output is stable across repeated captures, add golden fixtures and
+  exact compare scripts.
+- If the output is unstable or unavailable, document the blocker and defer
+  without accepting a baseline.
 
 Success criteria:
 
-- The Phase 4 target is explicit and low risk.
-- The selected target does not touch public headers, synthesis, phoneme, LTS,
-  VTM, HLSYN, audio backend, runtime threading, callback, queue, or dictionary
-  behavior.
-- No warning cleanup is performed in this phase.
+- Either a deterministic phoneme/text baseline is accepted with exact compare
+  tooling, or the blocker is documented with reproduction evidence.
+- Existing Autotools baseline still passes if scripts, tests, or golden files
+  change.
+- Public headers, exported symbols, dictionaries, API smoke, one-shot US audio,
+  and expanded US audio remain stable.
 
 Rules:
 
-- Use the stricter warning inventory when choosing the candidate.
-- If no clearly low-risk candidate exists, document the blocker and skip Phase
-  4 implementation rather than widening scope.
+- Do not change parser, phoneme, LTS, synthesis, timing, dictionary, public API,
+  or audio generation behavior.
+- Golden phoneme/text fixtures may be added only if the phase proves repeatable
+  byte-exact output.
 
 Implementation Summary:
 
-- Generated a refreshed strict parser warning summary from the Phase 1 strict
-  warning log with
-  `tools/baseline/summarize_warnings.py --log baseline-runs/next3-phase1-post-merge/build/build-strict-warnings.log --out-dir baseline-runs/next3-phase3-warning-strict`.
-- Updated `docs/modernization/WARNING_INVENTORY.md` with the accelerated plan
-  Phase 3 counts, refreshed strict risk classification, selected Phase 4
-  candidate, and rejected candidates.
-- Selected Phase 4 candidate: `src/licunix/src/liceninc.c`
-  `-Wmissing-prototypes`, limited to the private helper `all_digits` if source
-  review confirms it can be made internal to the translation unit.
-- Explicitly rejected the same file's `-Wpointer-sign` warnings for this pass
-  because pointer signedness is outside the low-risk warning-cleanup scope.
-- Files changed: `docs/modernization/WARNING_INVENTORY.md` and `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Warning counts did not change because no source cleanup was performed in this
-  phase.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change.
-- Behavior risk level: low. This phase updated warning planning documentation
-  only and did not modify source, build scripts, golden artifacts, or runtime
-  behavior.
-- Known limitations: the refreshed strict inventory still contains substantial
-  high, medium, and unknown warning debt; Phase 4 is intentionally limited to
-  one private tool file and one warning category.
+- Rechecked public-facing phoneme and text capture paths with temporary probes
+  under `baseline-runs/next4-phase3-phoneme-text/`; no probe source, baseline
+  tooling, or golden fixture was committed.
+- Confirmed `dist/say -h` still does not expose the Windows sample `-lp`
+  phoneme log option, while `libtts.so` still exports the relevant public API
+  functions for phoneme conversion, log files, and in-memory output.
+- Confirmed the probes must run from `dist/` to match the installed runtime
+  dictionary lookup context used by the API smoke test.
+- Reproduced the blocker: `TextToSpeechConvertToPhonemes` with `TTS_SILENT`
+  segfaulted twice, and `TextToSpeechOpenLogFile(..., LOG_TEXT)`,
+  `LOG_PHONEMES`, and `LOG_SYLLABLES` returned `MMSYSERR_ERROR` in no-audio
+  mode.
+- Probed a no-live-audio WAV-output variant; with relative WAV output,
+  `TextToSpeechOpenWaveOutFile` could be opened, but `TextToSpeechOpenLogFile`
+  still returned `MMSYSERR_ERROR`.
+- Confirmed inline `[:log text on]`, `[:log phonemes on]`, and
+  `[:log syllables on]` commands through `dist/say -fo` generated WAV output
+  only and did not create a separate deterministic text artifact.
+- Updated `docs/modernization/PHONEME_BASELINE_FEASIBILITY.md` with the
+  refreshed reproduction evidence and deferred phoneme/text baselines.
+- Verification was documentation-only plus API smoke:
+  `tools/baseline/check_api_smoke.sh --out
+  baseline-runs/next4-phase3-api-smoke-check` passed, and `git diff --check --
+  . ':(exclude)src/dapi/src/cmd/cm_cmd.c'` passed.
+- No parser, phoneme, LTS, synthesis, timing, dictionary, public API, audio,
+  source, build script, golden fixture, or accepted baseline behavior was
+  changed.
 
-## Phase 4: Low-Risk Auxiliary Warning Cleanup
+## Phase 4: Public API Callback And Queue-Adjacent Smoke Pilot
 
 Status: completed
 
-Reasoning checkpoint: high.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Reduce one low-risk warning category selected in Phase 3.
-- Add a warning-budget ratchet only if the selected warning category reaches
-  zero for that file or ownership area.
+- Add deterministic coverage for callback and queue-adjacent public API paths
+  without live audio hardware.
+- Improve safety before any deeper API implementation cleanup.
 
 Required work:
 
-- Make the smallest source change that resolves the selected warning.
-- Keep the edit local to the Phase 3 target.
-- Update `tests/golden/warnings/default-cleaned.tsv` only for a category proven
-  clean by the verification output.
-- Update the relevant warning documentation.
+- Extend existing API smoke tooling or add a separate installed-header harness
+  under `tools/baseline/`.
+- Prefer WAVE-file or no-audio modes that do not open live audio devices.
+- Capture stable event ordering and scalar callback data only. Do not assert
+  scheduler timing or wall-clock delays.
+- Cover only callback paths that are deterministic under repeated runs.
+- Update `docs/modernization/PUBLIC_API_AUDIT.md`.
 
 Success criteria:
 
-- The selected warning count is reduced as planned.
-- New warning-budget rows prevent that warning from returning.
-- The Autotools verification gate passes.
-- Public headers, exported symbols, dictionaries, API smoke output, one-shot US
-  audio, expanded US audio suites, and the detailed Autotools manifest still
-  match accepted baselines.
+- The harness builds against installed public headers and libraries.
+- Callback output is deterministic across repeated runs.
+- Public headers, exported symbols, dictionaries, API smoke WAV, one-shot US
+  audio, expanded US audio suites, and warning budgets pass.
+- No public API or ABI surface changes.
+
+Rules:
+
+- Do not change callback implementation, queue timing, pipe behavior, thread
+  lifecycle, public headers, or exported symbols.
+- If callback output is timing-sensitive or unstable, document the blocker and
+  defer instead of loosening checks.
+
+Implementation Summary:
+
+- Added `tools/baseline/api_callback_smoke.c`, a public installed-header
+  callback smoke harness with standard top-of-file documentation.
+- Added `tools/baseline/check_api_callback_smoke.sh` and the accepted exact
+  transcript `tests/golden/api/callback-smoke.txt`.
+- Wired `tools/baseline/verify_current.sh` to run the callback smoke gate and
+  include it in the standard summary.
+- The callback smoke runs from `dist/`, avoids live audio devices, writes
+  temporary relative WAV files that are moved into the run directory, and cleans
+  temporary dist files on exit.
+- Accepted callback coverage is limited to stable scalar data from a fixed US
+  English file-output scenario with `[:index mark 42]`: one
+  `TTS_MSG_INDEX_MARK` event, first parameter `0`, index value `42`, and
+  instance value `1234`.
+- The callback smoke compares the transcript against the committed fixture,
+  compares repeated transcripts exactly, and compares repeated generated WAV
+  files exactly. It does not assert scheduler timing, wall-clock ordering,
+  queue timing, pipe behavior, live-audio behavior, or callback pointer payloads.
+- Updated `docs/modernization/PUBLIC_API_AUDIT.md` with the accepted coverage
+  and remaining unsupported callback areas.
+- Verification passed:
+  `tools/baseline/check_api_callback_smoke.sh --out
+  baseline-runs/next4-phase4-api-callback-smoke`,
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase4-api-callback --expected tests/golden`, and
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public headers, exported symbols, dictionaries, user dictionaries, detailed
+  manifest, API smoke WAV, callback smoke transcript and repeated WAV, one-shot
+  US audio, expanded US audio suites, and warning budgets all matched accepted
+  baselines.
+- No callback implementation, queue timing, pipe behavior, thread lifecycle,
+  public header, exported symbol, live-audio, dictionary, synthesis, or parser
+  behavior was intentionally changed.
+
+## Phase 5: Non-US Deterministic Audio Baseline Expansion
+
+Status: completed
+
+Reasoning checkpoint: extra-high.
+
+Goals:
+
+- Expand deterministic WAV coverage beyond US English if the existing language
+  outputs are stable.
+- Keep the baseline shape simple enough to maintain.
+
+Required work:
+
+- Add or extend capture tooling for UK English, Spanish, German, Latin
+  American Spanish, and French using existing staged language libraries.
+- Start with one-shot WAV output for speakers 0 through 8.
+- Run repeated captures before accepting any new golden files.
+- Record sample counts, hashes, and exact comparisons.
+- Update `docs/modernization/BASELINE_EXPANSION_PLAN.md` and
+  `docs/modernization/READINESS_REVIEW.md`.
+
+Success criteria:
+
+- New non-US WAV baselines are accepted only if repeated captures are
+  byte-exact.
+- Existing US audio baselines remain byte-exact.
+- Dictionaries, user dictionaries, public headers, exported symbols, API smoke,
+  and manifests remain stable.
+
+Rules:
+
+- Do not change language selection behavior, voice ROM selection, sample rate,
+  default voice, synthesis code, parser behavior, or dictionary behavior.
+- If any language output is unstable, defer that language rather than accepting
+  fuzzy thresholds.
+
+Implementation Summary:
+
+- Extended `tools/baseline/capture_audio.sh` with `--language LANG` while
+  preserving US English as the default.
+- Added `tools/baseline/capture_non_us_audio.sh` and
+  `tools/baseline/compare_non_us_audio.sh` with standard documentation.
+- Added fixed ASCII one-shot input fixtures for `uk`, `sp`, `gr`, `la`, and
+  `fr` under `tests/golden/input/`.
+- Ran two independent non-US capture passes for UK English, Spanish, German,
+  Latin American Spanish, and French, speakers 0 through 8. All 45 WAV files
+  matched byte-for-byte across repeated captures.
+- Accepted the stable non-US WAV fixtures under `tests/golden/audio/uk/`,
+  `tests/golden/audio/sp/`, `tests/golden/audio/gr/`,
+  `tests/golden/audio/la/`, and `tests/golden/audio/fr/`.
+- Wired `tools/baseline/verify_current.sh` to run non-US audio capture and
+  exact comparison after the accepted US one-shot and US suite gates.
+- Updated `docs/modernization/BASELINE_EXPANSION_PLAN.md` and
+  `docs/modernization/READINESS_REVIEW.md` with accepted inputs, directories,
+  repeatability evidence, and verification results.
+- Verification passed:
+  `tools/baseline/compare_non_us_audio.sh --expected
+  baseline-runs/next4-phase5-non-us-audio-pass1 --actual
+  baseline-runs/next4-phase5-non-us-audio-pass2 --metrics-out
+  baseline-runs/next4-phase5-non-us-audio-repeat-metrics`,
+  `tools/baseline/compare_non_us_audio.sh --actual
+  baseline-runs/next4-phase5-non-us-audio-pass2 --metrics-out
+  baseline-runs/next4-phase5-non-us-audio-accepted-metrics`,
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase5-non-us-audio --expected tests/golden`, and
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public headers, exported symbols, dictionaries, user dictionaries, detailed
+  manifest, API smoke, callback smoke, US one-shot audio, expanded US audio
+  suites, non-US one-shot audio, and warning budgets all matched accepted
+  baselines.
+- No language selection, voice ROM selection, sample rate, default voice,
+  synthesis code, parser behavior, dictionary behavior, public API, exported
+  symbol, or live-audio behavior was intentionally changed.
+
+## Phase 6: Medium-Risk Warning Cleanup Wave
+
+Status: completed
+
+Reasoning checkpoint: extra-high.
+
+Goals:
+
+- Use the expanded coverage from earlier phases to reduce one medium-risk
+  warning category.
+- Keep warning cleanup narrow and behavior-neutral.
+
+Required work:
+
+- Select one file and one warning category from the refreshed strict inventory.
+- Prefer API/kernel service stubs, private helpers, missing declarations, or
+  unused parameters where behavior can be proven unchanged.
+- Avoid synthesis arithmetic, parser rules, dictionary format, public headers,
+  callback signatures, thread signatures, `volatile`, structure layout, and
+  pointer/integer casts unless this phase is explicitly narrowed to that exact
+  issue with matching gates.
+- Add a warning-budget row only for a category proven clean.
+- Update warning documentation.
+
+Success criteria:
+
+- The selected warning category is reduced or documented as deferred.
+- Autotools verification passes.
+- Relevant added baseline checks from Phases 3 through 5 still pass.
+- Public headers, exported symbols, dictionaries, API smoke, deterministic
+  audio, and warning budgets pass.
 
 Rules:
 
 - Do not mix warning categories.
-- Do not perform pointer signedness, pointer qualifier, callback, volatile,
-  structure layout, public API, audio, threading, parser, or synthesis cleanup
-  in this phase.
+- Do not perform broad formatting.
+- Do not change exported symbols or public API signatures.
 
 Implementation Summary:
 
-- Reviewed the selected `src/licunix/src/liceninc.c` helper and confirmed the
-  `all_digits` symbol is used only inside that translation unit for this tool.
-- Changed `src/licunix/src/liceninc.c` to make `all_digits` `static`, keeping
-  the existing parameter type and function body unchanged.
-- Added a zero-count warning-budget row for `src/licunix/src/liceninc.c`
-  `-Wmissing-prototypes` in `tests/golden/warnings/default-cleaned.tsv`.
-- Updated `docs/modernization/WARNING_INVENTORY.md` with the Phase 4 cleanup
-  result and verification evidence.
-- Files changed: `src/licunix/src/liceninc.c`,
-  `tests/golden/warnings/default-cleaned.tsv`,
-  `docs/modernization/WARNING_INVENTORY.md`, and `PLAN.md`.
-- Verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase4-liceninc-warning --expected tests/golden`.
-- Verification results: default warning-line count `1,778`, strict warning-line
-  count `29,761`, parser-visible default warnings `1,757`, and warning budget
-  status `ok`. Public headers, exported symbols, detailed Autotools manifest,
-  dictionaries, user dictionaries, API smoke WAV, one-shot US audio, and
-  expanded US audio suites all matched accepted baselines.
-- Additional strict parser verification:
-  `tools/baseline/summarize_warnings.py --log baseline-runs/next3-phase4-liceninc-warning/build/build-strict-warnings.log --out-dir baseline-runs/next3-phase4-warning-strict`.
-  Parser-visible strict warnings decreased from `29,743` to `29,738`, and the
-  refreshed strict parser reported no remaining warnings for
-  `src/licunix/src/liceninc.c`.
-- Additional warning-budget verification:
-  `tools/baseline/check_warning_budgets.py --warnings baseline-runs/next3-phase4-liceninc-warning/warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/next3-phase4-liceninc-warning/warning-budget-after.tsv`.
-  Result: `warning_budget_status=ok`.
-- Public exports did not change according to the committed symbol comparisons.
-  Dictionaries did not change according to the committed dictionary
-  comparisons. Golden audio did not change according to the committed one-shot
-  and expanded deterministic WAV comparisons.
-- Behavior risk level: low. The source change only narrowed a private helper's
-  linkage in a license maintenance tool and did not alter runtime synthesis,
-  public headers, exported symbols, dictionaries, audio, API behavior, or
-  threading behavior.
-- Known limitations: the warning-budget checker uses the default warning
-  summary; strict warning evidence was captured separately for this strict-only
-  cleanup. Pointer-sign warnings and other categories remain deferred.
+- Selected one file and one warning category:
+  `src/dapi/src/api/coop.h` `-Wdiscarded-qualifiers`.
+- Changed only literal-backed dictionary and registry path globals from
+  mutable `LPSTR` declarations to `const char *` declarations:
+  `szLocalMachineDECtalk`, `szCurrentUsersDECtalk`, `szMainDictDef`,
+  `szUserDictDef`, `szAbbrDictDef`, and `szForeignDictDef`.
+- Preserved global variable names and linkage. No symbols were made `static`,
+  no public headers were changed, and no dictionary strings or call sites were
+  changed.
+- Because `coop.h` contains legacy non-UTF-8 bytes, the edit was made with
+  byte-preserving exact substitutions instead of re-encoding the file.
+- Added `tests/golden/warnings/strict-cleaned.tsv` with a zero-count budget for
+  the cleaned `coop.h` category, and updated `tools/baseline/verify_current.sh`
+  to summarize strict warnings and check strict warning budgets when present.
+- Added `.gitattributes` whitespace rules for the legacy CRLF
+  `src/dapi/src/api/coop.h` header and generated detailed manifest format so
+  the standard `git diff --check` gate can validate this focused change without
+  reformatting unrelated legacy line endings or manifest syntax.
+- Refreshed `tests/golden/dist-manifest-detailed.txt` after the source change
+  predictably changed rebuilt language shared-library and `say_demo_*` binary
+  sizes and hashes, while exported symbols, dictionaries, public headers, API
+  smoke, callback smoke, US audio, non-US audio, and warning budgets passed.
+- Updated `docs/modernization/API_BOUNDARY_WARNINGS.md`,
+  `docs/modernization/WARNING_INVENTORY.md`, and
+  `docs/modernization/READINESS_REVIEW.md`.
+- Warning results: `coop.h` parser-visible strict `-Wdiscarded-qualifiers`
+  rows decreased from 66 to 0; strict warning lines decreased from 29,665 to
+  29,593; parser-visible strict warnings decreased from 29,642 to 29,572.
+- Verification passed:
+  `tools/baseline/build_unix.sh --strict-warnings --run-dir
+  baseline-runs/next4-phase6-coop-const-build`,
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase6-coop-const-final2 --expected tests/golden`, and
+  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
+- Public headers, exported symbols, dictionaries, user dictionaries, detailed
+  manifest, API smoke, callback smoke, US one-shot audio, expanded US audio
+  suites, non-US one-shot audio, default warning budget, and strict warning
+  budget all matched accepted baselines.
+- No public API signature, exported symbol name, dictionary behavior, parser
+  behavior, synthesis behavior, callback behavior, queue behavior, threading
+  behavior, audio behavior, language selection behavior, or voice selection
+  behavior was intentionally changed.
 
-## Phase 5: Deterministic Coverage Gap Map
+## Phase 7: API Implementation Warning Pilot
 
 Status: completed
 
-Reasoning checkpoint: high.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Decide which deterministic behavior coverage gaps are ready for extra-high
-  implementation later in this plan.
-- Keep unavailable or unstable capture paths documented rather than forced.
+- Evaluate one high-risk API implementation warning cleanup only after stronger
+  API and callback coverage exists.
+- Preserve ABI and public behavior.
 
 Required work:
 
-- Review existing public API smoke coverage, phoneme/text-mode feasibility,
-  CMake subset verification, audio fixtures, and platform wrapper smoke
-  coverage.
-- Identify public-facing capture paths first. Capture broader internal data
-  only when it directly helps verify functionality was not lost.
-- Keep US English, all 9 speakers, one-shot, WAV output as the default audio
-  baseline shape unless an extra-high phase explicitly expands coverage.
-- Update the relevant modernization note with accepted candidates and deferred
-  candidates.
+- Select one warning candidate from `ttsapi.c`, `init.c`, or adjacent API
+  implementation only if local review proves it is narrow.
+- Prefer private prototypes, local initialization, or unreachable debug-stub
+  hygiene.
+- Reject candidates involving callback signatures, structure layout,
+  pointer/integer conversions, loader semantics, multi-language dispatch,
+  memory ownership, or thread lifecycle unless this phase is revised with a
+  dedicated gate.
+- Update `docs/modernization/API_BOUNDARY_WARNINGS.md`.
 
 Success criteria:
 
-- Phase 7 public API smoke expansion scope is explicit.
-- Phase 8 legacy `OP_*` parity scope is explicit.
-- Phoneme/text-mode, non-US audio, callback timing, and live-audio gaps are
-  either assigned to a later extra-high phase or explicitly deferred.
-- No new baseline is accepted in this phase.
+- Either one narrow API implementation warning is cleaned and fully verified,
+  or the phase records why all candidates were deferred.
+- Public headers and exported symbols match exactly.
+- Expanded API smoke, callback smoke, dictionaries, deterministic audio,
+  manifests, and warning budgets pass.
 
 Rules:
 
-- Documentation and planning only.
-- Do not change parser, phoneme, synthesis, audio, API implementation, or
-  runtime threading code.
+- Stop on any API, symbol, header, dictionary, audio, callback, queue, or
+  manifest delta that is not explicitly explained and accepted.
 
 Implementation Summary:
 
-- Reviewed current public API smoke coverage, accepted US audio suites, phoneme
-  baseline feasibility notes, CMake subset verification, and platform wrapper
-  smoke coverage.
-- Updated `docs/modernization/BASELINE_EXPANSION_PLAN.md` with the accelerated
-  plan Phase 5 deterministic coverage gap map.
-- Accepted Phase 7 candidate: expand the public API smoke harness through
-  installed public headers/libraries only, keeping deterministic no-live-audio
-  scalar/status/error-path checks and preserving the final WAV output.
-- Accepted Phase 8 candidate: add isolated legacy `OP_*` parity evidence only
-  if it can be tested without routing runtime behavior through `src/platform`.
-- Accepted Phase 10 candidate: model CMake live-audio option state as
-  side-by-side configuration evidence only, without opening audio devices or
-  changing runtime routing.
-- Deferred phoneme/text-mode golden baselines, non-US audio baselines,
-  callback ordering, in-memory phoneme arrays, queue timing, pipe behavior, and
-  live-audio backend behavior.
-- Files changed: `docs/modernization/BASELINE_EXPANSION_PLAN.md` and
-  `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Warning counts did not change because no source cleanup was performed in this
-  phase.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change.
-- Behavior risk level: low. This phase changed planning documentation only and
-  did not modify source, build scripts, golden artifacts, parser behavior,
-  phoneme output, audio behavior, API implementation, or runtime threading.
-- Known limitations: this phase selected coverage candidates but did not add
-  new tests or baselines; the deferred areas remain outside verified behavior
-  claims.
+- Reviewed the refreshed strict warning inventory for `src/dapi/src/api/ttsapi.c`
+  and `src/dapi/src/api/init.c` after the expanded API callback and non-US audio
+  gates were in place.
+- Deferred all candidate source cleanups because none satisfied this phase's
+  narrow-candidate rule:
+  `init.c` unused locals are inside shared-memory init/fini lifecycle code;
+  `ttsapi.c` `PutIndexMarkInBuffer`, `PutPhonemeInBuffer`, and
+  `WriteAudioToFile` are exported symbols used by callback, phoneme-buffer, and
+  WAV-output paths; reserved/public API warnings are exported public,
+  sample-facing, SAPI-facing, or multi-language dispatch surfaces; and the
+  remaining pipe, callback, thread, pointer-sign, cast, ownership, and
+  type-limit warnings are behavior-sensitive.
+- Updated `docs/modernization/API_BOUNDARY_WARNINGS.md` with the Phase 7
+  candidate review and deferral rationale.
+- No source files, public headers, build files, dictionaries, golden audio,
+  manifests, warning budgets, exported symbols, API signatures, callback paths,
+  queue behavior, threading behavior, audio behavior, language selection
+  behavior, or voice selection behavior were changed.
+- No warning-budget row was added because Phase 7 intentionally cleaned no
+  warning category to zero.
 
-## Phase 6: CMake Detailed Parity Policy
+## Phase 8: CMake Detailed Parity Closure Attempt
 
 Status: completed
 
-Reasoning checkpoint: high.
+Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Define the evidence needed before any future CMake promotion decision.
-- Separate accepted basic path/type parity from unresolved detailed
-  metadata-hash differences.
+- Reduce or classify CMake detailed metadata-hash differences.
+- Keep CMake side-by-side unless all promotion blockers are eliminated and a
+  later phase explicitly promotes it.
 
 Required work:
 
-- Recompare current Autotools and CMake detailed manifests if Phase 1 produced
-  fresh manifests.
-- Review language-library symbol name/type parity versus full symbol
-  address/order differences.
-- Review CMake's missing live-audio option surface.
+- Compare current Autotools and CMake detailed manifests.
+- Classify each difference class: binary size, binary hash, directory
+  metadata, symbol address/order, build flags, source membership, generated
+  content, or packaging metadata.
+- Attempt low-risk CMake adjustments only when they do not alter Autotools or
+  default runtime behavior.
+- Record whether differences are eliminated, reduced, or accepted as future
+  promotion blockers.
 - Update `docs/modernization/CMAKE_OVERVIEW.md` and
-  `docs/modernization/PACKAGING_LAYOUT.md` with a clear acceptance policy for
-  detailed metadata/hash differences and promotion blockers.
+  `docs/modernization/PACKAGING_LAYOUT.md`.
 
 Success criteria:
 
-- CMake basic path/type parity remains recognized as achieved.
-- Detailed metadata/hash differences are classified and not accidentally
-  accepted as full parity.
-- Live-audio option parity work in Phase 10 has explicit boundaries.
-- CMake remains side-by-side.
+- CMake path/type parity still passes.
+- CMake deterministic dictionaries, audio, symbols, platform smoke, and OP
+  smoke still pass.
+- Any CMake build-system change is verified by the CMake subset gate and the
+  Autotools gate.
 
 Rules:
 
-- Documentation and comparison phase only.
-- Do not change `CMakeLists.txt`.
-- Do not promote CMake.
+- Do not remove Autotools.
+- Do not change install layout unless exact path/type and detailed manifest
+  evidence supports the change.
+- Do not promote CMake in this phase.
 
 Implementation Summary:
 
-- Compared the accelerated Phase 1 Autotools detailed manifest with the
-  accelerated Phase 1 CMake detailed manifest:
-  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase1-post-merge/dist-manifest-detailed.txt --actual baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt --out baseline-runs/next3-phase6-cmake-detailed-vs-autotools.diff`.
-- Rechecked the CMake detailed manifest against the committed Autotools golden:
-  `tools/baseline/compare_manifest.sh --expected tests/golden/dist-manifest-detailed.txt --actual baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt --out baseline-runs/next3-phase6-cmake-detailed-vs-golden.diff`.
-- Both comparisons reported `manifest: different`; the difference remains
-  detailed metadata, size, and hash output for CMake-built binaries plus
-  `doc/DECtalk/html` directory metadata.
-- Reviewed CMake language-library exported symbol name/type evidence from the
-  Phase 1 CMake gate; all language-library name/type comparisons passed.
+- Ran the CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase8-cmake-detailed --expected tests/golden`.
+- Verified CMake generated `compile_commands.json` with 3,307 lines, matched
+  generated dictionaries, matched one-shot US English WAVs for speakers 0
+  through 8, matched expanded US audio suites for speakers 0 through 8, matched
+  `libtts.so` exact exported symbols, matched language-library exported symbol
+  name/type sets, passed `dt_platform_smoke`, and passed `opthread_smoke`.
+- Compared the current Autotools detailed manifest from
+  `baseline-runs/next4-phase7-api-deferral/dist-manifest-detailed.txt` with the
+  CMake detailed manifest from
+  `baseline-runs/next4-phase8-cmake-detailed/dist-manifest-detailed.txt`.
+- Path/type checks passed in both directions with no missing or extra entries,
+  and both detailed manifests contain 1,126 entries.
+- Exact detailed comparison remains different:
+  `baseline-runs/next4-phase8-cmake-detailed/detailed-vs-autotools.diff`.
+- Classified remaining differences as one directory metadata-size difference
+  for `doc/DECtalk/html`, plus size/hash differences for 36 CMake-built
+  executable or shared-library artifacts: `lib/libtts.so`, all six
+  `lib/libtts_<lang>.so` libraries, `say`, `aclock`, `dtmemory`, all six
+  `tools/say_demo_<lang>` binaries, all six `tools/tunecheck_<lang>` binaries,
+  all six `tools/dic_<lang>` binaries, all six `tools/udic_<lang>` binaries,
+  `tools/dump_vdf`, and `tools/mfg_load`.
+- Reviewed build-flag evidence: Autotools compiles the authoritative Linux build
+  with `-g -fPIC -O2`, while CMake Release compiles with `-O3 -DNDEBUG -fPIC`
+  and its side-by-side target/link model. Matching those binaries exactly would
+  require a dedicated build-model parity effort and could invalidate the current
+  exact CMake symbol gate.
+- Made no CMake, Autotools, source, build-system, install-layout, dictionary,
+  golden audio, symbol, public-header, API, callback, queue, threading,
+  language-selection, or voice-selection changes.
 - Updated `docs/modernization/CMAKE_OVERVIEW.md` and
-  `docs/modernization/PACKAGING_LAYOUT.md` with the accelerated Phase 6
-  detailed parity policy.
-- Files changed: `docs/modernization/CMAKE_OVERVIEW.md`,
-  `docs/modernization/PACKAGING_LAYOUT.md`, and `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Warning counts did not change because no source cleanup was performed in this
-  phase.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change.
-- Behavior risk level: low. This phase changed documentation only and did not
-  modify CMake source membership, install layout, build scripts, runtime code,
-  golden artifacts, or CMake promotion state.
-- Known limitations: CMake remains side-by-side; detailed binary metadata/hash
-  parity and live-audio option parity remain unresolved promotion blockers.
+  `docs/modernization/PACKAGING_LAYOUT.md` with the Phase 8 evidence,
+  difference classification, and promotion-blocker decision.
 
-## Phase 7: Public API Smoke Matrix Expansion
+## Phase 9: CMake And Autotools Audio Option Build Matrix
 
 Status: completed
 
@@ -630,79 +772,75 @@ Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Expand deterministic public API smoke coverage without changing public API
-  behavior.
-- Improve confidence before any later API-boundary warning cleanup.
+- Increase confidence in audio-option configuration without opening live audio
+  devices.
+- Document which combinations are compile-only, metadata-only, or
+  behavior-tested.
 
 Required work:
 
-- Extend the public API smoke harness under `tools/baseline/` only.
-- Prefer installed-header and installed-library tests that run without live
-  audio hardware.
-- Exercise additional stable API calls selected in Phase 5, such as capability,
-  language, speaker, parameter, error-path, shutdown, and repeated-open/close
-  behavior when deterministic.
-- Keep output comparison public-facing where possible. Capture broader
-  internal data only if it directly verifies that behavior has not been lost.
-- Update API coverage documentation.
+- Exercise CMake default, `DECTALK_CMAKE_DISABLE_AUDIO=ON`,
+  `DECTALK_CMAKE_USE_ALSA=ON`, and `DECTALK_CMAKE_USE_PULSEAUDIO=ON` where
+  local dependencies allow.
+- Exercise matching Autotools configuration paths if they exist and can be run
+  without live audio hardware.
+- Capture compile-command, platform-smoke, and selected build metadata.
+- Do not open live devices. Do not require ALSA/PulseAudio runtime hardware.
+- Update `docs/modernization/AUDIO_BACKEND.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`, and macro documentation.
 
 Success criteria:
 
-- The expanded API smoke harness builds against installed public headers and
-  libraries.
-- API smoke output remains deterministic.
-- Public headers and exported symbols match accepted baselines.
-- Dictionaries, user dictionaries, one-shot US audio, expanded US audio suites,
-  and the public API smoke WAV match accepted baselines.
-- No public header, public API signature, calling convention, structure layout,
-  or exported symbol is changed.
+- Default audio behavior remains unchanged.
+- Compile-only or metadata-only option states are clearly labeled.
+- Existing deterministic WAV and API smoke gates still pass for default builds.
 
 Rules:
 
-- Do not touch `ttsapi.h`, `tts.h`, public headers, exported symbol lists, or
-  runtime API implementation files unless this phase is explicitly revised.
-- Stop on any API, symbol, header, dictionary, or audio delta.
+- Do not change `src/dapi/src/nt/linux_audio.c` runtime behavior.
+- Do not change callback timing, queues, device selection, or audio thread
+  lifecycle.
 
 Implementation Summary:
 
-- Expanded `tools/baseline/api_smoke.c` only. No public headers, exported
-  symbol baselines, or runtime API implementation files were changed.
-- Added deterministic no-live-audio coverage for a second
-  `TextToSpeechStartup()`/`TextToSpeechShutdown()` cycle, null output-pointer
-  validation for `TextToSpeechGetRate()` and `TextToSpeechGetSpeaker()`,
-  zero-count `TextToSpeechGetStatus()`, no-audio `STATUS_SPEAKING` and
-  `WAVE_OUT_DEVICE_ID`, mixed no-audio status behavior,
-  `TextToSpeechCloseInMemory()` when memory output is not open, and
-  `TextToSpeechOpenInMemory()` invalid-format validation.
-- Updated `docs/modernization/PUBLIC_API_AUDIT.md` with the expanded API smoke
-  matrix and verification evidence.
-- Files changed: `tools/baseline/api_smoke.c`,
-  `docs/modernization/PUBLIC_API_AUDIT.md`, and `PLAN.md`.
-- Targeted verification run:
-  `tools/baseline/check_api_smoke.sh --out baseline-runs/next3-phase7-api-smoke/api-smoke`.
-  Result: expanded API smoke compiled, ran, and produced an exact WAV match
-  against `tests/golden/audio/us/speaker_0.wav`.
-- Full verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase7-api-smoke --expected tests/golden`.
-- Full verification results: default warning-line count `1,778`, strict
-  warning-line count `29,761`, parser-visible default warnings `1,757`, and
-  warning budget status `ok`. Public headers, exported symbols, detailed
-  Autotools manifest, dictionaries, user dictionaries, API smoke WAV, one-shot
-  US audio, and expanded US audio suites all matched accepted baselines.
-- Public exports did not change according to the committed symbol comparisons.
-  Dictionaries did not change according to the committed dictionary
-  comparisons. Golden audio did not change according to the committed one-shot
-  and expanded deterministic WAV comparisons.
-- Behavior risk level: low to medium. The change expands test coverage for
-  public API behavior but does not alter installed headers, exported symbols,
-  runtime implementation, dictionaries, audio generation, live-audio routing,
-  callbacks, queues, or threading behavior.
-- Known limitations: this still is not a full API conformance suite and does
-  not test live audio hardware, callbacks, in-memory buffers with returned
-  samples, phoneme arrays, timing-sensitive behavior, non-US speech output, or
-  queue/pipe behavior.
+- Added `tools/baseline/check_audio_option_matrix.sh`, a documented
+  metadata-only helper that captures CMake audio option states with
+  `dt_platform_smoke` and Autotools audio option states with `configure`
+  metadata. The helper does not open live audio devices and does not update
+  accepted baselines.
+- Ran:
+  `tools/baseline/check_audio_option_matrix.sh --run-dir
+  baseline-runs/next4-phase9-audio-option-matrix`.
+- Local dependency evidence: `alsa: not found`; `libpulse-simple: not found`.
+- CMake metadata rows generated `compile_commands.json` with 3,307 lines each:
+  default reported `audio_disabled=0`, `audio_oss=1`, `audio_alsa=0`,
+  `audio_pulseaudio=0`, `audio_audioqueue=0`; disabled audio reported
+  `audio_disabled=1`, `audio_oss=0`; ALSA opt-in reported `audio_alsa=1`;
+  PulseAudio opt-in reported `audio_pulseaudio=1`.
+- Autotools configure-metadata rows: default and `--disable-pulseaudio` kept
+  `LINUX_AUDIO=$(OUTPUT_DIR)/linux_audio.o` with no `AUDIO_DEFINES` or
+  `AUDIO_LIBS` on this host; `--disable-audio` reported
+  `AUDIO_DEFINES=-DDISABLE_AUDIO`.
+- Classified CMake ALSA/PulseAudio rows as metadata-only because local backend
+  development packages were unavailable and CMake still does not replace
+  Autotools probing or link/certify those live backends.
+- Updated `docs/modernization/AUDIO_BACKEND.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`, and
+  `docs/modernization/MACRO_INVENTORY.md` with the Phase 9 matrix evidence and
+  classification.
+- Verified default behavior with:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase9-default-verify --expected tests/golden`.
+  Public headers, exported symbols, detailed manifest, dictionaries, user
+  dictionaries, API smoke, callback smoke, US audio, expanded US audio suites,
+  non-US audio, default warning budget, and strict warning budget all matched
+  accepted baselines.
+- No `src/dapi/src/nt/linux_audio.c` runtime behavior, callback timing, queue
+  behavior, device selection, audio thread lifecycle, source code, public API,
+  exported symbol, dictionary, deterministic audio, or default build behavior
+  was intentionally changed.
 
-## Phase 8: Legacy OP_* Parity Harness
+## Phase 10: Platform Adapter Scaffold
 
 Status: completed
 
@@ -710,244 +848,77 @@ Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Add evidence for legacy `OP_*` runtime semantics before considering any
-  platform wrapper adapter or runtime wiring.
-- Keep all runtime behavior unchanged.
+- Add isolated compatibility scaffolding for future platform-wrapper migration
+  without changing default runtime behavior.
+- Preserve the exact legacy `OP_*` evidence captured so far.
 
 Required work:
 
-- Add a dedicated test or smoke harness that exercises legacy `OP_*` behavior
-  without routing DECtalk runtime code through `src/platform`.
-- Cover only behaviors that can be tested deterministically without live audio:
-  thread create/join handle ownership, wait timeout behavior where available,
-  priority get/set return behavior, `OP_Sleep(0)` yield behavior at smoke-test
-  level, event auto-reset behavior, and lightweight lock timeout polling.
-- Compare the covered legacy semantics against the existing `dt_platform_smoke`
-  coverage and record gaps.
-- Update `docs/modernization/PLATFORM_WRAPPER_DECISION.md`.
+- Review `opthread_smoke` evidence against `src/platform` wrappers.
+- If safe, add a documented adapter layer under `src/platform/` that models
+  legacy handle ownership, wait return behavior, event semantics, priority
+  behavior, and timeout/poll behavior.
+- Add or extend CMake smoke coverage for the adapter.
+- Keep the adapter out of DECtalk runtime libraries and installed public APIs.
+- Update `docs/modernization/PLATFORM_WRAPPER_DECISION.md` and
+  `src/platform/README.md`.
 
 Success criteria:
 
-- The new parity harness is isolated from runtime synthesis and live audio.
-- CMake and/or Autotools verification runs the harness in a deterministic way.
-- Existing Autotools and CMake gates still pass.
-- Runtime `opthread.c`, `linux_audio.c`, audio routing, callbacks, queues,
-  pipes, and public APIs are not changed.
+- New source/header files have standard top-of-file documentation.
+- Adapter smoke tests pass.
+- Existing CMake and Autotools gates still pass.
+- No runtime code is routed through the adapter by default.
 
 Rules:
 
-- Do not wire `src/platform` wrappers into runtime code.
+- Do not change `src/dapi/src/nt/opthread.c`.
 - Do not change `src/dapi/src/nt/linux_audio.c`.
-- Do not change `src/dapi/src/nt/opthread.c` unless the phase is explicitly
-  revised with a narrower approved edit and matching rollback plan.
-- If direct `OP_*` harnessing requires invasive runtime changes, document the
-  blocker and stop the implementation.
-
-Implementation Summary:
-
-- Added `tools/platform/opthread_smoke.c`, a documented developer smoke harness
-  that links directly against `src/dapi/src/nt/opthread.c` to record selected
-  legacy `OP_*` behavior without routing runtime code through `src/platform`.
-- Added a CMake-only `opthread_smoke` target in `CMakeLists.txt`.
-- Updated `tools/baseline/verify_cmake_subset.sh` to build and run
-  `opthread_smoke`, recording output in
-  `baseline-runs/<phase>/opthread-smoke.log` and listing it in the verifier
-  summary.
-- Covered default-stack thread create, current Linux
-  `OP_WaitForThreadTermination` return behavior, thread return value, priority
-  get/set, `OP_Sleep(0)`, mutex lock/unlock, auto-reset/manual-reset event
-  semantics, and lightweight lock zero-timeout behavior.
-- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md`,
-  `docs/modernization/CMAKE_OVERVIEW.md`, and `src/platform/README.md` with
-  the new evidence and limitations.
-- Files changed: `tools/platform/opthread_smoke.c`, `CMakeLists.txt`,
-  `tools/baseline/verify_cmake_subset.sh`,
-  `docs/modernization/PLATFORM_WRAPPER_DECISION.md`,
-  `docs/modernization/CMAKE_OVERVIEW.md`, `src/platform/README.md`, and
-  `PLAN.md`.
-- CMake verification run:
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase8-opthread-cmake --expected tests/golden`.
-- CMake verification results: generated dictionaries matched; one-shot US audio
-  matched; expanded US audio suites matched; `libtts.so` exported symbols
-  matched exactly; language-library exported symbol name/type sets matched;
-  `dt_platform_smoke` passed; `opthread_smoke` passed; `compile_commands.json`
-  had `3,307` lines; detailed CMake staged manifest had `1,126` lines.
-- `opthread_smoke` recorded:
-  `op_thread_wait_status=1`, `op_thread_return=77`,
-  `op_thread_priority=0`, `op_mutex=ok`, `op_event_semantics=ok`,
-  `op_lightweight_lock=ok`, `op_sleep_zero=ok`, and `opthread_smoke=ok`.
-- Autotools verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase8-opthread-autotools --expected tests/golden`.
-- Autotools verification results: default warning-line count `1,778`, strict
-  warning-line count `29,760`, parser-visible default warnings `1,757`, and
-  warning budget status `ok`. Public headers, exported symbols, detailed
-  Autotools manifest, dictionaries, user dictionaries, API smoke WAV, one-shot
-  US audio, and expanded US audio suites all matched accepted baselines.
-- Public exports did not change according to the committed symbol comparisons.
-  Dictionaries did not change according to the committed dictionary
-  comparisons. Golden audio did not change according to the committed one-shot
-  and expanded deterministic WAV comparisons.
-- Behavior risk level: medium. This phase added a runtime-adjacent test target
-  that compiles `opthread.c`, but it did not modify `opthread.c`,
-  `linux_audio.c`, runtime libraries, installed headers, exported symbols,
-  audio routing, callbacks, queues, pipes, or threading behavior.
-- Known limitations: the harness does not prove live-audio, callback, queue,
-  pipe, buffer ownership, reset/pause/restart, backend state, exact scheduler
-  fairness, timing guarantees, non-current platform behavior, or runtime
-  wrapper replacement safety.
-
-## Phase 9: Platform Wrapper Adapter Decision
-
-Status: completed
-
-Reasoning checkpoint: extra-high.
-
-Goals:
-
-- Decide whether `src/platform` needs adapter APIs to preserve legacy runtime
-  contracts exactly.
-- Avoid premature runtime migration.
-
-Required work:
-
-- Review Phase 8 legacy `OP_*` evidence against `dt_thread`, `dt_mutex`,
-  `dt_event`, and `dt_time` semantics.
-- If evidence supports a safe adapter scaffold, add it only as isolated
-  CMake-smoke scaffolding under `src/platform/` with standard file
-  documentation.
-- If evidence is incomplete, document the missing semantics and defer adapter
-  implementation.
-- Update platform wrapper documentation.
-
-Success criteria:
-
-- A clear adapter decision is recorded.
-- Any new source/header file has standard project documentation at the top.
-- No runtime code is routed through `src/platform`.
-- Existing Autotools and CMake gates still pass when relevant.
-
-Rules:
-
-- Adapter scaffolding is allowed only if it is not linked into DECtalk runtime
-  libraries or installed public API surfaces.
 - Do not change live audio behavior, callback behavior, queue behavior, thread
   lifecycle behavior, or public API behavior.
 
 Implementation Summary:
 
-- Reviewed the accelerated Phase 8 `opthread_smoke` evidence against the
-  current `dt_thread`, `dt_mutex`, `dt_event`, and `dt_time` wrapper semantics.
-- Decision: defer platform adapter scaffolding. The current wrappers do not
-  encode legacy `OP_*` handle ownership, Linux wait return behavior, priority
-  get/set behavior, `ThreadLock` timeout-polling behavior, or exact `OP_WAIT_*`
-  compatibility.
-- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md` with the Phase 9
-  adapter decision, required future evidence, and reasons for deferral.
-- No new adapter source or header was created.
-- Files changed: `docs/modernization/PLATFORM_WRAPPER_DECISION.md` and
-  `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Warning counts did not change because this phase was documentation-only.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change.
-- Behavior risk level: low. This phase changed documentation only after the
-  Phase 8 CMake and Autotools gates passed.
-- Known limitations: runtime wrapper wiring, live audio, callbacks, queues,
-  pipes, buffer ownership, reset/pause/restart behavior, exact timing, and
-  non-current platform `OP_*` behavior remain outside verified coverage.
+- Added `src/platform/dt_opthread_adapter.h` and
+  `src/platform/dt_opthread_adapter.c`, a private compatibility scaffold that
+  delegates to legacy `OP_*` thread, mutex, event, priority, sleep, and
+  lightweight-lock primitives without routing DECtalk runtime code through
+  `src/platform`.
+- Added `tools/platform/dt_opthread_adapter_smoke.c`, a CMake-only smoke test
+  that verifies adapter-visible legacy handle ownership, wait return behavior,
+  priority behavior, event semantics, `OP_Sleep(0)`, and `ThreadLock`
+  timeout-poll behavior. The observed adapter output is recorded in
+  `docs/modernization/PLATFORM_WRAPPER_DECISION.md`.
+- Updated `CMakeLists.txt` to build `dt_opthread_adapter_smoke` as a developer
+  target linked only with `src/platform/dt_opthread_adapter.c` and
+  `src/dapi/src/nt/opthread.c`.
+- Updated `tools/baseline/verify_cmake_subset.sh` so the CMake subset gate
+  builds and runs `dt_opthread_adapter_smoke`, and records its log in the
+  summary.
+- Updated `src/platform/README.md` and
+  `docs/modernization/PLATFORM_WRAPPER_DECISION.md` to document the adapter as
+  private CMake-only scaffolding. Runtime wrapper wiring remains deferred.
+- Verified CMake subset behavior with:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase10-opthread-adapter --expected tests/golden`.
+  The gate passed, including `dt_platform_smoke`, `opthread_smoke`,
+  `dt_opthread_adapter_smoke`, dictionary comparison, US audio, expanded US
+  audio suites, `libtts.so` exact symbols, and language-library symbol
+  name/type checks.
+- Verified default Autotools/current behavior with:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase10-default-verify --expected tests/golden`.
+  Public headers, exported symbols, detailed manifest, dictionaries, user
+  dictionaries, API smoke, callback smoke, US audio, expanded US audio suites,
+  non-US audio, default warning budget, and strict warning budget all matched
+  accepted baselines.
+- Did not change `src/dapi/src/nt/opthread.c`,
+  `src/dapi/src/nt/linux_audio.c`, live audio behavior, callback behavior,
+  queue behavior, thread lifecycle behavior, public API behavior, exported
+  symbols, dictionaries, deterministic audio, install layout, or default
+  runtime routing.
 
-## Phase 10: CMake Live-Audio Option Parity Scaffolding
-
-Status: completed
-
-Reasoning checkpoint: extra-high.
-
-Goals:
-
-- Model the Autotools live-audio option surface in side-by-side CMake without
-  promoting CMake or changing deterministic runtime behavior.
-
-Required work:
-
-- Add or document CMake options only when their default behavior is explicitly
-  understood.
-- Prefer explicit `DISABLE_AUDIO`, `USE_ALSA`, and `USE_PULSEAUDIO` modeling
-  that preserves the current verified no-hardware deterministic checks.
-- Update compile-command or configuration evidence so the selected audio option
-  state is visible.
-- Update `docs/modernization/AUDIO_BACKEND.md`,
-  `docs/modernization/CMAKE_OVERVIEW.md`, and macro documentation as needed.
-
-Success criteria:
-
-- CMake configures and builds with the selected default audio option state.
-- The CMake subset verifier passes.
-- The Autotools verifier passes.
-- Deterministic WAV, dictionary, symbol, public header, API smoke, and manifest
-  checks remain stable.
-- CMake remains side-by-side.
-
-Rules:
-
-- Do not open live audio devices in tests.
-- Do not route runtime audio through new wrappers.
-- Do not change `src/dapi/src/nt/linux_audio.c`.
-- Stop on any unexplained audio, symbol, manifest, compile-command, or
-  dictionary delta.
-
-Implementation Summary:
-
-- Added side-by-side CMake cache options for the Autotools audio macro surface:
-  `DECTALK_CMAKE_DISABLE_AUDIO`, `DECTALK_CMAKE_USE_ALSA`, and
-  `DECTALK_CMAKE_USE_PULSEAUDIO`.
-- The options define `DISABLE_AUDIO`, `USE_ALSA`, and `USE_PULSEAUDIO` for
-  CMake targets when enabled. `DISABLE_AUDIO` takes precedence over ALSA and
-  PulseAudio macro options.
-- Preserved the default verified CMake state with all new options `OFF`.
-- Updated `docs/modernization/AUDIO_BACKEND.md`,
-  `docs/modernization/CMAKE_OVERVIEW.md`, and
-  `docs/modernization/MACRO_INVENTORY.md` with the option surface, default
-  metadata, disabled-audio metadata probe, and limitations.
-- Files changed: `CMakeLists.txt`, `docs/modernization/AUDIO_BACKEND.md`,
-  `docs/modernization/CMAKE_OVERVIEW.md`,
-  `docs/modernization/MACRO_INVENTORY.md`, and `PLAN.md`.
-- CMake default verification run:
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase10-cmake-audio-options --expected tests/golden`.
-- CMake default verification results: generated dictionaries matched; one-shot
-  US audio matched; expanded US audio suites matched; `libtts.so` exported
-  symbols matched exactly; language-library exported symbol name/type sets
-  matched; `dt_platform_smoke` passed with `audio_disabled=0`, `audio_oss=1`,
-  `audio_alsa=0`, and `audio_pulseaudio=0`; `opthread_smoke` passed;
-  `compile_commands.json` had `3,307` lines; detailed CMake staged manifest had
-  `1,126` lines.
-- Metadata-only disabled-audio probe:
-  `cmake -S . -B baseline-runs/next3-phase10-cmake-disable-audio/build -DCMAKE_BUILD_TYPE=Release -DDECTALK_CMAKE_DISABLE_AUDIO=ON -DCMAKE_C_COMPILER=/usr/bin/gcc`,
-  `cmake --build baseline-runs/next3-phase10-cmake-disable-audio/build --target dt_platform_smoke -- -j1`,
-  and
-  `baseline-runs/next3-phase10-cmake-disable-audio/build/dt_platform_smoke /home/yam/dt PLAN.md`.
-  Result: `audio_disabled=1`, `audio_oss=0`, `audio_alsa=0`,
-  `audio_pulseaudio=0`, and `audio_audioqueue=0`.
-- Autotools verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase10-cmake-audio-options-autotools --expected tests/golden`.
-- Autotools verification results: default warning-line count `1,778`, strict
-  warning-line count `29,760`, parser-visible default warnings `1,757`, and
-  warning budget status `ok`. Public headers, exported symbols, detailed
-  Autotools manifest, dictionaries, user dictionaries, API smoke WAV, one-shot
-  US audio, and expanded US audio suites all matched accepted baselines.
-- Public exports did not change according to the committed symbol comparisons.
-  Dictionaries did not change according to the committed dictionary
-  comparisons. Golden audio did not change according to the committed one-shot
-  and expanded deterministic WAV comparisons.
-- Behavior risk level: medium. This phase changes side-by-side CMake
-  configuration only; defaults preserve verified behavior, but non-default
-  live-audio macro combinations are not promoted or runtime-certified.
-- Known limitations: this phase does not replace Autotools audio probing, does
-  not open live audio devices, does not link ALSA or PulseAudio libraries, does
-  not route runtime audio through wrappers, and does not validate live-audio
-  callbacks, queues, timing, or backend device selection.
-
-## Phase 11: API-Boundary Warning Pilot
+## Phase 11: Experimental Runtime Wrapper Opt-In Decision
 
 Status: completed
 
@@ -955,90 +926,68 @@ Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Use the expanded API smoke coverage from Phase 7 to evaluate one
-  API-adjacent warning cleanup.
-- Reduce warning debt only if the candidate is narrow and behavior-neutral.
+- Decide whether any runtime wrapper wiring can be introduced behind a
+  disabled-by-default experimental option.
+- Avoid default behavior changes.
 
 Required work:
 
-- Select one API-boundary warning candidate from the refreshed warning
-  inventory.
-- Prefer local implementation hygiene such as missing includes, missing private
-  prototypes, or indentation/control-flow clarity.
-- Avoid public API signatures, callbacks, structure layout, calling convention,
-  pointer/integer conversions, `volatile`, thread lifecycle, and loader
-  behavior unless a separate explicit approval is added.
-- Add a warning-budget row only for a category proven clean.
-- Update `docs/modernization/API_BOUNDARY_WARNINGS.md` or related notes.
+- Review Phase 10 adapter evidence and current runtime ownership boundaries.
+- If safe, add only disabled-by-default build-system scaffolding for an
+  experimental wrapper path. The default Autotools and CMake builds must not
+  use the wrapper path.
+- Prefer compile-only or smoke-only opt-in evidence.
+- If no safe opt-in exists, document the blocker and defer.
 
 Success criteria:
 
-- The selected warning is reduced or the phase documents why it was deferred.
-- Expanded API smoke, public headers, exported symbols, dictionaries, one-shot
-  US audio, expanded US audio suites, and warning budgets pass.
-- No public API or ABI surface changes.
+- Default runtime artifacts, symbols, dictionaries, and audio remain stable.
+- Any experimental option is clearly named, disabled by default, undocumented as
+  production-ready, and excluded from installed public APIs.
+- Existing default gates pass.
 
 Rules:
 
-- Stop on any API smoke, symbol, public header, dictionary, or audio delta.
-- If the only available candidates involve callbacks, ABI-sensitive structs,
-  pointer/integer casts, or runtime threading, defer instead of widening scope.
+- Do not enable wrapper wiring by default.
+- Do not change audio, callback, queue, pipe, or thread timing behavior.
+- Do not claim runtime wrapper replacement safety unless default and
+  experimental gates prove it.
 
 Implementation Summary:
 
-- Selected the `src/dapi/src/kernel/services.c` `-Wmissing-prototypes`
-  warning cluster reported through the API build context as
-  `src/dapi/src/api/services.c`.
-- Added matching local prototypes above the existing service-function
-  definitions. No symbol was made `static`, and no function definition, public
-  header, public API signature, calling convention, structure layout, call
-  site, callback path, loader path, thread path, or audio path was changed.
-- Added a zero-count warning-budget row for
-  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes`.
-- Refreshed `tests/golden/dist-manifest-detailed.txt` after the first
-  verification pass showed expected metadata-hash changes for installed
-  language libraries and sample demos linked with the touched source. The
-  install path/type layout did not change compared with the Phase 10 Autotools
-  capture.
-- Updated `docs/modernization/API_BOUNDARY_WARNINGS.md` and
-  `docs/modernization/WARNING_INVENTORY.md` with the selected candidate,
-  verification evidence, and deferred warning categories.
-- Files changed: `src/dapi/src/kernel/services.c`,
-  `tests/golden/warnings/default-cleaned.tsv`,
-  `tests/golden/dist-manifest-detailed.txt`,
-  `docs/modernization/API_BOUNDARY_WARNINGS.md`,
-  `docs/modernization/WARNING_INVENTORY.md`, and `PLAN.md`.
-- Initial verification run:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase11-api-boundary-services --expected tests/golden`.
-  Result: all captures completed, exported symbols matched, API smoke and
-  deterministic US audio matched, but the detailed manifest comparison stopped
-  on expected binary metadata-hash changes from the source edit.
-- Additional classification checks: generated dictionaries and user
-  dictionaries matched; public headers matched; warning budget passed; strict
-  warning parser output in
-  `baseline-runs/next3-phase11-api-boundary-services/warnings-strict/`
-  showed no remaining `src/dapi/src/kernel/services.c`
-  `-Wmissing-prototypes` rows.
-- Final current-tree verification run after refreshing the detailed manifest
-  baseline and normalizing the inserted prototype block:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase11-api-boundary-services-lf --expected tests/golden`.
-- Final verification results: default warning-line count `1,777`, strict
-  warning-line count `29,665`, parser-visible default warnings `1,757`,
-  parser-visible strict warnings `29,644`, and warning budget status `ok`.
-  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
-  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
-  suites all matched accepted baselines.
-- Public exports did not change according to the committed symbol
-  comparisons. Dictionaries did not change according to the committed
-  dictionary comparisons. Golden audio did not change according to the
-  committed one-shot and expanded deterministic WAV comparisons.
-- Behavior risk level: medium. The source edit is prototype-only and preserves
-  linkage, but the touched source is linked into installed runtime libraries,
-  so the binary metadata/hash baseline changed and was refreshed after behavior
-  gates passed.
-- Known limitations: pointer-sign, pointer-qualifier, unused-parameter,
-  callback-facing, loader-adjacent, structure-layout, public API
-  implementation, threading, and audio warnings remain deferred.
+- Reviewed Phase 10 adapter evidence and current runtime ownership boundaries.
+  The private adapter now preserves observed legacy `OP_*` primitive behavior,
+  but it does not prove API thread ownership, queue, pipe, callback, reset,
+  pause, restart, buffer ownership, or audio-timing behavior.
+- Deferred disabled-by-default runtime wrapper opt-in scaffolding. No CMake,
+  Autotools, installed-header, public-API, runtime-library, or executable option
+  was added because an experimental runtime option would create an unproven
+  second threading path before runtime-specific evidence exists.
+- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md` with the Phase 11
+  decision, blockers, and future gates required before any option such as an
+  experimental OP-thread adapter can be added.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md` to list
+  `dt_opthread_adapter_smoke` among the developer-only smoke targets and to
+  state that CMake exposes no runtime wrapper opt-in option.
+- Verified the CMake subset with:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake --expected
+  tests/golden`. The gate passed, including `dt_platform_smoke`,
+  `opthread_smoke`, `dt_opthread_adapter_smoke`, dictionary comparison, US
+  audio, expanded US audio suites, `libtts.so` exact symbols, and
+  language-library symbol name/type checks.
+- Verified default Autotools/current behavior with:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-default --expected
+  tests/golden`. Public headers, exported symbols, detailed manifest,
+  dictionaries, user dictionaries, API smoke, callback smoke, US audio,
+  expanded US audio suites, non-US audio, default warning budget, and strict
+  warning budget all matched accepted baselines.
+- Did not change `src/dapi/src/nt/opthread.c`,
+  `src/dapi/src/nt/linux_audio.c`, live audio behavior, callback behavior,
+  queue behavior, pipe behavior, thread timing, public API behavior, exported
+  symbols, dictionaries, deterministic audio, install layout, or default
+  runtime routing.
 
 ## Phase 12: CMake Promotion Readiness Decision
 
@@ -1048,79 +997,69 @@ Reasoning checkpoint: extra-high.
 
 Goals:
 
-- Decide whether CMake is closer to promotion after Phase 10.
-- Avoid promoting CMake inside this plan unless a separate explicit approval is
-  added.
+- Decide whether CMake is ready for any promotion after the detailed parity and
+  audio-option matrix work.
+- Keep Autotools unless promotion criteria are fully met and explicitly
+  recorded.
 
 Required work:
 
-- Review CMake basic path/type parity, detailed metadata/hash differences,
-  language-library symbol name/type evidence, compile-command evidence, and
-  audio-option parity evidence.
-- Compare current CMake and Autotools staged manifests.
-- Record whether remaining differences are eliminated, explicitly acceptable,
-  or still blocking.
-- Update `docs/modernization/CMAKE_OVERVIEW.md`,
-  `docs/modernization/PACKAGING_LAYOUT.md`, and the readiness review.
+- Review CMake path/type parity, detailed metadata/hash differences,
+  language-library symbol evidence, compile-command evidence, audio-option
+  matrix evidence, and deterministic behavior checks.
+- If blockers remain, record them with exact future gates.
+- If blockers are eliminated, draft the smallest promotion step that does not
+  remove Autotools or legacy build paths.
+- Update CMake, packaging, build overview, and readiness documentation.
 
 Success criteria:
 
 - CMake status is explicit and evidence-based.
-- Promotion blockers are listed with required future gates.
-- If CMake remains side-by-side, the reason is concrete.
-- If CMake appears promotable, create a future promotion plan rather than
-  promoting it in this phase.
+- Autotools remains authoritative unless all promotion criteria are met.
+- No existing build path is removed.
 
 Rules:
 
-- Do not promote CMake in this phase.
-- Do not remove Autotools or existing build paths.
-- Do not change install layout unless explicitly approved by a revised phase.
+- Do not remove Autotools.
+- Do not remove Visual Studio, legacy Visual Studio 6, or devops build paths.
+- Do not change install layout without exact manifest evidence.
 
 Implementation Summary:
 
-- Rechecked current CMake readiness after Phase 10 audio-option modeling and
-  the Phase 11 API-boundary warning pilot.
-- Ran
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase12-cmake-readiness --expected tests/golden`.
-- CMake verification results: generated dictionaries matched; one-shot US audio
-  matched for speakers 0 through 8; expanded US audio suites matched for
-  speakers 0 through 8; CMake-staged `libtts.so` matched the committed exact
-  exported-symbol baseline; language-library exported symbol name/type sets
-  matched; `dt_platform_smoke` passed with default audio metadata;
-  `opthread_smoke` passed; `compile_commands.json` had `3,307` lines; and the
-  detailed CMake staged manifest had `1,126` lines.
-- Captured the current CMake path/type manifest and compared it with the
-  current Phase 11 Autotools path/type manifest:
-  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest.txt --actual baseline-runs/next3-phase12-cmake-readiness/dist-manifest.txt --out baseline-runs/next3-phase12-cmake-basic-vs-autotools.diff`.
-  Result: `manifest: ok`, with `589` entries on each side.
-- Compared the current CMake detailed metadata-hash manifest with the current
-  Phase 11 Autotools detailed metadata-hash manifest:
-  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest-detailed.txt --actual baseline-runs/next3-phase12-cmake-readiness/dist-manifest-detailed.txt --out baseline-runs/next3-phase12-cmake-detailed-vs-autotools.diff`.
-  Result: `manifest: different`, with `1,126` entries on each side.
-- Decision: CMake remains side-by-side and is not promoted. Basic path/type
-  parity is still accepted, but detailed binary metadata/hash differences,
-  `doc/DECtalk/html` directory metadata, unaccepted full language-library
-  symbol address/order differences, and unverified live-audio behavior remain
-  promotion blockers.
+- Reviewed the current CMake subset evidence from
+  `baseline-runs/next4-phase11-runtime-optin-defer-cmake` and the current
+  default Autotools evidence from
+  `baseline-runs/next4-phase11-runtime-optin-defer-default`.
+- Captured a fresh CMake basic staged manifest from the Phase 11 CMake staged
+  tree at `baseline-runs/next4-phase12-cmake-readiness/cmake-dist-manifest.txt`.
+- Compared current Autotools and CMake path/type manifests with:
+  `tools/baseline/compare_manifest.sh --expected
+  baseline-runs/next4-phase11-runtime-optin-defer-default/dist-manifest.txt
+  --actual baseline-runs/next4-phase12-cmake-readiness/cmake-dist-manifest.txt
+  --out baseline-runs/next4-phase12-cmake-readiness/basic-vs-autotools.diff`.
+  Result: `manifest: ok`, with 589 entries on each side.
+- Compared current Autotools and CMake detailed metadata/hash manifests with:
+  `tools/baseline/compare_manifest.sh --expected
+  baseline-runs/next4-phase11-runtime-optin-defer-default/dist-manifest-detailed.txt
+  --actual
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake/dist-manifest-detailed.txt
+  --out baseline-runs/next4-phase12-cmake-readiness/detailed-vs-autotools.diff`.
+  Result: `manifest: different`, with 1,126 detailed entries on each side.
+- Determined that CMake is not ready for promotion. Autotools remains
+  authoritative because detailed metadata/hash differences remain for 36
+  CMake-built executable or shared-library artifacts plus the
+  `doc/DECtalk/html` directory metadata, CMake still uses a distinct
+  build-flag/link model, CMake audio options are metadata-only on this host,
+  and no runtime wrapper opt-in is approved.
 - Updated `docs/modernization/CMAKE_OVERVIEW.md`,
-  `docs/modernization/PACKAGING_LAYOUT.md`, and
-  `docs/modernization/READINESS_REVIEW.md`.
-- Files changed: `docs/modernization/CMAKE_OVERVIEW.md`,
   `docs/modernization/PACKAGING_LAYOUT.md`,
-  `docs/modernization/READINESS_REVIEW.md`, and `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Warning counts did not change because this phase was documentation and
-  comparison only.
-- Public exports did not change. Dictionaries did not change. Golden audio did
-  not change.
-- Behavior risk level: low. This phase changed documentation only and did not
-  modify source, build scripts, install layout, public APIs, dictionaries,
-  audio output, or CMake promotion state.
-- Known limitations: CMake promotion remains deferred; live audio hardware,
-  callbacks, queue behavior, backend device selection, non-current targets,
-  non-US audio, and phoneme/text output remain outside verified coverage.
+  `docs/modernization/BUILD_OVERVIEW.md`, and
+  `docs/modernization/READINESS_REVIEW.md` with the Phase 12 readiness
+  decision, evidence, blockers, and future promotion gates.
+- Did not promote CMake, remove Autotools, remove Visual Studio paths, remove
+  legacy Visual Studio 6 paths, remove devops build paths, change install
+  layout, change public APIs, change exported symbols, change dictionaries,
+  change deterministic audio, or change runtime routing.
 
 ## Phase 13: Final Readiness Review, PR, And Merge
 
@@ -1137,10 +1076,12 @@ Required work:
 
 - Run the final Autotools verification gate.
 - Run the final CMake subset verification gate.
+- Run any new baseline comparison gates added by this plan.
 - Capture and compare relevant manifests.
 - Record final warning counts, warning budgets, public headers, exported
-  symbols, dictionaries, user dictionaries, public API smoke, deterministic
-  audio, CMake status, platform wrapper status, and deferred risks.
+  symbols, dictionaries, user dictionaries, public API smoke, callback smoke,
+  deterministic audio, phoneme/text status, CMake status, platform wrapper
+  status, and deferred risks.
 - Update `docs/modernization/READINESS_REVIEW.md`.
 - Update this plan with the final Implementation Summary.
 - Commit final documentation and any remaining intended files.
@@ -1152,8 +1093,9 @@ Success criteria:
 - Final Autotools verification passes.
 - Final CMake subset verification passes.
 - Warning budgets pass.
-- No unexplained behavior, symbol, header, dictionary, manifest, API, or audio
-  deltas remain.
+- Any new accepted baselines compare exactly.
+- No unexplained behavior, symbol, header, dictionary, manifest, API, callback,
+  phoneme, text, timing, or audio deltas remain.
 - The PR is created and merged, or a repository-policy blocker is documented
   with exact status.
 
@@ -1166,49 +1108,48 @@ Rules:
 
 Implementation Summary:
 
-- Ran the final authoritative Autotools/Linux verification gate:
-  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase13-final --expected tests/golden`.
-- Final Autotools results: default warning-line count `1,778`, strict
-  warning-line count `29,665`, parser-visible default warnings `1,756`,
-  parser-visible strict warnings `29,643`, and warning budget status `ok`.
-  Public headers, exported symbols, detailed Autotools manifest, dictionaries,
-  user dictionaries, API smoke WAV, one-shot US audio, and expanded US audio
-  suites all matched accepted baselines.
-- Ran the final CMake subset verification gate:
-  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase13-final-cmake --expected tests/golden`.
-- Final CMake results: generated dictionaries matched; one-shot US audio
-  matched for speakers 0 through 8; expanded US audio suites matched for
-  speakers 0 through 8; CMake-staged `libtts.so` matched the committed exact
-  exported-symbol baseline; language-library exported symbol name/type sets
-  matched; `dt_platform_smoke` passed; `opthread_smoke` passed;
-  `compile_commands.json` had `3,307` lines; and the detailed CMake staged
-  manifest had `1,126` lines.
-- Captured and compared final CMake path/type and detailed manifests against
-  the final Autotools manifests. Path/type staging matched with `589` entries
-  on each side. Detailed metadata-hash comparison still differed with `1,126`
-  entries on each side because CMake-built binary sizes/hashes and
-  `doc/DECtalk/html` directory metadata still differ.
+- Ran the final Autotools/current gate:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase13-final-default --expected tests/golden`.
+  Result: passed. Final counts were 1,778 default warning lines, 29,593 strict
+  warning lines, 1,757 parser-visible default warnings, and 29,571
+  parser-visible strict warnings. Default and strict warning budgets passed.
+- The final Autotools gate also matched accepted public headers, exported
+  symbols, detailed manifest, generated dictionaries, user dictionaries, public
+  API smoke, API callback smoke, US English one-shot WAVs for speakers 0
+  through 8, expanded US audio suites for speakers 0 through 8, and non-US
+  one-shot WAVs for `uk`, `sp`, `gr`, `la`, and `fr`, speakers 0 through 8.
+- Ran the final CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase13-final-cmake --expected tests/golden`.
+  Result: passed. CMake generated `compile_commands.json` with 3,325 lines;
+  matched dictionaries, one-shot US audio, expanded US audio suites, exact
+  `libtts.so` exported symbols, and language-library symbol name/type sets; and
+  passed `dt_platform_smoke`, `opthread_smoke`, and
+  `dt_opthread_adapter_smoke`.
+- Ran the final audio-option matrix:
+  `tools/baseline/check_audio_option_matrix.sh --run-dir
+  baseline-runs/next4-phase13-audio-option-matrix`. Result: passed as
+  metadata-only CMake evidence and configure-metadata-only Autotools evidence;
+  no live audio hardware behavior was certified.
+- Captured and compared the final CMake basic staged manifest. Basic path/type
+  comparison passed with 589 entries on each side:
+  `baseline-runs/next4-phase13-cmake-manifest/basic-vs-autotools.diff`.
+  Detailed metadata/hash comparison still differed with 1,126 detailed entries
+  on each side:
+  `baseline-runs/next4-phase13-cmake-manifest/detailed-vs-autotools.diff`.
 - Updated `docs/modernization/READINESS_REVIEW.md` with the final readiness
-  review, final gate results, CMake status, behavior-risk boundaries, and
-  remaining limitations.
-- Files changed: `docs/modernization/READINESS_REVIEW.md` and `PLAN.md`.
-- Verification command:
-  `git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'`.
-- Public exports did not change according to the committed symbol comparisons.
-  Dictionaries did not change according to the committed dictionary
-  comparisons. Golden audio did not change according to the committed one-shot
-  and expanded deterministic WAV comparisons.
-- Behavior risk level: low for this final documentation checkpoint. The full
-  plan's highest-risk accepted change was the Phase 11 API-boundary local
-  prototype cleanup plus refreshed detailed Autotools manifest baseline, which
-  passed final symbol, dictionary, header, API-smoke, audio, and warning-budget
-  gates.
-- Known limitations: live audio hardware, callbacks, queue timing, backend
-  device selection, non-current targets, non-US audio, phoneme/text output,
-  CMake promotion, runtime platform-wrapper wiring, and remaining high-risk
-  warning cleanup are still deferred.
-- PR publication and merge are performed after this committed plan update so
-  the PR contains the completed readiness record.
+  state, final verification results, CMake status, platform wrapper status,
+  phoneme/text status, warning counts, deferred risks, and behavior statement.
+- No unexplained public header, exported symbol, dictionary, user dictionary,
+  API smoke, callback smoke, deterministic audio, warning-budget, or
+  Autotools-manifest delta remains. The only expected CMake-vs-Autotools delta
+  is the documented detailed metadata/hash packaging difference.
+- Did not change speech output, phoneme output, parser behavior, dictionary
+  behavior, public APIs, exported symbols, sample rate, default voice, install
+  layout, live audio routing, callback runtime behavior, queue behavior, thread
+  lifecycle behavior, CMake authority, Autotools authority, or historical target
+  support.
 
 ## Definition Of Done For Each Phase
 
@@ -1225,8 +1166,6 @@ Each completed phase summary must state:
 
 ## Current Immediate Next Step
 
-Before implementing Phase 1, review this plan against the current codebase and
-ask any upfront clarification questions. If there are no blockers and execution
-is already using extra-high reasoning, the plan can run from Phase 1 through
-Phase 13 without reasoning-change prompts. If execution starts at high
-reasoning, stop before Phase 7 for a single extra-high reasoning change prompt.
+Before implementing Phase 1, verify the tree is synchronized with
+`origin/develop` after PR #5 and run the Phase 1 baseline refresh. Extra-high
+reasoning is assumed for all phases, so no reasoning-level prompt is required.

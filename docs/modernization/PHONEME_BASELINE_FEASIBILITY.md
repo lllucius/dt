@@ -153,3 +153,62 @@ to whitespace checking:
 ```sh
 git diff --check -- . ':(exclude)src/dapi/src/cmd/cm_cmd.c'
 ```
+
+## Next High-Risk Plan Phase 3 Refresh
+
+The post-PR #5 plan rechecked public-facing phoneme and text output capture
+paths under `baseline-runs/next4-phase3-phoneme-text/`. Temporary probes were
+kept under `baseline-runs/` and were not committed as source, tooling, or
+accepted fixtures.
+
+Inspection:
+
+```sh
+dist/say -h
+nm -D dist/lib/libtts.so | \
+  rg 'TextToSpeech(ConvertToPhonemes|OpenLogFile|CloseLogFile|OpenInMemory|ReturnBuffer|AddBuffer)'
+```
+
+Observed status:
+
+- `dist/say -h` still exposes `-fo`, `-fi`, `-a`, `-l`, `-pre`, and `-post`,
+  but it does not expose the Windows sample `-lp` phoneme log option.
+- `libtts.so` still exports `TextToSpeechConvertToPhonemes`,
+  `TextToSpeechOpenLogFile`, `TextToSpeechCloseLogFile`,
+  `TextToSpeechOpenInMemory`, `TextToSpeechAddBuffer`, and
+  `TextToSpeechReturnBuffer`.
+
+Probe results from the correct installed runtime context:
+
+- Running the probes from the repository root failed at startup because the
+  staged runtime could not locate `dtalk_us.dic`; rerunning from `dist/`
+  matched the existing API smoke setup.
+- `TextToSpeechConvertToPhonemes` with `TTS_SILENT` segfaulted twice when run
+  from `dist/`.
+- `TextToSpeechOpenLogFile(..., LOG_TEXT)`,
+  `TextToSpeechOpenLogFile(..., LOG_PHONEMES)`, and
+  `TextToSpeechOpenLogFile(..., LOG_SYLLABLES)` all returned
+  `MMSYSERR_ERROR` in the no-audio setup.
+- A no-live-audio WAV-output variant was also probed. With relative WAV output,
+  `TextToSpeechOpenWaveOutFile` could be opened, but
+  `TextToSpeechOpenLogFile(..., LOG_TEXT)` still returned `MMSYSERR_ERROR`.
+- Inline command probes using `[:log text on]`, `[:log phonemes on]`, and
+  `[:log syllables on]` through `dist/say -fo` generated WAV files but did not
+  create a separate text, phoneme, syllable, or `log.txt` artifact in the probe
+  directories.
+- `tools/baseline/check_api_smoke.sh --out
+  baseline-runs/next4-phase3-api-smoke-check` passed, confirming the installed
+  public API smoke and deterministic WAV path still work.
+
+Decision:
+
+- Do not add phoneme or text golden fixtures in this phase.
+- Do not add capture or compare scripts yet, because there is no proven
+  deterministic public artifact to compare.
+- Defer phoneme/text baselines until either the public phoneme conversion crash
+  is understood and fixed under an API-boundary gate, or the public log-file
+  path can create a stable no-live-audio text artifact.
+
+Behavior statement: this refresh did not change parser, phoneme, LTS,
+synthesis, timing, dictionary, public API, audio generation, source, build
+scripts, golden fixtures, or accepted baselines.

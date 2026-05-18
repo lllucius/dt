@@ -389,16 +389,16 @@ LPTSTR szCurrentUsersDECtalk =
 
 #else //UNDER_CE 
 #ifdef SAPI5DECTALK
-LPSTR szLocalMachineDECtalk =
+const char *szLocalMachineDECtalk =
 	"SOFTWARE\\" COMPANY "\\" PRODUCT "\\sapi5\\" DECTALK_LANGUAGE;
-LPSTR szCurrentUsersDECtalk =
+const char *szCurrentUsersDECtalk =
     "Software\\" COMPANY "\\" CURRENT_USER_PRODUCT "\\sapi5\\" DECTALK_LANGUAGE;
 #else
 
-LPSTR szLocalMachineDECtalk =
+const char *szLocalMachineDECtalk =
 	"SOFTWARE\\" COMPANY "\\" PRODUCT "\\" VERSION "\\" DECTALK_LANGUAGE;
 
-LPSTR szCurrentUsersDECtalk =
+const char *szCurrentUsersDECtalk =
     "Software\\" COMPANY "\\" CURRENT_USER_PRODUCT "\\" DECTALK_LANGUAGE;
 #endif // SAPI5DECTALK
 #endif //UNDER_CE
@@ -407,10 +407,10 @@ LPSTR szCurrentUsersDECtalk =
 /* GL 09/25/1997 add abbreviation dict entry and UK_english support */
 /* GL 11/03/1997 add NWSNOAA dictionary entry */
 /* CAB 08/07/2002 Added for TTSStarupEXFonix() */
-LPSTR szMainDictDef = "DTALK_" DECTALK_LANGUAGE ".DIC";
-LPSTR szUserDictDef = "USER_" DECTALK_LANGUAGE ".DIC";
-LPSTR szAbbrDictDef = "ABBR_" DECTALK_LANGUAGE ".DIC";
-LPSTR szForeignDictDef = "DTALK_FL_" DECTALK_LANGUAGE ".DIC";
+const char *szMainDictDef = "DTALK_" DECTALK_LANGUAGE ".DIC";
+const char *szUserDictDef = "USER_" DECTALK_LANGUAGE ".DIC";
+const char *szAbbrDictDef = "ABBR_" DECTALK_LANGUAGE ".DIC";
+const char *szForeignDictDef = "DTALK_FL_" DECTALK_LANGUAGE ".DIC";
 
 #ifdef GERMAN	// Bats 987 12/03/01
 #define FOREIGNDICT_DTDIC_LOG
