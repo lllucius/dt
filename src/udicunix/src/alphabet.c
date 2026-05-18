@@ -77,12 +77,9 @@ void ReadAndAlphabetize(char *szFilename)
 #else
 	char fnam_t[_MAX_FNAME]="";	
 #endif
-	unsigned long Guard1=0xdeadbeef;
-	unsigned long Guard2=0xfeedface;
 	unsigned char word[256];
 	struct listup *headup;
 /* 	struct listlo *headlo; */
-	unsigned int i=0;
 
 	fpFtab=NULL;
 /*
@@ -116,7 +113,6 @@ int get_Aentry(unsigned char word[256])
 {
 	int j = 0;           
 	int k=0; 
-	int i=0;
 	int done=0;
 	unsigned char n = '\0';
 	char w1[100],w2[100];
@@ -286,7 +282,6 @@ unsigned char sort_up(unsigned char *word,struct listup *head)
 void write_up(struct listup *head)
 /*struct listup *head;*/
 {
-   unsigned char termstrg[]="\0\r\n";
 	int i=0;
 	if (head != NULL)
 		{

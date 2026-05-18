@@ -1039,3 +1039,283 @@ output, parser behavior, dictionary behavior, public APIs, exported symbols,
 sample rate, default voice, install layout, live audio routing, callback
 runtime behavior, queue behavior, thread lifecycle behavior, CMake authority,
 Autotools authority, or historical target support.
+
+## Next Warning Cleanup Plan Phase 1 Baseline
+
+The warning-focused follow-on plan started with a post-PR #6 baseline refresh
+after PR #6 was merged to `origin/develop` as
+`5b408cbea26ba5d9697366e0a4169c86a5f424cc`.
+
+Autotools/current refresh:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase1-post-pr6 \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,593.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,572.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and the US user-dictionary fixture matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output and expanded US audio suites matched exactly.
+- non-US one-shot WAV output matched exactly for `uk`, `sp`, `gr`, `la`, and
+  `fr`, speakers 0 through 8.
+
+CMake subset refresh:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next5-phase1-post-pr6-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,325 lines.
+- generated dictionaries matched accepted baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the accepted exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched accepted
+  baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+
+The parser-visible strict count is one row higher than the PR #6 final
+readiness note, but both strict warning budgets still pass and all accepted
+behavior gates reproduced. No source, public API, build script, runtime,
+dictionary-generation, audio, or threading behavior was intentionally changed
+in this refresh phase.
+
+## Next Warning Cleanup Plan Phase 3 Readiness
+
+Phase 3 cleaned one low-risk strict warning category in the user-dictionary
+alphabetizer:
+
+- file: `src/udicunix/src/alphabet.c`;
+- category: `-Wunused-variable`;
+- change: removed unused local variables only.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase3-alphabet-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,777.
+- strict warning-line count: 29,563.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,542.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV output matched exactly.
+
+The detailed install manifest baseline was refreshed after two captures proved
+the expected binary metadata/hash change was stable and limited to rebuilt
+`tools/udic_*` binaries. User-dictionary generated output remained byte-exact.
+
+Behavior statement: no dictionary format, dictionary sorting, dictionary
+lookup, text parsing, codepage conversion, public API, exported symbol,
+synthesis, audio, callback, queue, thread lifecycle, language selection, or
+voice selection behavior was intentionally changed.
+
+## Next Warning Cleanup Plan Phase 4 Readiness
+
+Phase 4 cleaned one low-risk strict missing-prototype warning in the tunecheck
+sample tool:
+
+- file: `src/samplosf/src/dtsamples/tunecheck.c`;
+- category: `-Wmissing-prototypes`;
+- change: made private helper `MakeTunerParams` file-local with `static`.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase4-tunecheck-prototype-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,556.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,535.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV output matched exactly.
+
+The detailed install manifest baseline was refreshed after two captures proved
+the expected binary metadata/hash change was stable and limited to rebuilt
+`tools/tunecheck_*` binaries.
+
+Behavior statement: no generated tuner string, command-line behavior, public
+API, exported symbol, dictionary behavior, synthesis behavior, deterministic
+audio output, callback behavior, queue behavior, thread lifecycle behavior,
+language selection, or voice selection behavior was intentionally changed.
+
+## Next Warning Cleanup Plan Phase 5 Readiness
+
+Phase 5 cleaned one low-risk strict unused-variable category in the tunecheck
+sample tool:
+
+- file: `src/samplosf/src/dtsamples/tunecheck.c`;
+- category: `-Wunused-variable`;
+- change: removed unused local variables only.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase5-tunecheck-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,519.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,500.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV output matched exactly.
+
+The detailed install manifest baseline was refreshed after two captures proved
+the expected binary metadata/hash change was stable and limited to rebuilt
+`tools/tunecheck_*` binaries.
+
+Behavior statement: no callback logic, buffer processing, audio file
+generation, tuner-string generation, command-line parsing, displayed output,
+public API, exported symbol, dictionary behavior, synthesis behavior,
+deterministic audio output, queue behavior, thread lifecycle behavior, language
+selection, or voice selection behavior was intentionally changed.
+
+## Next Warning Cleanup Plan Final Readiness
+
+Date: 2026-05-18.
+
+The warning-focused follow-on plan is complete. It refreshed the post-PR #6
+baseline, recorded a new warning-gate map, cleaned one low-risk unused-variable
+category in the user-dictionary alphabetizer, cleaned one low-risk
+missing-prototype category in the tunecheck sample tool, cleaned one low-risk
+unused-variable category in the tunecheck sample tool, and re-ran final
+readiness gates.
+
+Final Autotools/current gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase6-final-default \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,521.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,498.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV output matched exactly.
+
+Final CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next5-phase6-final-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,325 lines.
+- generated dictionaries matched accepted baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the accepted exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched accepted
+  baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and
+  `dt_opthread_adapter_smoke` passed.
+
+Final audio-option matrix:
+
+```sh
+tools/baseline/check_audio_option_matrix.sh \
+  --run-dir baseline-runs/next5-phase6-audio-option-matrix
+```
+
+Results:
+
+- CMake default, disabled-audio, ALSA, and PulseAudio rows completed as
+  metadata-only probes.
+- Autotools default, `--disable-audio`, and `--disable-pulseaudio` rows
+  completed as configure-metadata-only probes.
+- Local ALSA and PulseAudio rows remain metadata-only; no live backend
+  hardware behavior was certified.
+
+Warning cleanup result:
+
+- `src/udicunix/src/alphabet.c` now has zero strict `-Wunused-variable`
+  warning rows.
+- `src/samplosf/src/dtsamples/tunecheck.c` now has zero strict
+  `-Wmissing-prototypes` rows and zero strict `-Wunused-variable` rows for the
+  cleaned categories.
+- Remaining warning debt is still substantial and includes deferred
+  pointer-sign, pointer-qualifier, format-y2k, unused-parameter,
+  callback-facing, loader-adjacent, structure-layout, threading, parser,
+  synthesis, audio, and public API implementation warnings.
+
+Final status:
+
+- Autotools remains the authoritative Linux build path.
+- CMake remains side-by-side and non-authoritative.
+- `src/platform` remains private scaffolding; no runtime wrapper option or
+  routing is enabled.
+- deterministic phoneme/text golden baselines were not accepted; phoneme/text
+  output remains a deferred risk area.
+- live audio hardware, backend device selection, queue timing, pipe timing,
+  full callback timing, reset/pause/restart timing, non-current targets, and
+  historical platform behavior remain outside the verified coverage.
+
+Behavior statement: this plan reduced selected low-risk warning categories in
+dictionary-generation and sample-tool code while preserving accepted Linux
+baselines. It did not intentionally change speech output, phoneme output,
+parser behavior, dictionary behavior, public APIs, exported symbols, sample
+rate, default voice, install layout, live audio routing, callback runtime
+behavior, queue behavior, thread lifecycle behavior, CMake authority,
+Autotools authority, or historical target support.

@@ -259,6 +259,209 @@ tools/baseline/verify_current.sh \
   --expected tests/golden
 ```
 
+## Next Warning Cleanup Plan Refresh
+
+The warning-focused follow-on plan refreshed warning evidence with:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase1-post-pr6 \
+  --expected tests/golden
+```
+
+Current warning counts:
+
+| Source | Count |
+| --- | ---: |
+| default warning lines | 1,778 |
+| parser-visible default warnings | 1,757 |
+| strict warning lines | 29,593 |
+| parser-visible strict warnings | 29,572 |
+
+Selected cleanup sequence:
+
+1. `src/udicunix/src/alphabet.c`, strict `-Wunused-variable`.
+   The target rows are local unused variables in the user-dictionary
+   alphabetizer. The cleanup must not touch pointer signedness, text parsing,
+   codepage conversion, sort order, file I/O, dictionary format, or generated
+   user-dictionary output.
+2. `src/samplosf/src/dtsamples/tunecheck.c`, strict
+   `-Wmissing-prototypes`.
+   The target row is private helper `MakeTunerParams`. The cleanup may make
+   the helper file-local only if source review confirms there is no external
+   reference.
+3. `src/samplosf/src/dtsamples/tunecheck.c`, strict
+   `-Wunused-variable`.
+   The target rows are unused locals in the sample tool. The cleanup must not
+   touch callback behavior, buffer processing, tuner-string generation,
+   command-line parsing, format-y2k output, qualifier cleanup, or pointer
+   signedness.
+
+Rejected candidates for this pass:
+
+- `src/udicunix/src/alphabet.c` pointer-sign warnings: these are dictionary
+  text-buffer boundary warnings and should not be mixed with unused-variable
+  removal.
+- `src/samplosf/src/dtsamples/tunecheck.c` `-Wdiscarded-qualifiers` and
+  `-Wformat-y2k`: these can affect string typing or displayed output and need
+  a separate review.
+- parser-adjacent command files under `src/dapi/src/cmd/`: parser behavior is
+  higher risk than the selected shipped tool cleanup.
+- `src/dapi/src/osf/` stubs: many rows are low-risk-looking unused parameters,
+  but those files model compatibility APIs and should be grouped separately.
+
+Budget policy for this plan:
+
+- Add strict warning-budget rows only after a selected file/category reaches
+  zero and the full default gate passes.
+- Do not broaden budgets to unrelated warning debt.
+
+## Next Warning Cleanup Plan Phase 3 Cleanup
+
+Phase 3 implemented the selected `src/udicunix/src/alphabet.c`
+`-Wunused-variable` cleanup.
+
+Implementation:
+
+- removed unused local variables `Guard1`, `Guard2`, and `i` from
+  `ReadAndAlphabetize`;
+- removed unused local variable `i` from `get_Aentry`;
+- removed unused local variable `termstrg` from `write_up`;
+- did not touch pointer signedness, input parsing, codepage conversion, sort
+  order, file I/O, dictionary format, or generated dictionary output logic.
+
+Warning evidence:
+
+- `src/udicunix/src/alphabet.c` strict `-Wunused-variable` rows decreased to
+  zero.
+- remaining `alphabet.c` strict warnings are deferred pointer-sign rows.
+- strict parser-visible warnings decreased from 29,572 in the Phase 1 refresh
+  to 29,542 in the final Phase 3 verification.
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/udicunix/src/alphabet.c`, `-Wunused-variable`, maximum count `0`.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase3-alphabet-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,777.
+- strict warning-line count: 29,563.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,542.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+The detailed manifest baseline was refreshed after repeated captures showed a
+stable, expected metadata/hash change only for the rebuilt `tools/udic_*`
+binaries. User-dictionary output itself remained byte-exact.
+
+## Next Warning Cleanup Plan Phase 4 Cleanup
+
+Phase 4 implemented the selected `src/samplosf/src/dtsamples/tunecheck.c`
+`-Wmissing-prototypes` cleanup.
+
+Implementation:
+
+- made the private `MakeTunerParams` helper file-local with `static`;
+- did not change the generated tuner string, command-line parsing, callback
+  logic, audio buffer processing, public API usage, or exported symbols.
+
+Warning evidence:
+
+- `MakeTunerParams` strict `-Wmissing-prototypes` rows decreased to zero.
+- strict parser-visible warnings decreased from 29,542 in the Phase 3 final
+  verification to 29,535 in the Phase 4 final verification.
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/samplosf/src/dtsamples/tunecheck.c`, `-Wmissing-prototypes`, maximum
+  count `0`.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase4-tunecheck-prototype-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,556.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,535.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+The detailed manifest baseline was refreshed after repeated captures showed a
+stable, expected metadata/hash change only for the rebuilt `tools/tunecheck_*`
+binaries.
+
+## Next Warning Cleanup Plan Phase 5 Cleanup
+
+Phase 5 implemented the selected `src/samplosf/src/dtsamples/tunecheck.c`
+`-Wunused-variable` cleanup.
+
+Implementation:
+
+- removed unused local variable `level` from `main`;
+- removed unused local variables `dwAvgSamplesPerSecond`,
+  `dwCurrentSamplesPerSecond`, `dwOldSamples`, and `dwOldTime` from
+  `TTSCallbackRoutine`;
+- removed unused local variable `kk` from `DoFullAutoTune`;
+- did not change callback logic, buffer processing, audio file generation,
+  tuner-string generation, command-line parsing, or displayed output.
+
+Warning evidence:
+
+- `src/samplosf/src/dtsamples/tunecheck.c` strict `-Wunused-variable` rows
+  decreased to zero.
+- remaining `tunecheck.c` strict warnings are deferred
+  `-Wdiscarded-qualifiers` and `-Wformat-y2k` rows.
+- strict parser-visible warnings decreased from 29,535 in the Phase 4 final
+  verification to 29,500 in the Phase 5 final verification.
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/samplosf/src/dtsamples/tunecheck.c`, `-Wunused-variable`, maximum count
+  `0`.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase5-tunecheck-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,519.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,500.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+The detailed manifest baseline was refreshed after repeated captures showed a
+stable, expected metadata/hash change only for the rebuilt `tools/tunecheck_*`
+binaries.
+
 Result: the final gate passed with public headers, exported symbols, detailed
 manifest, dictionaries, user dictionaries, API smoke, callback smoke, US
 one-shot audio, expanded US audio suites, non-US one-shot audio, default warning
