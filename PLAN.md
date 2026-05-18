@@ -704,7 +704,7 @@ Implementation Summary:
 
 ## Phase 8: Legacy OP_* Parity Harness
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -742,6 +742,59 @@ Rules:
   revised with a narrower approved edit and matching rollback plan.
 - If direct `OP_*` harnessing requires invasive runtime changes, document the
   blocker and stop the implementation.
+
+Implementation Summary:
+
+- Added `tools/platform/opthread_smoke.c`, a documented developer smoke harness
+  that links directly against `src/dapi/src/nt/opthread.c` to record selected
+  legacy `OP_*` behavior without routing runtime code through `src/platform`.
+- Added a CMake-only `opthread_smoke` target in `CMakeLists.txt`.
+- Updated `tools/baseline/verify_cmake_subset.sh` to build and run
+  `opthread_smoke`, recording output in
+  `baseline-runs/<phase>/opthread-smoke.log` and listing it in the verifier
+  summary.
+- Covered default-stack thread create, current Linux
+  `OP_WaitForThreadTermination` return behavior, thread return value, priority
+  get/set, `OP_Sleep(0)`, mutex lock/unlock, auto-reset/manual-reset event
+  semantics, and lightweight lock zero-timeout behavior.
+- Updated `docs/modernization/PLATFORM_WRAPPER_DECISION.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`, and `src/platform/README.md` with
+  the new evidence and limitations.
+- Files changed: `tools/platform/opthread_smoke.c`, `CMakeLists.txt`,
+  `tools/baseline/verify_cmake_subset.sh`,
+  `docs/modernization/PLATFORM_WRAPPER_DECISION.md`,
+  `docs/modernization/CMAKE_OVERVIEW.md`, `src/platform/README.md`, and
+  `PLAN.md`.
+- CMake verification run:
+  `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase8-opthread-cmake --expected tests/golden`.
+- CMake verification results: generated dictionaries matched; one-shot US audio
+  matched; expanded US audio suites matched; `libtts.so` exported symbols
+  matched exactly; language-library exported symbol name/type sets matched;
+  `dt_platform_smoke` passed; `opthread_smoke` passed; `compile_commands.json`
+  had `3,307` lines; detailed CMake staged manifest had `1,126` lines.
+- `opthread_smoke` recorded:
+  `op_thread_wait_status=1`, `op_thread_return=77`,
+  `op_thread_priority=0`, `op_mutex=ok`, `op_event_semantics=ok`,
+  `op_lightweight_lock=ok`, `op_sleep_zero=ok`, and `opthread_smoke=ok`.
+- Autotools verification run:
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase8-opthread-autotools --expected tests/golden`.
+- Autotools verification results: default warning-line count `1,778`, strict
+  warning-line count `29,760`, parser-visible default warnings `1,757`, and
+  warning budget status `ok`. Public headers, exported symbols, detailed
+  Autotools manifest, dictionaries, user dictionaries, API smoke WAV, one-shot
+  US audio, and expanded US audio suites all matched accepted baselines.
+- Public exports did not change according to the committed symbol comparisons.
+  Dictionaries did not change according to the committed dictionary
+  comparisons. Golden audio did not change according to the committed one-shot
+  and expanded deterministic WAV comparisons.
+- Behavior risk level: medium. This phase added a runtime-adjacent test target
+  that compiles `opthread.c`, but it did not modify `opthread.c`,
+  `linux_audio.c`, runtime libraries, installed headers, exported symbols,
+  audio routing, callbacks, queues, pipes, or threading behavior.
+- Known limitations: the harness does not prove live-audio, callback, queue,
+  pipe, buffer ownership, reset/pause/restart, backend state, exact scheduler
+  fairness, timing guarantees, non-current platform behavior, or runtime
+  wrapper replacement safety.
 
 ## Phase 9: Platform Wrapper Adapter Decision
 

@@ -4,6 +4,8 @@ Phase 8 decision: defer runtime wrapper wiring.
 Phase 9 update: add non-runtime wrapper parity coverage, but continue to defer
 runtime wiring.
 Phase 10 decision: no runtime wrapper pilot is approved.
+Accelerated Phase 8 update: add isolated legacy `OP_*` parity evidence, but
+continue to defer runtime wiring.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -131,3 +133,48 @@ callback-timing, queue, pipe, or buffer-ownership parity harness exists.
 
 No exact file, wrapper, behavior gate, or rollback plan is proposed for
 implementation in this phase because the prerequisite evidence is incomplete.
+
+## Accelerated Phase 8 OP_* Harness
+
+Accelerated Phase 8 adds `tools/platform/opthread_smoke.c` and builds it only
+as the CMake `opthread_smoke` developer target. The target links directly
+against `src/dapi/src/nt/opthread.c` for evidence, but it is not installed and
+is not linked into DECtalk runtime libraries.
+
+Covered by the harness:
+
+- `OP_CreateThread` with default stack size;
+- `OP_WaitForThreadTermination` handle ownership and current Linux return
+  behavior;
+- `OP_GetThreadPriority` and `OP_SetThreadPriority` with the current thread
+  priority;
+- `OP_Sleep(0)` as a smoke-level scheduler-yield check;
+- `OP_CreateMutex`, `OP_LockMutex`, `OP_UnlockMutex`, and `OP_DestroyMutex`;
+- auto-reset and manual-reset `OP_CreateEvent`/`OP_WaitForEvent` semantics;
+- `ThreadLock` successful lock and zero-timeout failed relock behavior.
+
+Observed CMake verifier output:
+
+```text
+op_thread_wait_status=1
+op_thread_return=77
+op_thread_priority=0
+op_mutex=ok
+op_event_semantics=ok
+op_lightweight_lock=ok
+op_sleep_zero=ok
+opthread_smoke=ok
+```
+
+Still not covered:
+
+- live audio routing, device opening, callback timing, queue behavior, pipe
+  behavior, buffer ownership, reset/pause/restart transitions, and backend
+  state;
+- exact scheduler fairness or timing guarantees;
+- non-current platform `OP_*` behavior;
+- runtime replacement of any `opthread.c` call path with `src/platform`.
+
+Decision remains unchanged: no runtime wrapper pilot is approved. The new
+evidence helps define adapter requirements, but `src/platform` is still not a
+drop-in replacement for active DECtalk runtime code.

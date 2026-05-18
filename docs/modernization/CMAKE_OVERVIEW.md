@@ -32,6 +32,8 @@ The current CMake build creates:
 - `dectalk_cmake_stage`, which installs the CMake-built subset into
   `baseline-runs/.../cmake-dist` by default.
 - `compile_commands.json` for analysis tooling.
+- developer smoke targets `dt_platform_smoke` and `opthread_smoke`, which are
+  built by the CMake subset verifier but are not installed.
 
 Configure and stage example:
 
