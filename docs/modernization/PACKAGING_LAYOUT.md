@@ -152,3 +152,35 @@ promotion must either eliminate the binary metadata/hash differences with a
 dedicated build-model parity effort or explicitly approve them as release
 packaging differences after matching behavior, symbol, dictionary, audio,
 callback, queue, and threading evidence.
+
+## Next High-Risk Plan Phase 12 Packaging Decision
+
+Phase 12 rechecked CMake packaging against the current default Autotools gate
+artifacts.
+
+Current path/type evidence:
+
+- Autotools manifest:
+  `baseline-runs/next4-phase11-runtime-optin-defer-default/dist-manifest.txt`
+- CMake manifest:
+  `baseline-runs/next4-phase12-cmake-readiness/cmake-dist-manifest.txt`
+- comparison output:
+  `baseline-runs/next4-phase12-cmake-readiness/basic-vs-autotools.diff`
+- result: `manifest: ok`, with 589 entries in each manifest.
+
+Current detailed evidence:
+
+- Autotools detailed manifest:
+  `baseline-runs/next4-phase11-runtime-optin-defer-default/dist-manifest-detailed.txt`
+- CMake detailed manifest:
+  `baseline-runs/next4-phase11-runtime-optin-defer-cmake/dist-manifest-detailed.txt`
+- comparison output:
+  `baseline-runs/next4-phase12-cmake-readiness/detailed-vs-autotools.diff`
+- result: `manifest: different`, with 1,126 entries in each manifest.
+
+Decision: CMake remains side-by-side. Basic path/type staging parity is still
+accepted, but detailed metadata/hash differences for CMake-built binaries and
+`doc/DECtalk/html` directory metadata remain release-packaging promotion
+blockers. No install layout, Autotools rule, CMake stage rule, public header,
+dictionary, audio, symbol, or runtime routing change was made for this
+decision.

@@ -356,6 +356,68 @@ Default CMake behavior remains the verified side-by-side state: OSS metadata is
 visible on Linux, ALSA and PulseAudio are off, audio is not disabled, and live
 audio hardware is not opened by the verification path.
 
+## Next High-Risk Plan Phase 12 Promotion Readiness
+
+Recommendation: continue side-by-side and do not promote CMake to the
+authoritative Linux build path yet.
+
+Fresh CMake evidence:
+
+- `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake --expected
+  tests/golden` passed.
+- `compile_commands.json` was generated with 3,325 lines.
+- generated dictionaries matched committed dictionary baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+
+Fresh Autotools/default evidence:
+
+- `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-default --expected
+  tests/golden` passed.
+- Public headers, exported symbols, detailed manifest, dictionaries, user
+  dictionaries, API smoke, callback smoke, US audio, expanded US audio suites,
+  non-US audio, default warning budget, and strict warning budget all matched
+  accepted baselines.
+
+Manifest evidence:
+
+- CMake path/type manifest:
+  `baseline-runs/next4-phase12-cmake-readiness/cmake-dist-manifest.txt`
+- path/type comparison:
+  `baseline-runs/next4-phase12-cmake-readiness/basic-vs-autotools.diff`
+- result: `manifest: ok`, with 589 entries on each side.
+- detailed comparison:
+  `baseline-runs/next4-phase12-cmake-readiness/detailed-vs-autotools.diff`
+- result: `manifest: different`, with 1,126 detailed entries on each side.
+
+Promotion blockers:
+
+- detailed metadata/hash differences remain for 36 CMake-built executable or
+  shared-library artifacts plus the `doc/DECtalk/html` directory metadata;
+- CMake Release build flags and target/link model still differ from the
+  authoritative Autotools build model;
+- language-library full address/order symbol captures are not accepted as exact
+  parity, although name/type sets match;
+- CMake audio options remain metadata-only on this host and do not replace
+  Autotools probing, backend linkage, callback timing, queues, or live-audio
+  behavior;
+- no runtime wrapper opt-in has been approved.
+
+Future promotion gates should either eliminate these blockers or explicitly
+accept each difference class with matching release, symbol, dictionary, API,
+callback, threading, and audio evidence. Until then, Autotools remains the
+authoritative Linux build path and CMake remains verification scaffolding.
+
 ## Phase 18 Promotion Recommendation
 
 This historical recommendation predates the later Phase 5 packaging closure. See

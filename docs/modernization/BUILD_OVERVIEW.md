@@ -27,10 +27,15 @@ inventory, not a support promise.
     and `make`.
   - `docker-compose.yml` mounts the repository and runs that Dockerfile.
 - Side-by-side CMake build.
-  - `CMakeLists.txt` currently builds an initial US `libtts_us.so`, `say_cmake`,
-    and `compile_commands.json`.
+  - `CMakeLists.txt` currently builds the side-by-side Linux CMake subset:
+    multi-language and per-language `libtts` shared libraries, dictionary
+    tools, sample tools, staged packaging, `compile_commands.json`, and
+    developer-only platform smoke targets.
   - The CMake path is Linux-only by default; non-current targets require
     `DECTALK_CMAKE_ENABLE_LEGACY_TARGETS=ON`.
+  - CMake remains non-authoritative. Autotools remains the primary Linux build
+    until detailed packaging, build-model, and live-audio promotion blockers
+    are resolved or explicitly accepted.
   - Historical/non-current Autotools target triplets require
     `./configure --enable-legacy-targets`.
   - Scope and source-membership differences are documented in

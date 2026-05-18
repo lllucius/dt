@@ -887,3 +887,55 @@ Behavior statement: no public API signatures, exported symbol names,
 dictionary strings, parser behavior, synthesis behavior, callback behavior,
 audio behavior, language selection behavior, or voice selection behavior were
 intentionally changed.
+
+## Next High-Risk Plan Phase 12 CMake Promotion Readiness
+
+Phase 12 reviewed whether CMake is ready for promotion after the detailed
+manifest, audio-option, adapter-smoke, and default behavior work.
+
+Decision: CMake is not ready to replace Autotools as the authoritative Linux
+build path. It remains useful side-by-side verification scaffolding.
+
+Verification reviewed:
+
+- CMake subset gate:
+  `tools/baseline/verify_cmake_subset.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake --expected
+  tests/golden`
+- Default Autotools/current gate:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next4-phase11-runtime-optin-defer-default --expected
+  tests/golden`
+
+Results:
+
+- CMake generated `compile_commands.json` with 3,325 lines.
+- CMake dictionaries, one-shot US English audio, expanded US audio suites,
+  exact `libtts.so` exported symbols, and language-library symbol name/type
+  sets matched accepted baselines.
+- `dt_platform_smoke`, `opthread_smoke`, and `dt_opthread_adapter_smoke`
+  passed.
+- Default Autotools public headers, exported symbols, detailed manifest,
+  dictionaries, user dictionaries, API smoke, callback smoke, US audio,
+  expanded US audio suites, non-US audio, default warning budget, and strict
+  warning budget matched accepted baselines.
+- CMake path/type staged manifest comparison passed with 589 entries on each
+  side.
+- CMake detailed metadata-hash comparison still differed with 1,126 detailed
+  entries on each side.
+
+Promotion blockers:
+
+- CMake-built binaries still differ in size and SHA-256 hash from
+  Autotools-built binaries.
+- `doc/DECtalk/html` directory metadata still differs.
+- CMake uses a different Release build flag and target/link model than the
+  authoritative Autotools build.
+- CMake audio options remain metadata-only and do not certify live backend
+  probing, linkage, callback timing, queues, or live-audio behavior.
+- No runtime platform-wrapper opt-in is approved.
+
+Behavior statement: no build path was promoted, no build path was removed, no
+install layout changed, and no public API, exported symbol, dictionary, audio,
+callback, queue, thread lifecycle, or runtime routing behavior was
+intentionally changed.

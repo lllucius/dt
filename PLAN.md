@@ -991,7 +991,7 @@ Implementation Summary:
 
 ## Phase 12: CMake Promotion Readiness Decision
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -1023,6 +1023,43 @@ Rules:
 - Do not remove Autotools.
 - Do not remove Visual Studio, legacy Visual Studio 6, or devops build paths.
 - Do not change install layout without exact manifest evidence.
+
+Implementation Summary:
+
+- Reviewed the current CMake subset evidence from
+  `baseline-runs/next4-phase11-runtime-optin-defer-cmake` and the current
+  default Autotools evidence from
+  `baseline-runs/next4-phase11-runtime-optin-defer-default`.
+- Captured a fresh CMake basic staged manifest from the Phase 11 CMake staged
+  tree at `baseline-runs/next4-phase12-cmake-readiness/cmake-dist-manifest.txt`.
+- Compared current Autotools and CMake path/type manifests with:
+  `tools/baseline/compare_manifest.sh --expected
+  baseline-runs/next4-phase11-runtime-optin-defer-default/dist-manifest.txt
+  --actual baseline-runs/next4-phase12-cmake-readiness/cmake-dist-manifest.txt
+  --out baseline-runs/next4-phase12-cmake-readiness/basic-vs-autotools.diff`.
+  Result: `manifest: ok`, with 589 entries on each side.
+- Compared current Autotools and CMake detailed metadata/hash manifests with:
+  `tools/baseline/compare_manifest.sh --expected
+  baseline-runs/next4-phase11-runtime-optin-defer-default/dist-manifest-detailed.txt
+  --actual
+  baseline-runs/next4-phase11-runtime-optin-defer-cmake/dist-manifest-detailed.txt
+  --out baseline-runs/next4-phase12-cmake-readiness/detailed-vs-autotools.diff`.
+  Result: `manifest: different`, with 1,126 detailed entries on each side.
+- Determined that CMake is not ready for promotion. Autotools remains
+  authoritative because detailed metadata/hash differences remain for 36
+  CMake-built executable or shared-library artifacts plus the
+  `doc/DECtalk/html` directory metadata, CMake still uses a distinct
+  build-flag/link model, CMake audio options are metadata-only on this host,
+  and no runtime wrapper opt-in is approved.
+- Updated `docs/modernization/CMAKE_OVERVIEW.md`,
+  `docs/modernization/PACKAGING_LAYOUT.md`,
+  `docs/modernization/BUILD_OVERVIEW.md`, and
+  `docs/modernization/READINESS_REVIEW.md` with the Phase 12 readiness
+  decision, evidence, blockers, and future promotion gates.
+- Did not promote CMake, remove Autotools, remove Visual Studio paths, remove
+  legacy Visual Studio 6 paths, remove devops build paths, change install
+  layout, change public APIs, change exported symbols, change dictionaries,
+  change deterministic audio, or change runtime routing.
 
 ## Phase 13: Final Readiness Review, PR, And Merge
 
