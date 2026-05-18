@@ -535,12 +535,12 @@ f 755 2234880 tools/say_demo_gr ->
 f 755 2437888 lib/libtts_gr.so -> 
 f 755 25688 dtmemory -> 
 f 755 34776 tools/dump_vdf -> 
-f 755 41064 tools/udic_fr -> 
-f 755 41064 tools/udic_la -> 
-f 755 41064 tools/udic_sp -> 
-f 755 41096 tools/udic_gr -> 
-f 755 41096 tools/udic_uk -> 
-f 755 41096 tools/udic_us -> 
+f 755 40944 tools/udic_fr -> 
+f 755 40944 tools/udic_la -> 
+f 755 40944 tools/udic_sp -> 
+f 755 40976 tools/udic_gr -> 
+f 755 40976 tools/udic_uk -> 
+f 755 40976 tools/udic_us -> 
 f 755 43208 tools/mfg_load -> 
 f 755 46136 tools/dic_fr -> 
 f 755 46136 tools/dic_la -> 
@@ -1118,9 +1118,9 @@ bedf4d314ded804e53d8c3b5f28f135ab4af698ad9d158ca71716cc29f6181e6  tools/tunechec
 f5398a98c4dfd59e97011fd1bb4f6fd6e39a886a9e856ccb4be871c281b9b365  tools/tunecheck_sp
 219cd733990a851bc2c850f850cd257097d84c3ed555e1d1a76cfaa3350b1011  tools/tunecheck_uk
 3835d44429c4ec406881461f3bfba2daf3e5e0c0a645c17a19546b0f7195909e  tools/tunecheck_us
-9e377c3646b1e54282bd76778144d113152032669f063c4e386e7d6fcece7481  tools/udic_fr
-f9846dfc81b3493d4ce5384f40a9414aa89cabd773043c0144fd0a7454697988  tools/udic_gr
-cf6ba1cb49393da1b34760b0b87a963f6c02b14738020d20df01c7da86f7aa6d  tools/udic_la
-62d419345d0efbbd40ca2be402416ce4f3db3d9af2cd89f689c168426b6c8e10  tools/udic_sp
-c8830adccdd5ebdfd3fd93388cf89f971f9c85b1b8c5232fe01f95d0f77bd241  tools/udic_uk
-c37e80f8785cc700cdd5e0f83c8be00d91250e9159be4aadc152a8535bcb198d  tools/udic_us
+e4b0ab2ba338e73a6b1c1c43d904c0d55329dd4ce3146d4dbf787b61a962c525  tools/udic_fr
+8ac383da7b023a613a5f89685c4974b8fe264b8f5bdf12c88bc44e667d7bc5a6  tools/udic_gr
+6372153bccfd49e4ceb554c8d724d7dae625540522170f50d6de9d44af0e7663  tools/udic_la
+4a687988f8d4a7b66b03a484b7c3d7e509268d1397d1356905a827d21c069252  tools/udic_sp
+a3d7e8c312ab4ad2537894cd9129421205ed49f15b4d4ef3461b887b0d8fd6a5  tools/udic_uk
+b0a7be730111702c50584ae75bf586f98f7c48573ffba25d9bd4f56a41528b6d  tools/udic_us

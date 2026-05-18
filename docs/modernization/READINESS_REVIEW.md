@@ -1097,3 +1097,42 @@ readiness note, but both strict warning budgets still pass and all accepted
 behavior gates reproduced. No source, public API, build script, runtime,
 dictionary-generation, audio, or threading behavior was intentionally changed
 in this refresh phase.
+
+## Next Warning Cleanup Plan Phase 3 Readiness
+
+Phase 3 cleaned one low-risk strict warning category in the user-dictionary
+alphabetizer:
+
+- file: `src/udicunix/src/alphabet.c`;
+- category: `-Wunused-variable`;
+- change: removed unused local variables only.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase3-alphabet-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,777.
+- strict warning-line count: 29,563.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,542.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV output matched exactly.
+
+The detailed install manifest baseline was refreshed after two captures proved
+the expected binary metadata/hash change was stable and limited to rebuilt
+`tools/udic_*` binaries. User-dictionary generated output remained byte-exact.
+
+Behavior statement: no dictionary format, dictionary sorting, dictionary
+lookup, text parsing, codepage conversion, public API, exported symbol,
+synthesis, audio, callback, queue, thread lifecycle, language selection, or
+voice selection behavior was intentionally changed.

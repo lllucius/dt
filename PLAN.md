@@ -310,7 +310,7 @@ Implementation Summary:
 
 ## Phase 3: UDICT Alphabetizer Unused-Variable Cleanup
 
-Status: pending
+Status: completed
 
 Reasoning checkpoint: extra-high.
 
@@ -340,6 +340,36 @@ Rules:
 - Do not change dictionary format, dictionary sorting, dictionary lookup, or
   user-dictionary generated output.
 - Do not mix pointer signedness or qualifier cleanup into this phase.
+
+Implementation Summary:
+
+- Removed only unused local variables from `src/udicunix/src/alphabet.c`:
+  `Guard1`, `Guard2`, and `i` in `ReadAndAlphabetize`, `i` in `get_Aentry`,
+  and `termstrg` in `write_up`.
+- Because `alphabet.c` contains legacy non-UTF-8 bytes, the edit was made with
+  byte-preserving exact substitutions after `apply_patch` could not decode the
+  file.
+- Added a strict warning-budget row for
+  `src/udicunix/src/alphabet.c` `-Wunused-variable` at maximum count `0`.
+- Refreshed `tests/golden/dist-manifest-detailed.txt` after repeated captures
+  proved the expected binary metadata/hash change was stable and limited to
+  rebuilt `tools/udic_*` binaries. User-dictionary output remained byte-exact.
+- Updated `docs/modernization/WARNING_INVENTORY.md` and
+  `docs/modernization/READINESS_REVIEW.md` with the Phase 3 evidence.
+- Verification:
+  `tools/baseline/verify_current.sh --run-dir
+  baseline-runs/next5-phase3-alphabet-unused-final --expected tests/golden`
+  passed. Counts were 1,777 default warning lines, 29,563 strict warning
+  lines, 1,757 parser-visible default warnings, and 29,542 parser-visible
+  strict warnings. Default and strict warning budgets passed.
+- Public headers, exported symbols, detailed manifest, generated dictionaries,
+  user dictionaries, API smoke, callback smoke, US one-shot audio, expanded US
+  audio suites, and non-US one-shot audio all matched accepted baselines.
+- Did not change dictionary format, dictionary sorting, dictionary lookup, text
+  parsing, codepage conversion, pointer signedness, qualifier handling, public
+  APIs, exported symbols, synthesis behavior, audio behavior, callback
+  behavior, queue behavior, threading behavior, language selection, or voice
+  selection.
 
 ## Phase 4: Tunecheck Missing-Prototype Cleanup
 

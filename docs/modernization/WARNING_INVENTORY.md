@@ -316,6 +316,55 @@ Budget policy for this plan:
   zero and the full default gate passes.
 - Do not broaden budgets to unrelated warning debt.
 
+## Next Warning Cleanup Plan Phase 3 Cleanup
+
+Phase 3 implemented the selected `src/udicunix/src/alphabet.c`
+`-Wunused-variable` cleanup.
+
+Implementation:
+
+- removed unused local variables `Guard1`, `Guard2`, and `i` from
+  `ReadAndAlphabetize`;
+- removed unused local variable `i` from `get_Aentry`;
+- removed unused local variable `termstrg` from `write_up`;
+- did not touch pointer signedness, input parsing, codepage conversion, sort
+  order, file I/O, dictionary format, or generated dictionary output logic.
+
+Warning evidence:
+
+- `src/udicunix/src/alphabet.c` strict `-Wunused-variable` rows decreased to
+  zero.
+- remaining `alphabet.c` strict warnings are deferred pointer-sign rows.
+- strict parser-visible warnings decreased from 29,572 in the Phase 1 refresh
+  to 29,542 in the final Phase 3 verification.
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/udicunix/src/alphabet.c`, `-Wunused-variable`, maximum count `0`.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next5-phase3-alphabet-unused-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,777.
+- strict warning-line count: 29,563.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,542.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and user dictionaries matched accepted baselines.
+- public API smoke and API callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+The detailed manifest baseline was refreshed after repeated captures showed a
+stable, expected metadata/hash change only for the rebuilt `tools/udic_*`
+binaries. User-dictionary output itself remained byte-exact.
+
 Result: the final gate passed with public headers, exported symbols, detailed
 manifest, dictionaries, user dictionaries, API smoke, callback smoke, US
 one-shot audio, expanded US audio suites, non-US one-shot audio, default warning
