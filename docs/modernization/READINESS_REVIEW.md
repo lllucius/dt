@@ -390,10 +390,11 @@ readiness review. The parser-visible default warning count decreased from 1,772
 to 1,771 during the post-merge refresh; no source behavior change was made in
 this phase.
 
-## Current Plan Final Readiness Review
+## PR #4 Final Readiness Review
 
-The current modernization plan completed Phases 1 through 12 on local
-`develop`, which is 11 commits ahead of `origin/develop` before PR publication.
+The modernization plan completed Phases 1 through 12 and was published through
+PR #4, `Complete current modernization plan`. PR #4 merged into `develop` as
+`0555a8fef13d39f7e31ac96bd582ffb05f34db98`.
 
 Autotools/Linux final gate:
 
@@ -459,8 +460,9 @@ Review areas:
 
 - Linux build reproducibility: the authoritative Autotools/Linux gate rebuilt
   and reproduced accepted deterministic baselines under `tests/golden`.
-- Hosted and local CI behavior: local CI-equivalent scripts passed. Hosted PR
-  CI has not run for these commits yet and remains a publication gate.
+- Hosted and local CI behavior: local CI-equivalent scripts passed before PR
+  publication. GitHub accepted the PR #4 merge after hosted checks reached a
+  policy-acceptable state.
 - warnings: warning counts decreased during the plan, but substantial warning
   debt remains. The warning budget only ratchets categories that have already
   been cleaned.
@@ -495,6 +497,206 @@ Known limitations:
   device selection were not tested.
 - Golden audio coverage remains US English only.
 - Non-current platform builds were not tested.
+- Historical target branches are preserved and documented, not proven working.
+- Behavior preservation is claimed only for the deterministic checks listed in
+  this section.
+
+## Accelerated Plan Phase 1 Baseline
+
+The accelerated modernization plan started with a post-merge baseline refresh
+after PR #4 was merged to `origin/develop` as
+`0555a8fef13d39f7e31ac96bd582ffb05f34db98`. Local `develop` also contained the
+new planning commit `bf6e56912a5fb9c40de35b11b721c5e42cf0255b`.
+
+Autotools/Linux refresh:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next3-phase1-post-merge \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,762.
+- parser-visible default warnings: 1,757.
+- warning budget status was `ok`.
+- public header audit matched the committed allowlists.
+- exported symbols matched the committed symbol baselines.
+- detailed Autotools manifest matched the committed baseline.
+- generated main dictionaries and the US user-dictionary fixture matched the
+  committed dictionary baselines.
+- public API smoke output matched the committed speaker 0 golden WAV exactly.
+- US English one-shot golden WAV output matched exactly for speakers 0 through
+  8.
+- expanded deterministic US audio suites matched exactly for speakers 0 through
+  8: `us_abbreviations`, `us_commands_markup`, and
+  `us_punctuation_numbers`.
+
+CMake subset refresh:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next3-phase1-post-merge-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built the staged target.
+- `compile_commands.json` was generated with 3,295 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched the committed
+  baselines.
+- expanded `dt_platform_smoke` passed with `event_semantics=ok`.
+- the detailed CMake staged manifest contained 1,126 lines.
+
+The default warning-line count and parser-visible default warning count matched
+the previous final readiness review. The strict warning-line count decreased
+from 29,764 to 29,762 during the post-merge refresh. No source behavior change
+was made in this phase.
+
+## Accelerated Plan Phase 12 CMake Readiness
+
+Phase 12 rechecked CMake promotion readiness after Phase 10 audio-option
+modeling and the Phase 11 API-boundary warning pilot.
+
+CMake subset gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next3-phase12-cmake-readiness \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built the staged target.
+- `compile_commands.json` was generated with 3,307 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata showing OSS selected
+  and ALSA/PulseAudio disabled.
+- `opthread_smoke` passed.
+
+Manifest decision:
+
+- CMake path/type staging still matches current Autotools path/type staging:
+  589 entries on each side, `manifest: ok`.
+- CMake detailed metadata-hash staging still differs from current Autotools
+  detailed staging: 1,126 entries on each side, `manifest: different`.
+- Remaining detailed differences are built-binary sizes and hashes plus
+  `doc/DECtalk/html` directory metadata.
+
+Decision: CMake is not promoted by this plan. Autotools remains authoritative.
+CMake is suitable as a side-by-side verification build, but detailed packaging
+differences and unverified live-audio behavior remain promotion blockers.
+
+## Accelerated Plan Final Readiness Review
+
+The accelerated modernization plan completed Phases 1 through 13 locally before
+PR publication.
+
+Autotools/Linux final gate:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next3-phase13-final \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,665.
+- parser-visible default warnings: 1,756.
+- parser-visible strict warnings: 29,643.
+- warning budget status was `ok`.
+- public header audit matched the committed allowlists.
+- exported symbols matched the committed symbol baselines.
+- detailed Autotools manifest matched the committed detailed manifest.
+- generated main dictionaries and the US user-dictionary fixture matched the
+  committed dictionary baselines.
+- public API smoke built against installed headers and libraries and matched
+  the committed speaker 0 WAV exactly.
+- US English one-shot golden WAV output matched exactly for speakers 0 through
+  8.
+- expanded deterministic US audio suites matched exactly for speakers 0 through
+  8: `us_abbreviations`, `us_commands_markup`, and
+  `us_punctuation_numbers`.
+
+CMake subset final gate:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next3-phase13-final-cmake \
+  --expected tests/golden
+```
+
+Results:
+
+- CMake configured and built `dectalk_cmake_stage`.
+- `compile_commands.json` was generated with 3,307 lines.
+- CMake-generated dictionaries matched the committed dictionary baselines.
+- CMake-staged US English one-shot WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exported-symbol baseline
+  exactly.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata.
+- `opthread_smoke` passed.
+- CMake path/type staged manifest matched current Autotools path/type staging:
+  589 entries on each side.
+- CMake detailed metadata-hash manifest still differs from Autotools detailed
+  output: 1,126 entries on each side, with built-binary size/hash differences
+  and `doc/DECtalk/html` directory metadata differences.
+
+Review areas:
+
+- warnings: Phase 11 removed the selected API-boundary
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes` cluster and added a
+  warning-budget row. Substantial warning debt remains in high-risk areas.
+- public API and exports: public headers, exported symbols, and expanded API
+  smoke checks passed. Public API signatures and exported names were not
+  intentionally changed.
+- dictionaries: generated dictionaries and the US user-dictionary fixture
+  remained byte-exact against accepted baselines.
+- golden audio: deterministic US English WAV baselines passed for all 9
+  speakers across the one-shot input and expanded suites.
+- CMake: side-by-side status remains. CMake has exact path/type staging parity
+  and deterministic output parity for covered checks, but detailed
+  metadata/hash differences and unverified live-audio behavior block promotion.
+- platform wrappers: `src/platform/` remains isolated scaffolding; runtime
+  wrapper wiring is still deferred.
+
+Known limitations:
+
+- Not all warnings are addressed.
+- High-risk warning cleanup in synthesis, phoneme, LTS, VTM, HLSYN, public API,
+  threading, and audio code remains deferred.
+- CMake is not promoted to the primary Linux build path.
+- Live audio hardware behavior, callback timing, queue behavior, backend device
+  selection, and non-default CMake audio backend combinations were not tested.
+- Golden audio coverage remains US English only.
+- Non-current platform builds were not tested.
+- Phoneme/text golden baselines were not added.
 - Historical target branches are preserved and documented, not proven working.
 - Behavior preservation is claimed only for the deterministic checks listed in
   this section.

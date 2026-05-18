@@ -41,10 +41,16 @@ Autotools remains the authoritative build path for audio behavior.
 
 ## CMake Status
 
-The side-by-side CMake build does not currently expose live audio backend
-options. It builds the current Linux source set with default defines and does
-not pass `USE_ALSA`, `USE_PULSEAUDIO`, or `DISABLE_AUDIO` into the DECtalk
-runtime targets.
+The side-by-side CMake build exposes opt-in audio macro options:
+
+- `DECTALK_CMAKE_DISABLE_AUDIO`
+- `DECTALK_CMAKE_USE_ALSA`
+- `DECTALK_CMAKE_USE_PULSEAUDIO`
+
+The defaults preserve the current verified CMake state:
+`audio_disabled=0`, `audio_oss=1`, `audio_alsa=0`, and
+`audio_pulseaudio=0`. The options model the Autotools macro surface, but they
+do not replace Autotools probing or prove live-audio behavior.
 
 Phase 11 adds `src/platform/dt_audio_backend.*` only as compile-time metadata
 scaffolding for CMake smoke checks. It reports the backend macros and legacy
@@ -67,3 +73,53 @@ nine US English speakers. Phase 11 must keep those comparisons exact.
   phase explicitly approves it and exact baselines still pass.
 - Keep `linux_audio.c` as the authoritative implementation until a wrapper can
   delegate to it without behavior drift.
+
+## Accelerated Phase 10 CMake Option Evidence
+
+Phase 10 added CMake cache options for the audio macro surface while preserving
+the default verified behavior.
+
+Default CMake subset verification:
+
+```sh
+tools/baseline/verify_cmake_subset.sh \
+  --run-dir baseline-runs/next3-phase10-cmake-audio-options \
+  --expected tests/golden
+```
+
+Default `dt_platform_smoke` audio metadata:
+
+```text
+audio_disabled=0
+audio_oss=1
+audio_alsa=0
+audio_pulseaudio=0
+audio_audioqueue=0
+audio_legacy_oss_device=/dev/dsp
+```
+
+Metadata-only disabled-audio probe:
+
+```sh
+cmake -S . -B baseline-runs/next3-phase10-cmake-disable-audio/build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DDECTALK_CMAKE_DISABLE_AUDIO=ON \
+  -DCMAKE_C_COMPILER=/usr/bin/gcc
+cmake --build baseline-runs/next3-phase10-cmake-disable-audio/build \
+  --target dt_platform_smoke -- -j1
+baseline-runs/next3-phase10-cmake-disable-audio/build/dt_platform_smoke \
+  /home/yam/dt PLAN.md
+```
+
+Disabled-audio metadata:
+
+```text
+audio_disabled=1
+audio_oss=0
+audio_alsa=0
+audio_pulseaudio=0
+audio_audioqueue=0
+```
+
+The disabled-audio probe validates metadata visibility only. It does not
+exercise live devices, promote CMake, or approve runtime audio behavior changes.

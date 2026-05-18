@@ -25,12 +25,11 @@ out by a phase plan.
 - `PACKAGING_LAYOUT.md` documents the Autotools `dist/` layout and detailed
   manifest modes.
 - `DICTIONARY_BASELINE.md` documents dictionary and user-dictionary checks.
-- `READINESS_REVIEW.md` records the final readiness state, verification
-  evidence, limitations, and recommended higher-risk follow-on objectives for
-  the current modernization plan.
+- `READINESS_REVIEW.md` records cumulative readiness states, verification
+  evidence, limitations, and recommended higher-risk follow-on objectives.
 - `BASELINE_EXPANSION_PLAN.md` recommends the next deterministic baselines to
   add before higher-risk warning and API cleanup.
-- `NEXT_PLAN_GATE_MAP.md` maps the next plan's higher-risk targets to required
+- `NEXT_PLAN_GATE_MAP.md` maps the active plan's higher-risk targets to required
   behavior gates before source changes begin.
 - `PHONEME_BASELINE_FEASIBILITY.md` records why no new phoneme or text-mode
   golden baseline was accepted before public API smoke coverage is expanded.
@@ -43,7 +42,7 @@ out by a phase plan.
   rules.
 - `AUDIO_BACKEND.md`: current live audio backend behavior and containment
   scaffolding.
-- `PLATFORM_WRAPPER_DECISION.md`: Phase 8 decision on whether `src/platform`
+- `PLATFORM_WRAPPER_DECISION.md`: current decision on whether `src/platform`
   wrappers are ready for runtime wiring.
 
 ## Cleanup Boundaries

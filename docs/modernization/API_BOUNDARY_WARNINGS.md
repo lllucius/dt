@@ -40,5 +40,49 @@ Reasons:
   low-risk wave.
 - `ttsapi.h` and `tts.h` were intentionally left unchanged.
 
-Phase 13 and Phase 14 should revisit these warnings with extra-high reasoning,
-expanded verification, and explicit exported-symbol/public-header review.
+Phase 13 and Phase 14 should revisit the remaining warnings with extra-high
+reasoning, expanded verification, and explicit exported-symbol/public-header
+review.
+
+## Accelerated Plan Phase 11 Pilot
+
+Phase 11 selected the `src/dapi/src/kernel/services.c`
+`-Wmissing-prototypes` cluster reported through the API build context as
+`src/dapi/src/api/services.c`.
+
+The implementation added matching local prototypes above the existing
+definitions. It did not make any symbol `static`, change public headers, change
+calling conventions, change structure layout, or alter call sites. The cleanup
+therefore preserves the existing external linkage used by command, phoneme,
+SAPI, and language-library code.
+
+Strict warning evidence:
+
+- before: `baseline-runs/next3-phase11-warning-strict-pre/warnings.tsv`
+- after: `baseline-runs/next3-phase11-api-boundary-services/warnings-strict/`
+- result: no remaining `-Wmissing-prototypes` rows for
+  `src/dapi/src/kernel/services.c`
+
+Verification:
+
+- `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase11-api-boundary-services --expected tests/golden`
+  completed all captures but stopped at the expected detailed manifest
+  metadata-hash comparison because the touched source is linked into installed
+  language libraries and sample demos.
+- The detailed manifest baseline was refreshed after symbol, dictionary,
+  public-header, API-smoke, warning-budget, one-shot US audio, and expanded US
+  audio comparisons passed.
+- Public exported symbol comparisons remained exact. Public headers remained
+  unchanged. Generated dictionaries and user dictionaries remained byte-exact.
+  API smoke and deterministic US audio remained exact.
+- Final current-tree verification passed with
+  `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase11-api-boundary-services-lf --expected tests/golden`.
+
+Remaining API-boundary warning work stays deferred:
+
+- `ttsapi.c` warnings are still high risk because many are exported, reserved,
+  callback-facing, or loader-adjacent.
+- `coop.h` qualifier warnings remain medium risk.
+- `init.c` unused locals remain in a high-risk API initialization path.
+- Pointer-sign and unused-parameter warnings in `services.c` were not mixed
+  into this prototype cleanup.

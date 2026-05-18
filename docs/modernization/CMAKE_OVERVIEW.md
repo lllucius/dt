@@ -32,6 +32,8 @@ The current CMake build creates:
 - `dectalk_cmake_stage`, which installs the CMake-built subset into
   `baseline-runs/.../cmake-dist` by default.
 - `compile_commands.json` for analysis tooling.
+- developer smoke targets `dt_platform_smoke` and `opthread_smoke`, which are
+  built by the CMake subset verifier but are not installed.
 
 Configure and stage example:
 
@@ -78,11 +80,20 @@ loader path are available during CMake runtime checks.
 
 ## Audio options
 
-The CMake build does not currently expose live audio backend options. It does
-not pass `USE_ALSA`, `USE_PULSEAUDIO`, or `DISABLE_AUDIO` into DECtalk runtime
-targets, and it does not replace Autotools audio probing. See
-`docs/modernization/AUDIO_BACKEND.md` for the current backend inventory and the
-Phase 11 containment scaffolding.
+The CMake build exposes side-by-side cache options for the Autotools audio macro
+surface:
+
+- `DECTALK_CMAKE_DISABLE_AUDIO`, which defines `DISABLE_AUDIO` when enabled.
+- `DECTALK_CMAKE_USE_ALSA`, which defines `USE_ALSA` when enabled and audio is
+  not disabled.
+- `DECTALK_CMAKE_USE_PULSEAUDIO`, which defines `USE_PULSEAUDIO` when enabled
+  and audio is not disabled.
+
+The default values are all `OFF`, preserving the current verified CMake state:
+OSS metadata is visible on Linux, ALSA and PulseAudio are off, and audio is not
+disabled. These options do not replace Autotools probing and do not prove
+live-audio behavior. See `docs/modernization/AUDIO_BACKEND.md` for the current
+backend inventory and containment scaffolding.
 
 The dictionary custom commands intentionally pass build-relative output paths to
 `dic_<lang>`. The dictionary compiler treats leading `/` arguments as options,
@@ -101,8 +112,10 @@ CMake-built binaries, plus the `doc/DECtalk/html` directory size. These are not
 path/type omissions, but they still need an explicit promotion decision before
 CMake can become authoritative.
 
-CMake also still does not expose the live audio backend options used by the
-Autotools runtime build. Autotools remains authoritative.
+CMake now exposes side-by-side live-audio macro options for `DISABLE_AUDIO`,
+`USE_ALSA`, and `USE_PULSEAUDIO`, but those options do not replace Autotools
+probing, link ALSA or PulseAudio libraries, or certify live-audio hardware
+behavior. Autotools remains authoritative.
 
 ## Phase 6 Parity Decision
 
@@ -140,6 +153,105 @@ Remaining differences and risk:
 Future promotion work should either eliminate these differences or define and
 approve an explicit acceptance policy for them. Until then, Autotools remains
 the authoritative Linux build and CMake should remain side-by-side.
+
+## Accelerated Plan Phase 6 Detailed Parity Policy
+
+Phase 6 rechecked detailed CMake packaging evidence from the accelerated
+post-merge baseline:
+
+```sh
+tools/baseline/compare_manifest.sh \
+  --expected baseline-runs/next3-phase1-post-merge/dist-manifest-detailed.txt \
+  --actual baseline-runs/next3-phase1-post-merge-cmake/dist-manifest-detailed.txt \
+  --out baseline-runs/next3-phase6-cmake-detailed-vs-autotools.diff
+```
+
+Result: `manifest: different`.
+
+Accepted evidence:
+
+- basic staged path/type parity remains achieved.
+- both detailed manifests contain 1,126 lines.
+- CMake-generated dictionaries match accepted dictionary baselines.
+- CMake deterministic US audio checks match accepted one-shot and expanded WAV
+  baselines.
+- CMake-staged `libtts.so` matches the committed exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets match committed
+  baselines.
+
+Unaccepted differences:
+
+- detailed metadata, size, and SHA-256 hashes still differ for CMake-built
+  binaries.
+- `doc/DECtalk/html` directory metadata still differs.
+- CMake models the Autotools live-audio macro surface for `DISABLE_AUDIO`,
+  `USE_ALSA`, and `USE_PULSEAUDIO`, but non-default live-audio behavior is not
+  certified and CMake does not replace Autotools probing or backend linkage.
+
+Promotion policy:
+
+- exact basic path/type parity is necessary but not sufficient for promotion.
+- detailed metadata/hash differences may be accepted only by a future explicit
+  CMake promotion plan after reviewing each difference class.
+- binary size/hash differences are not automatically behavior regressions while
+  deterministic dictionaries, symbols, API smoke, and audio checks pass, but
+  they are release-packaging differences and remain promotion blockers.
+- live-audio option parity is modeled only as side-by-side macro state; live
+  backend probing, linkage, device selection, callbacks, queues, and timing
+  must still be certified or explicitly waived before CMake can become
+  authoritative for Linux.
+- this phase does not promote CMake and does not remove Autotools.
+
+## Accelerated Plan Phase 12 Readiness Decision
+
+Recommendation: continue side-by-side and defer CMake promotion.
+
+Current CMake evidence:
+
+- `tools/baseline/verify_cmake_subset.sh --run-dir baseline-runs/next3-phase12-cmake-readiness --expected tests/golden`
+  passed.
+- `compile_commands.json` was generated with 3,307 lines.
+- generated dictionaries matched committed dictionary baselines.
+- CMake-staged one-shot US English WAV output matched exactly for speakers 0
+  through 8.
+- CMake-staged expanded US audio suites matched exactly for speakers 0 through
+  8.
+- CMake-staged `libtts.so` matched the committed exact exported-symbol
+  baseline.
+- CMake language-library exported symbol name/type sets matched committed
+  baselines.
+- `dt_platform_smoke` passed with default audio metadata:
+  `audio_disabled=0`, `audio_oss=1`, `audio_alsa=0`,
+  `audio_pulseaudio=0`, and `audio_audioqueue=0`.
+- `opthread_smoke` passed with the current legacy `OP_*` smoke semantics.
+
+Manifest evidence:
+
+- current Autotools staged path/type manifest:
+  `baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest.txt`
+- current CMake staged path/type manifest:
+  `baseline-runs/next3-phase12-cmake-readiness/dist-manifest.txt`
+- path/type comparison:
+  `tools/baseline/compare_manifest.sh --expected baseline-runs/next3-phase11-api-boundary-services-lf/dist-manifest.txt --actual baseline-runs/next3-phase12-cmake-readiness/dist-manifest.txt --out baseline-runs/next3-phase12-cmake-basic-vs-autotools.diff`
+- result: `manifest: ok`, with 589 entries on each side.
+- detailed CMake-vs-Autotools comparison:
+  `baseline-runs/next3-phase12-cmake-detailed-vs-autotools.diff`
+- detailed result: `manifest: different`, with 1,126 entries on each side.
+
+Promotion blockers:
+
+- CMake-built binaries still have different sizes and SHA-256 hashes from
+  Autotools-built binaries.
+- `doc/DECtalk/html` directory metadata still differs.
+- CMake language-library full symbol address/order captures are not accepted as
+  exact parity, although name/type sets match.
+- CMake audio options are modeled as macro state only; live-audio probing,
+  backend linkage, device selection, callback timing, queue behavior, and live
+  hardware behavior remain outside verified coverage.
+
+Promotion should be handled by a separate future plan. This phase does not
+promote CMake and does not remove Autotools or any existing build path.
 
 ## Phase 18 Promotion Recommendation
 

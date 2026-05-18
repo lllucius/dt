@@ -63,7 +63,14 @@ Current deterministic coverage:
 - no-audio `TextToSpeechStartup()`
 - get/set/error cases for rate, speaker, language, and main volume, with state
   restored before audio generation
+- second no-audio `TextToSpeechStartup()`/`TextToSpeechShutdown()` lifecycle
+  check before the main handle is created
 - `TextToSpeechGetStatus(INPUT_CHARACTER_COUNT)`
+- deterministic no-audio status/error cases for null rate/speaker output
+  pointers, zero-count status requests, `STATUS_SPEAKING`,
+  `WAVE_OUT_DEVICE_ID`, mixed no-audio status requests,
+  `TextToSpeechCloseInMemory()` when memory output is not open, and
+  `TextToSpeechOpenInMemory()` with an invalid format
 - WAV-file output through `TextToSpeechOpenWaveOutFile()`,
   `TextToSpeechSpeak()`, `TextToSpeechSync()`,
   `TextToSpeechCloseWaveOutFile()`, and `TextToSpeechShutdown()`
@@ -87,3 +94,38 @@ Explicitly unsupported in the smoke matrix:
   explicit API/ABI decision.
 - Treat generated symbol comparisons and header audit comparisons as blocking
   checks for public API work.
+
+## Accelerated Plan Phase 7 Update
+
+Phase 7 expanded `tools/baseline/api_smoke.c` without changing public headers
+or runtime implementation files.
+
+Added coverage:
+
+- second no-audio startup/shutdown cycle
+- null output-pointer checks for `TextToSpeechGetRate()` and
+  `TextToSpeechGetSpeaker()`
+- `TextToSpeechGetStatus()` zero-count validation
+- no-audio `STATUS_SPEAKING` and `WAVE_OUT_DEVICE_ID` status behavior
+- mixed no-audio status behavior for input count plus speaking state
+- `TextToSpeechCloseInMemory()` when memory output is not open
+- `TextToSpeechOpenInMemory()` invalid-format validation
+
+Verification:
+
+```sh
+tools/baseline/check_api_smoke.sh \
+  --out baseline-runs/next3-phase7-api-smoke/api-smoke
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next3-phase7-api-smoke \
+  --expected tests/golden
+```
+
+Results:
+
+- expanded API smoke output was deterministic.
+- API smoke WAV comparison remained exact against
+  `tests/golden/audio/us/speaker_0.wav`.
+- public headers, exported symbols, dictionaries, user dictionaries, detailed
+  Autotools manifest, one-shot US audio, expanded US audio suites, and warning
+  budgets matched accepted baselines.

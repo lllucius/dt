@@ -27,3 +27,10 @@ manual-reset event waits, finite event timeouts, path helpers, compile-time
 audio metadata, and historical target inventory. It does not prove parity for
 legacy `OP_*` stack size, priority, handle ownership, scheduler-yield,
 lightweight-lock, live-audio, callback, queue, or buffer behavior.
+
+The CMake-only `opthread_smoke` target exercises selected legacy `OP_*`
+semantics directly against `src/dapi/src/nt/opthread.c`. It records current
+thread create/join, priority, event, mutex, sleep, and lightweight-lock
+behavior as comparison evidence for future adapter work. It is not installed,
+does not link to DECtalk runtime libraries, and does not route any runtime
+threading or audio behavior through `src/platform`.

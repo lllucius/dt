@@ -137,3 +137,124 @@ This prevents regression of the Phase 13 dictionary compiler format cleanup
 and the Phase 5 sample loader prototype-definition cleanup without making
 unrelated legacy warning debt fatal. New budgets should be added only after a
 focused cleanup has passed the relevant behavior checks.
+
+## Accelerated Plan Phase 3 Refresh
+
+The accelerated plan refreshed warning evidence from the Phase 1 post-merge
+baseline:
+
+- default warning summary:
+  `baseline-runs/next3-phase1-post-merge/warnings-default/`
+- strict warning log:
+  `baseline-runs/next3-phase1-post-merge/build/build-strict-warnings.log`
+- refreshed strict parser summary:
+  `baseline-runs/next3-phase3-warning-strict/`
+
+Current warning counts:
+
+| Source | Count |
+| --- | ---: |
+| default warning lines | 1,778 |
+| parser-visible default warnings | 1,757 |
+| strict warning lines | 29,762 |
+| parser-visible strict warnings | 29,743 |
+
+Refreshed strict risk classification:
+
+| Risk | Count | Ownership |
+| --- | ---: | --- |
+| high | 9,333 | behavior-critical synthesis, phoneme, LTS, API, and audio/threading areas |
+| medium | 5,147 | pointer qualifier, conversion, callback, and related boundary warnings |
+| low | 1,670 | unused parameters, missing prototypes, old-style definitions, and local tool cleanup |
+| unknown | 13,593 | unclassified warnings requiring local review before cleanup |
+
+Selected Phase 4 candidate:
+
+- file: `src/licunix/src/liceninc.c`
+- category: `-Wmissing-prototypes`
+- current strict parser evidence: three repeated warnings for private helper
+  `all_digits`
+- planned approach: make the helper internal to the translation unit if review
+  confirms it is not externally referenced
+- expected budget: add a zero-count `-Wmissing-prototypes` row for
+  `src/licunix/src/liceninc.c` only if the category reaches zero after
+  verification
+
+Rejected candidates for this pass:
+
+- `src/licunix/src/liceninc.c` `-Wpointer-sign`: pointer signedness is outside
+  this low-risk phase and should not be mixed with a prototype cleanup.
+- `src/samplosf/src/dtsamples/tunecheck.c` `-Wunused-variable`: larger sample
+  tool surface and more warnings; suitable only after a focused review.
+- `src/samplosf/src/dtsamples/mfg_load.c` `-Wmissing-prototypes`: already has a
+  warning-budget history, but the remaining functions need more local review
+  than the single-helper `liceninc.c` target.
+- private command/parser files under `src/dapi/src/cmd/`: parser-adjacent and
+  deferred until stronger behavior coverage is needed.
+
+Do not expand Phase 4 beyond the selected file and warning category unless the
+candidate proves invalid during source review.
+
+## Accelerated Plan Phase 4 Cleanup
+
+Phase 4 implemented the selected `src/licunix/src/liceninc.c`
+`-Wmissing-prototypes` cleanup by making the private `all_digits` helper
+file-local with `static`.
+
+Verification:
+
+- `tools/baseline/verify_current.sh --run-dir baseline-runs/next3-phase4-liceninc-warning --expected tests/golden`
+- `tools/baseline/summarize_warnings.py --log baseline-runs/next3-phase4-liceninc-warning/build/build-strict-warnings.log --out-dir baseline-runs/next3-phase4-warning-strict`
+- `tools/baseline/check_warning_budgets.py --warnings baseline-runs/next3-phase4-liceninc-warning/warnings-default/warnings.tsv --budget tests/golden/warnings/default-cleaned.tsv --out baseline-runs/next3-phase4-liceninc-warning/warning-budget-after.tsv`
+
+Results:
+
+- strict warning-line count decreased from 29,762 to 29,761.
+- parser-visible strict warnings decreased from 29,743 to 29,738.
+- the refreshed strict parser reported no remaining warnings for
+  `src/licunix/src/liceninc.c`.
+- the warning budget passed after adding a zero-count
+  `src/licunix/src/liceninc.c` `-Wmissing-prototypes` row.
+- public headers, exported symbols, dictionaries, user dictionaries, API smoke,
+  one-shot US audio, expanded US audio suites, and the detailed Autotools
+  manifest matched accepted baselines.
+
+The pointer-sign cleanup originally visible in this file remains out of scope
+as a warning category. It should not be mixed into low-risk warning cleanup
+unless a later phase explicitly selects it.
+
+## Accelerated Plan Phase 11 API-Boundary Pilot
+
+Phase 11 selected one API-boundary warning candidate from the refreshed strict
+warning inventory:
+
+- file: `src/dapi/src/kernel/services.c`
+- normalized build-context path in API warnings: `src/dapi/src/api/services.c`
+- category: `-Wmissing-prototypes`
+- approach: add matching local prototypes for existing externally linked
+  service functions without changing linkage, definitions, public headers,
+  call sites, or exported symbol names
+
+Results:
+
+- parser-visible default warnings remained `1,757`.
+- default warning-line count decreased from `1,778` to `1,777`.
+- strict warning-line count decreased from `29,760` to `29,665`.
+- parser-visible strict warnings decreased from `29,738` to `29,644`.
+- the refreshed strict parser reported no remaining
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes` warnings.
+- a zero-count warning-budget row was added for
+  `src/dapi/src/kernel/services.c` `-Wmissing-prototypes`.
+- public exported symbols, public headers, generated dictionaries, user
+  dictionaries, API smoke output, one-shot US audio, and expanded deterministic
+  US audio matched accepted baselines.
+
+The detailed Autotools manifest metadata-hash baseline was refreshed because
+`services.c` is linked into installed language libraries and sample demo
+binaries. The path/type install layout did not change when compared with the
+Phase 10 Autotools capture.
+
+Deferred warning categories remain unchanged: pointer-sign, pointer qualifier,
+unused-parameter, callback-facing, loader-adjacent, structure-layout,
+threading, and public API implementation warnings still require separate
+extra-high review and gates.

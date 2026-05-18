@@ -4,6 +4,8 @@ Phase 8 decision: defer runtime wrapper wiring.
 Phase 9 update: add non-runtime wrapper parity coverage, but continue to defer
 runtime wiring.
 Phase 10 decision: no runtime wrapper pilot is approved.
+Accelerated Phase 8 update: add isolated legacy `OP_*` parity evidence, but
+continue to defer runtime wiring.
 
 No `src/platform` wrapper is approved for runtime integration yet. The existing
 wrappers remain useful CMake-only scaffolding, but they are not behaviorally
@@ -131,3 +133,85 @@ callback-timing, queue, pipe, or buffer-ownership parity harness exists.
 
 No exact file, wrapper, behavior gate, or rollback plan is proposed for
 implementation in this phase because the prerequisite evidence is incomplete.
+
+## Accelerated Phase 8 OP_* Harness
+
+Accelerated Phase 8 adds `tools/platform/opthread_smoke.c` and builds it only
+as the CMake `opthread_smoke` developer target. The target links directly
+against `src/dapi/src/nt/opthread.c` for evidence, but it is not installed and
+is not linked into DECtalk runtime libraries.
+
+Covered by the harness:
+
+- `OP_CreateThread` with default stack size;
+- `OP_WaitForThreadTermination` handle ownership and current Linux return
+  behavior;
+- `OP_GetThreadPriority` and `OP_SetThreadPriority` with the current thread
+  priority;
+- `OP_Sleep(0)` as a smoke-level scheduler-yield check;
+- `OP_CreateMutex`, `OP_LockMutex`, `OP_UnlockMutex`, and `OP_DestroyMutex`;
+- auto-reset and manual-reset `OP_CreateEvent`/`OP_WaitForEvent` semantics;
+- `ThreadLock` successful lock and zero-timeout failed relock behavior.
+
+Observed CMake verifier output:
+
+```text
+op_thread_wait_status=1
+op_thread_return=77
+op_thread_priority=0
+op_mutex=ok
+op_event_semantics=ok
+op_lightweight_lock=ok
+op_sleep_zero=ok
+opthread_smoke=ok
+```
+
+Still not covered:
+
+- live audio routing, device opening, callback timing, queue behavior, pipe
+  behavior, buffer ownership, reset/pause/restart transitions, and backend
+  state;
+- exact scheduler fairness or timing guarantees;
+- non-current platform `OP_*` behavior;
+- runtime replacement of any `opthread.c` call path with `src/platform`.
+
+Decision remains unchanged: no runtime wrapper pilot is approved. The new
+evidence helps define adapter requirements, but `src/platform` is still not a
+drop-in replacement for active DECtalk runtime code.
+
+## Accelerated Phase 9 Adapter Decision
+
+Decision: defer platform adapter scaffolding.
+
+The accelerated Phase 8 `opthread_smoke` target gives useful legacy evidence,
+but it also confirms that an adapter would need to preserve details that are
+not represented by the current `src/platform` APIs:
+
+- Linux `OP_WaitForThreadTermination` currently returns `1` after a successful
+  join in the smoke harness while also returning the thread status value.
+- Legacy thread handles are heap-allocated `pthread_t *` values owned and freed
+  by the wait function.
+- Priority get/set calls are part of the legacy contract even though the
+  wrapper API does not expose priority.
+- `ThreadLock` uses the legacy timeout-polling contract, including immediate
+  failure on zero-timeout relock in the smoke harness.
+- Event constants, return values, and auto-reset/manual-reset semantics must
+  remain compatible with `OP_WAIT_*` behavior.
+
+Current `dt_thread`, `dt_mutex`, `dt_event`, and `dt_time` wrappers remain
+useful scaffolding, but their APIs do not encode those legacy contracts exactly.
+Adding adapter files now would either duplicate `opthread.c` semantics without
+a runtime user or create a misleading migration path before live runtime gates
+exist.
+
+Required before reconsidering adapter scaffolding:
+
+- define whether adapters preserve `OP_*` names and return values exactly or
+  expose a separate compatibility layer;
+- add callback, queue, pipe, reset, pause, restart, and buffer-ownership
+  evidence for any audio-adjacent adapter;
+- keep exact public API, symbol, dictionary, manifest, and deterministic audio
+  gates in the adapter plan;
+- decide how non-current platform `OP_*` branches remain quarantined.
+
+No new adapter source or header is approved by this phase.

@@ -108,6 +108,29 @@ void wait_semaphore( P_SEMAPHORE );
 
 void signal_semaphore( int * );
 void free_index(PKSD_T pKsd_t);
+void save_index(PKSD_T pKsd_t, unsigned int sym, unsigned int type,
+		unsigned int value, unsigned int how);
+void adjust_index(PKSD_T pKsd_t, unsigned int which, int direction, int del);
+void adjust_allo(PKSD_T pKsd_t, unsigned int which, int direction);
+void set_index_allo(PKSD_T pKsd_t, unsigned int nphone, unsigned int nallo);
+void send_index(int how, int value);
+void start_flush(int serial_mode);
+void reset_spc(void);
+void default_lang(PKSD_T pKsd_t, unsigned int lang_code,
+		  unsigned int ready_code);
+void flush_done(PKSD_T pKsd_t);
+void set_gpio(int dummy);
+void clr_gpio(int dummy);
+#if defined __linux__ || defined VXWORKS || defined _SPARC_SOLARIS_ || defined ARM7 || defined __EMSCRIPTEN__ || defined (__APPLE__)
+int putseq(void *sp);
+#else
+int putseq(struct SEQ_struct __far *sp);
+#endif
+DWORD EncodeDectalkVolume(DWORD dwVolume);
+DWORD DecodeDectalkVolume(DWORD dwVolume);
+void StereoVolumeControl(LPTTS_HANDLE_T phTTS, int iVolume, int iVolumeType,
+			 BOOL bLeft, BOOL bRight);
+void SetStereoVolume(LPTTS_HANDLE_T phTTS, int iLeftVolume, int iRightVolume);
 
 #ifndef MSDOS
 static DWORD ModifyVolume( DWORD, int, int );
