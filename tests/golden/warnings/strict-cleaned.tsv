@@ -1,0 +1,2 @@
+file	flag	max_count	note
+src/dapi/src/api/coop.h	-Wdiscarded-qualifiers	0	Phase 6 changed literal-backed dictionary and registry path globals to const character pointers without changing exported names.

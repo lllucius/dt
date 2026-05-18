@@ -77,6 +77,9 @@ mkdir -p "$run_dir"
 "$repo_root/tools/baseline/summarize_warnings.py" \
   --log "$run_dir/build/build.log" \
   --out-dir "$run_dir/warnings-default"
+"$repo_root/tools/baseline/summarize_warnings.py" \
+  --log "$run_dir/build/build-strict-warnings.log" \
+  --out-dir "$run_dir/warnings-strict"
 "$repo_root/tools/baseline/capture_symbols.sh" --out "$run_dir/symbols"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" --out "$run_dir/dist-manifest.txt"
 "$repo_root/tools/baseline/capture_dist_manifest.sh" \
@@ -142,12 +145,20 @@ if [ -n "$expected_dir" ]; then
       --budget "$expected_dir/warnings/default-cleaned.tsv" \
       --out "$run_dir/warning-budget.tsv" > "$run_dir/warning-budget.txt"
   fi
+  if [ -f "$expected_dir/warnings/strict-cleaned.tsv" ]; then
+    "$repo_root/tools/baseline/check_warning_budgets.py" \
+      --warnings "$run_dir/warnings-strict/warnings.tsv" \
+      --budget "$expected_dir/warnings/strict-cleaned.tsv" \
+      --out "$run_dir/warning-budget-strict.tsv" > "$run_dir/warning-budget-strict.txt"
+  fi
 fi
 
 {
   printf 'run_dir=%s\n' "$run_dir"
   printf 'default_warnings=%s\n' "$(cat "$run_dir/build/default-warning-count.txt")"
   printf 'strict_warnings=%s\n' "$(cat "$run_dir/build/strict-warning-count.txt")"
+  printf 'parser_default_warnings=%s\n' "$(($(wc -l < "$run_dir/warnings-default/warnings.tsv") - 1))"
+  printf 'parser_strict_warnings=%s\n' "$(($(wc -l < "$run_dir/warnings-strict/warnings.tsv") - 1))"
   printf 'audio_compare=%s\n' "$run_dir/audio-compare.txt"
   printf 'audio_metrics=%s\n' "$run_dir/audio-metrics.tsv"
   printf 'audio_suite_compare=%s\n' "$run_dir/audio-suite-compare.txt"
@@ -163,6 +174,7 @@ fi
   [ -f "$run_dir/api-smoke/summary.txt" ] && printf 'api_smoke=%s\n' "$run_dir/api-smoke/summary.txt"
   [ -f "$run_dir/api-callback-smoke/summary.txt" ] && printf 'api_callback_smoke=%s\n' "$run_dir/api-callback-smoke/summary.txt"
   [ -f "$run_dir/warning-budget.txt" ] && printf 'warning_budget=%s\n' "$run_dir/warning-budget.txt"
+  [ -f "$run_dir/warning-budget-strict.txt" ] && printf 'warning_budget_strict=%s\n' "$run_dir/warning-budget-strict.txt"
 } > "$run_dir/summary.txt"
 
 cat "$run_dir/summary.txt"

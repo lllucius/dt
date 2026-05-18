@@ -1,0 +1,2 @@
+src/dapi/src/api/coop.h whitespace=cr-at-eol
+tests/golden/dist-manifest-detailed.txt whitespace=-blank-at-eol

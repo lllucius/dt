@@ -219,6 +219,61 @@ Results:
   one-shot US audio, expanded US audio suites, and the detailed Autotools
   manifest matched accepted baselines.
 
+## Next High-Risk Plan Phase 6 Cleanup
+
+Phase 6 implemented one medium-risk warning cleanup:
+
+- file: `src/dapi/src/api/coop.h`
+- category: `-Wdiscarded-qualifiers`
+- change: literal-backed dictionary and registry path globals now use
+  `const char *` instead of mutable `LPSTR`
+
+The selected variables were:
+
+- `szLocalMachineDECtalk`
+- `szCurrentUsersDECtalk`
+- `szMainDictDef`
+- `szUserDictDef`
+- `szAbbrDictDef`
+- `szForeignDictDef`
+
+Warning evidence:
+
+- before: 66 parser-visible strict `coop.h` `-Wdiscarded-qualifiers` rows.
+- after: 0 parser-visible strict `coop.h` `-Wdiscarded-qualifiers` rows.
+- strict warning-line count decreased from 29,665 to 29,593.
+- parser-visible strict warnings decreased from 29,642 to 29,572.
+
+Budget ratchet:
+
+- `tests/golden/warnings/strict-cleaned.tsv` now tracks
+  `src/dapi/src/api/coop.h`, `-Wdiscarded-qualifiers`, maximum count `0`.
+- `tools/baseline/verify_current.sh` now emits a strict warning parser summary
+  and checks the strict budget when the file is present.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase6-coop-const-final2 \
+  --expected tests/golden
+```
+
+Result: the final gate passed with public headers, exported symbols, detailed
+manifest, dictionaries, user dictionaries, API smoke, callback smoke, US
+one-shot audio, expanded US audio suites, non-US one-shot audio, default warning
+budget, and strict warning budget all matching accepted baselines.
+
+Notes:
+
+- the detailed manifest changed because the edited header is compiled into the
+  language shared libraries and `say_demo_*` tools; the manifest baseline was
+  refreshed only after symbols, dictionaries, API, callback, audio, and warning
+  gates passed.
+- no public API signatures, exported symbol names, dictionary strings, parser
+  behavior, synthesis behavior, callback behavior, or audio behavior were
+  intentionally changed.
+
 The pointer-sign cleanup originally visible in this file remains out of scope
 as a warning category. It should not be mixed into low-risk warning cleanup
 unless a later phase explicitly selects it.

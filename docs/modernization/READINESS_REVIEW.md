@@ -842,3 +842,48 @@ language-aware capture tooling only. It did not change language selection,
 voice ROM selection, sample rate, default voice, synthesis code, parser
 behavior, dictionary behavior, public APIs, exported symbols, or live-audio
 behavior.
+
+## Next High-Risk Plan Phase 6 Warning Cleanup
+
+Phase 6 cleaned one medium-risk strict warning category:
+
+- file: `src/dapi/src/api/coop.h`.
+- category: `-Wdiscarded-qualifiers`.
+- implementation: changed literal-backed dictionary and registry path globals
+  from mutable `LPSTR` declarations to `const char *` declarations while
+  preserving the global variable names.
+
+Warning results:
+
+- `coop.h` parser-visible strict `-Wdiscarded-qualifiers` rows decreased from
+  66 to 0.
+- strict warning-line count decreased from 29,665 to 29,593.
+- parser-visible strict warnings decreased from 29,642 to 29,572.
+- `tests/golden/warnings/strict-cleaned.tsv` now enforces this category at
+  zero, and `verify_current.sh` checks strict warning budgets when present.
+
+Final verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase6-coop-const-final2 \
+  --expected tests/golden
+```
+
+Results:
+
+- default warning-line count: 1,778.
+- strict warning-line count: 29,593.
+- parser-visible default warnings: 1,757.
+- parser-visible strict warnings: 29,572.
+- default and strict warning budgets passed.
+- public headers, exported symbols, detailed manifest, generated dictionaries,
+  and the US user-dictionary fixture matched accepted baselines.
+- public API smoke and callback smoke matched accepted baselines.
+- US English one-shot WAV output, expanded US audio suites, and non-US
+  one-shot WAV outputs matched exactly.
+
+Behavior statement: no public API signatures, exported symbol names,
+dictionary strings, parser behavior, synthesis behavior, callback behavior,
+audio behavior, language selection behavior, or voice selection behavior were
+intentionally changed.

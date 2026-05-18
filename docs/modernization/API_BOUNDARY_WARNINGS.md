@@ -82,7 +82,57 @@ Remaining API-boundary warning work stays deferred:
 
 - `ttsapi.c` warnings are still high risk because many are exported, reserved,
   callback-facing, or loader-adjacent.
-- `coop.h` qualifier warnings remain medium risk.
 - `init.c` unused locals remain in a high-risk API initialization path.
 - Pointer-sign and unused-parameter warnings in `services.c` were not mixed
   into this prototype cleanup.
+
+## Next High-Risk Plan Phase 6 Coop Qualifier Cleanup
+
+Phase 6 selected the `src/dapi/src/api/coop.h` `-Wdiscarded-qualifiers`
+cluster from the refreshed strict warning inventory.
+
+The implementation changed only literal-backed global pointer declarations from
+`LPSTR` to `const char *`:
+
+- `szLocalMachineDECtalk`
+- `szCurrentUsersDECtalk`
+- `szMainDictDef`
+- `szUserDictDef`
+- `szAbbrDictDef`
+- `szForeignDictDef`
+
+These variables remain global data symbols with the same names. The change does
+not make them `static`, does not change public headers, does not change
+dictionary names, and does not alter call sites that copy or format the strings.
+
+Warning evidence:
+
+- before: 66 parser-visible strict `src/dapi/src/api/coop.h`
+  `-Wdiscarded-qualifiers` rows.
+- after: 0 parser-visible strict `src/dapi/src/api/coop.h`
+  `-Wdiscarded-qualifiers` rows.
+- strict warning-line count decreased from 29,665 to 29,593.
+- parser-visible strict warnings decreased from 29,642 to 29,572.
+- `tests/golden/warnings/strict-cleaned.tsv` now enforces the cleaned
+  `coop.h` category at zero.
+
+Verification:
+
+```sh
+tools/baseline/verify_current.sh \
+  --run-dir baseline-runs/next4-phase6-coop-const-final2 \
+  --expected tests/golden
+```
+
+Result: public headers, exported symbols, detailed manifest, dictionaries, user
+dictionaries, API smoke, callback smoke, US audio, expanded US audio suites,
+non-US audio, default warning budget, and strict warning budget all matched
+accepted baselines.
+
+Remaining API-boundary warning work stays deferred:
+
+- `ttsapi.c` warnings are still high risk because many are exported, reserved,
+  callback-facing, loader-adjacent, memory-owner, or file-output adjacent.
+- `init.c` unused locals remain in a high-risk API initialization path.
+- Pointer-sign and unused-parameter warnings in `services.c` were not mixed
+  into this qualifier cleanup.
